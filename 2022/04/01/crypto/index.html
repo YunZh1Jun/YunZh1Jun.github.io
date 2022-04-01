@@ -16,15 +16,15 @@
   <meta name="author" content="云之君">
   <meta name="keywords" content="">
   
-    <meta name="description" content="MathJax.Hub.Config({             tex2jax: {             skipTags: [&#39;script&#39;, &#39;noscript&#39;, &#39;style&#39;, &#39;textarea&#39;, &#39;pre&#39;],             inlineMath: [[&#39;$&#39;,&#39;$&#39;]]             }         });">
+    <meta name="description" content="SM4输入4*4字节明文，32轮迭代后输出反序作为密文。每一轮迭代需要4字节轮密钥，迭代过程即是不断使用轮函数F，往后计算下一个字。 例如4字明文 $(X_{0},X_{1},X_{2},X_{3})$ ，一轮迭代后得到 $X_{4}&#x3D;F(X_{0},X_{1},X_{2},X_{3},rk_{0})$二轮迭代即是 $X_{5}&#x3D;F(X_{1},X_{2},X_{3},X_{4},rk_{1})$">
 <meta property="og:type" content="article">
 <meta property="og:title" content="crypto">
 <meta property="og:url" content="http://example.com/2022/04/01/crypto/index.html">
 <meta property="og:site_name" content="云之君">
-<meta property="og:description" content="MathJax.Hub.Config({             tex2jax: {             skipTags: [&#39;script&#39;, &#39;noscript&#39;, &#39;style&#39;, &#39;textarea&#39;, &#39;pre&#39;],             inlineMath: [[&#39;$&#39;,&#39;$&#39;]]             }         });">
+<meta property="og:description" content="SM4输入4*4字节明文，32轮迭代后输出反序作为密文。每一轮迭代需要4字节轮密钥，迭代过程即是不断使用轮函数F，往后计算下一个字。 例如4字明文 $(X_{0},X_{1},X_{2},X_{3})$ ，一轮迭代后得到 $X_{4}&#x3D;F(X_{0},X_{1},X_{2},X_{3},rk_{0})$二轮迭代即是 $X_{5}&#x3D;F(X_{1},X_{2},X_{3},X_{4},rk_{1})$">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-01T09:55:56.724Z">
-<meta property="article:modified_time" content="2022-04-01T14:36:19.896Z">
+<meta property="article:modified_time" content="2022-04-01T14:57:09.308Z">
 <meta property="article:author" content="云之君">
 <meta name="twitter:card" content="summary_large_image">
   
@@ -208,7 +208,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.5k 字
+      1.4k 字
     </span>
   
 
@@ -217,7 +217,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      13 分钟
+      12 分钟
     </span>
   
 
@@ -249,18 +249,7 @@
             <h1 style="display: none">crypto</h1>
             
             <div class="markdown-body">
-              <p><head>
-    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-            tex2jax: {
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-            inlineMath: [['$','$']]
-            }
-        });
-    </script>
-</head></p>
-<h2 id="SM4"><a href="#SM4" class="headerlink" title="SM4"></a>SM4</h2><p>输入4*4字节明文，32轮迭代后输出反序作为密文。<br>每一轮迭代需要4字节轮密钥，迭代过程即是不断使用轮函数F，往后计算下一个字。</p>
+              <h2 id="SM4"><a href="#SM4" class="headerlink" title="SM4"></a>SM4</h2><p>输入4*4字节明文，32轮迭代后输出反序作为密文。<br>每一轮迭代需要4字节轮密钥，迭代过程即是不断使用轮函数F，往后计算下一个字。</p>
 <p>例如4字明文 $(X_{0},X_{1},X_{2},X_{3})$ ，一轮迭代后得到 $X_{4}=F(X_{0},X_{1},X_{2},X_{3},rk_{0})$<br>二轮迭代即是 $X_{5}=F(X_{1},X_{2},X_{3},X_{4},rk_{1})$<br>以此类推，得到 $(X_{32},X_{33},X_{34},X_{35})$ ，输出 $(X_{35},X_{34},X_{33},X_{32})$ 作为密文</p>
 <p><strong>轮函数执行的运算为：</strong><br>$F(X_{i},X_{i+1},X_{i+2},X_{i+3},rk_{i})=X_{i} \bigoplus T(X_{i+1}\bigoplus X_{i+2}\bigoplus X_{i+3}\bigoplus rk_{i})$</p>
 <p><strong>合成置换T：</strong><br>一字输入A，一字输出C，包含非线性变换$\tau$和线性变换$L$，即$C=L(\tau(A))$</p>
