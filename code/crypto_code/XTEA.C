@@ -21,9 +21,9 @@ void decrypt(uint32_t* v, uint32_t* key) {
 int main()
 {
     // 两个32位无符号整数，即待加密的64bit明文数据
-    uint32_t v[2] = {0x12345678, 0x78563412};
+    uint32_t v[2] = {0x68686868, 0x68686868};
     // 四个32位无符号整数，即128bit的key
-    uint32_t k[4]= {0x1, 0x2, 0x3, 0x4};
+    uint32_t k[4]= {0x30201000, 0x70605040, 0xb0a09080, 0xf0e0d0c0};
 
     printf("Data is : %x %x\n", v[0], v[1]);
     encrypt(v, k);
