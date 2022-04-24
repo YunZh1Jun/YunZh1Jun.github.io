@@ -24,7 +24,7 @@
 <meta property="og:description" content="VNCTFBabyMazepyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。  这个题可以很明显看出来，0处的指令就是跳转到4，而4处的指令是跳转到2，2处的指令是跳转到6，6处的指令就是正常的创建迷宫的指令了，所以把前三句patch掉。在十六进制编辑器里把这三句删掉，然后改字节码长度co_co">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-24T11:06:32.779Z">
-<meta property="article:modified_time" content="2022-04-24T16:24:20.198Z">
+<meta property="article:modified_time" content="2022-04-24T16:52:34.526Z">
 <meta property="article:author" content="云之君">
 <meta property="article:tag" content="WP">
 <meta property="article:tag" content="CTF">
@@ -251,6 +251,12 @@
             <!-- SEO header -->
             <h1 style="display: none">日常随缘复现</h1>
             
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年4月25日 凌晨
+                
+              </p>
+            
             <div class="markdown-body">
               <h2 id="VNCTF"><a href="#VNCTF" class="headerlink" title="VNCTF"></a>VNCTF</h2><h3 id="BabyMaze"><a href="#BabyMaze" class="headerlink" title="BabyMaze"></a>BabyMaze</h3><p>pyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。</p>
 <p><img src=/code/chall_photo/pyc_flower.jpg width=100% /></p>
@@ -296,6 +302,13 @@
             <hr>
             <div>
               <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a>
+                    
+                  </div>
                 
                 
                   <div class="post-meta">

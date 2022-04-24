@@ -24,7 +24,7 @@
 <meta property="og:description" content="一些闲话其实SEH的概念之前已经接触过几次了，第一次是在瞎翻track和含树师傅博客的时候，看到21年的miniL有涉及到这个东西，觉得还是含树师傅的方法（一个一个翻函数）最管用，所以就没太在意这个东西。直到寒假做hgame的题被教育了，后来刷buu逆向的时候做到SCTF2019的creakme又被教育了一通，觉得还是得了解这个东西吧。怎么说呢，做题毕竟只是做题，可能这道题可以嗯翻函数，另一个题可">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-04-12T13:01:53.899Z">
-<meta property="article:modified_time" content="2022-04-13T04:15:05.013Z">
+<meta property="article:modified_time" content="2022-04-24T16:53:01.776Z">
 <meta property="article:author" content="云之君">
 <meta property="article:tag" content="SEH">
 <meta property="article:tag" content="Windows">
@@ -250,6 +250,12 @@
             <!-- SEO header -->
             <h1 style="display: none">Windows-SEH学习笔记</h1>
             
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年4月25日 凌晨
+                
+              </p>
+            
             <div class="markdown-body">
               <h4 id="一些闲话"><a href="#一些闲话" class="headerlink" title="一些闲话"></a>一些闲话</h4><p>其实SEH的概念之前已经接触过几次了，第一次是在瞎翻track和含树师傅博客的时候，看到21年的miniL有涉及到这个东西，<del>觉得还是含树师傅的方法（一个一个翻函数）最管用，所以就没太在意这个东西</del>。直到寒假做hgame的题被教育了，后来刷buu逆向的时候做到SCTF2019的creakme又被教育了一通，觉得还是得了解这个东西吧。<br>怎么说呢，做题毕竟只是做题，可能这道题可以嗯翻函数，另一个题可以嗯怼汇编，即使一点也不了解这个东西也能拿到flag。但是我感觉，不知道原理的话，对一些<del>比较屑的</del>题还是难免无从下手吧，而且明白一个东西之后用起来感觉会更顺手一些。<br>最初知道寻找SEH相关的一些调用地址是在《逆向工程核心原理》这本书上，然后自己拿题目瞎调了一通。但是调出来的东西，跟书上说的东西，不能说是毫不相干，只能说是八竿子打不着(x，只好去网上找各种博客康。看了很多篇之后慢慢感觉理解了一些，感觉里面还是有挺多很有意思的东西，然后又综合《逆向工程核心原理》和《加密与解密》， <del>再顺便完成复现题目的任务，</del> 自己写了一篇博客。</p>
 <p>不过这篇文章只是一些比较简单的应用，而且只涉及了SEH，也只有静态分析的部分， <del>（因为我太菜了，OD还用不熟练，之后也许会写一篇动调的）</del> 对于VEH、UEH、VCH等异常处理还没有研究过，SEH栈展开之类的高级内容也许以后学了会再写一篇（逃</p>
@@ -401,6 +407,13 @@
             <hr>
             <div>
               <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0/">学习</a>
+                    
+                  </div>
                 
                 
                   <div class="post-meta">
