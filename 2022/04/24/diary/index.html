@@ -259,7 +259,7 @@
             
             <div class="markdown-body">
               <h2 id="VNCTF"><a href="#VNCTF" class="headerlink" title="VNCTF"></a>VNCTF</h2><h3 id="BabyMaze"><a href="#BabyMaze" class="headerlink" title="BabyMaze"></a>BabyMaze</h3><p>pyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。</p>
-<p><img src=/code/chall_photo/pyc_flower.jpg width=100% /></p>
+<p><img src=/img/code/chall_photo/pyc_flower.jpg width=100% /></p>
 <p>这个题可以很明显看出来，0处的指令就是跳转到4，而4处的指令是跳转到2，2处的指令是跳转到6，6处的指令就是正常的创建迷宫的指令了，所以把前三句patch掉。<br>在十六进制编辑器里把这三句删掉，然后改字节码长度co_code，减去6（因为上面三条指令是6个字节）。</p>
 <h4 id="pyc文件格式"><a href="#pyc文件格式" class="headerlink" title="pyc文件格式"></a>pyc文件格式</h4><ul>
 <li>开始4字节magic int，标识pyc版本信息</li>
