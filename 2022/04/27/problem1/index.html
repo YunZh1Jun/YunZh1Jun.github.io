@@ -209,7 +209,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      220 字
+      227 字
     </span>
   
 
@@ -258,7 +258,7 @@
             <div class="markdown-body">
               <p>记录一次WSL闪退的解决方案。</p>
 <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>想跑一个ELF程序，但是WSL突然闪退，不论如何都打不开，于是去搜了一下，查到可能是因为使用过虚拟机，关闭了<code>hyper-v</code>。<br>想起来确实昨天下了个安卓模拟器，提示我要关闭<code>hyper-v</code>，我当时没太在意，就直接点确认然后重启了。</p>
-<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>可能是Win11更新了的缘故，我并没有找到<code>Hyper-V</code>这个选项，所以自己瞎找了一圈。<br>按win搜索 启用或关闭Windows功能，进入这个页面：<br><img src=/img/code/pht/windows_i.jpg width=50% /><br>勾选标蓝的地方，重启电脑。<br>Done!</p>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>可能是Win11更新了的缘故，我并没有找到<code>Hyper-V</code>这个选项，所以自己瞎找了一圈。<br>按win搜索 启用或关闭Windows功能，进入这个页面：<br><img src=/img/code/pht/windows_i.jpg width=70% /><br>滚动条拉到底，勾选标蓝的地方，重启电脑。<br>Done!</p>
 
             </div>
             <hr>
@@ -457,22 +457,6 @@
 <!-- 主题的启动项 保持在最底部 -->
 <script  src="/js/boot.js" ></script>
 
-
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 </body>
 </html>
