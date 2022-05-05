@@ -19,7 +19,7 @@
     <meta name="description" content="VNCTFBabyMazepyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。  这个题可以很明显看出来，0处的指令就是跳转到4，而4处的指令是跳转到2，2处的指令是跳转到6，6处的指令就是正常的创建迷宫的指令了，所以把前三句patch掉。在十六进制编辑器里把这三句删掉，然后改字节码长度co_co">
 <meta property="og:type" content="article">
 <meta property="og:title" content="日常随缘复现">
-<meta property="og:url" content="http://yunzh1jun.com/2022/04/24/diary/index.html">
+<meta property="og:url" content="http://yunzh1jun.com/2022/04/24/witeup/index.html">
 <meta property="og:site_name" content="云之君">
 <meta property="og:description" content="VNCTFBabyMazepyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。  这个题可以很明显看出来，0处的指令就是跳转到4，而4处的指令是跳转到2，2处的指令是跳转到6，6处的指令就是正常的创建迷宫的指令了，所以把前三句patch掉。在十六进制编辑器里把这三句删掉，然后改字节码长度co_co">
 <meta property="og:locale" content="zh_CN">
@@ -335,7 +335,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/04/24/torment_diary/">
+                      <a href="/2022/04/24/torment_writeup/">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile">复现</span>
                         <span class="visible-mobile">上一篇</span>
