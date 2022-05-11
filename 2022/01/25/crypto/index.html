@@ -209,7 +209,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      7.2k 字
+      8.9k 字
     </span>
   
 
@@ -218,7 +218,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      61 分钟
+      74 分钟
     </span>
   
 
@@ -360,22 +360,50 @@
 <h3 id="线性反馈移位寄存器-LFSR"><a href="#线性反馈移位寄存器-LFSR" class="headerlink" title="线性反馈移位寄存器(LFSR)"></a>线性反馈移位寄存器(LFSR)</h3><p>这直接看<a target="_blank" rel="noopener" href="https://ctf-wiki.org/crypto/streamcipher/fsr/lfsr/">wiki</a>和<a target="_blank" rel="noopener" href="https://www.trackonyou.top/2021/05/22/%E3%80%8CNOTES-02%E3%80%8DStreamCipher-%E7%BA%BF%E6%80%A7%E5%8F%8D%E9%A6%88%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8/">track神的博客</a>吧<br><del>一个一个抄公式太累了……</del></p>
 <p>几点个人理解：<br>反馈函数：$a_{i+n}=\displaystyle \sum^{n}_{j=1}{c_{j}a_{i+n-j}}$<br>其中，$c_{j}$均在某个有限域$F_{q}$中。<br>有限数域一般是$GF(2)$，即只含有0, 1两个数。<br>实际代码实现中，用逐位异或可以代替加法和乘法，即取$a_{i+n}$的逐比特异或。</p>
 <p><a href="/img/code/crypto_code/LFSR.py">实现代码</a><br><a href="/img/code/crypto_code/LFSRwp.py">题解</a></p>
-<h3 id="RC4"><a href="#RC4" class="headerlink" title="RC4"></a>RC4</h3><p>RC4使用一个长度为256的s_box，一个长度任意的密钥（不大于256）。密钥的主要功能是将s_box搅乱，i保证s_box的每个元素都得到处理，j保证s_box的搅乱是随机的。将s_box与明文异或，得到密文。解密过程也完全相同。</p>
+<h3 id="RC系列"><a href="#RC系列" class="headerlink" title="RC系列"></a>RC系列</h3><h4 id="RC2"><a href="#RC2" class="headerlink" title="RC2"></a>RC2</h4><p><a target="_blank" rel="noopener" href="https://people.csail.mit.edu/rivest/pubs/KRRR98.pdf">参考资料</a></p>
+<h5 id="密钥扩展"><a href="#密钥扩展" class="headerlink" title="密钥扩展"></a>密钥扩展</h5><p>$T(1\leqslant T\leqslant128)$字节密钥，置于数组$L[T-1]$中，使用一个固定的P盒。</p>
+<ol>
+<li>for $i =T,T+1,…,127$ do<br> $L[i]=P[L[i-1]+L[i-T]]$</li>
+<li>$L[128-T8]=P[L[128-T8] \&amp; TM]$</li>
+<li>for $i=127-T8,…,0$ do<br> $L[i]=P[L[i+1] \bigoplus L[i+T8]]$</li>
+<li>$K[i]=L[2i]+L[2i+1]&lt;&lt;8$</li>
+</ol>
+<p>最终有64字节密钥$K[64]$用于加密。</p>
+<h5 id="加解密"><a href="#加解密" class="headerlink" title="加解密"></a>加解密</h5><p>一次4字节加密，记为$R[4]$，分MIX和MASH两个过程。</p>
+<ul>
+<li>MIX<br>  定义$s[4]=\{1,2,3,5\}$<br>  $R[i]=R[i]+K[j]+(R[i-1]\&amp;R[i-2])+($~$R[i-1]\&amp;R[i-3])$<br>  $j+=1$<br>  $R[i]=R[i]&lt;&lt;&lt;s[i]$</li>
+<li>MIXING</li>
+</ul>
+<h4 id="RC4"><a href="#RC4" class="headerlink" title="RC4"></a>RC4</h4><p>RC4使用一个长度为256的s_box，一个长度任意的密钥（不大于256）。密钥的主要功能是将s_box搅乱，i保证s_box的每个元素都得到处理，j保证s_box的搅乱是随机的。将s_box与明文异或，得到密文。解密过程也完全相同。</p>
 <p><a href="/img/code/crypto_code/RC4.c">RC4</a></p>
-<h3 id="TEA系列"><a href="#TEA系列" class="headerlink" title="TEA系列"></a>TEA系列</h3><p>一种分组加密算法，此系列算法都使用了一个神秘常数作为倍数程序中一般写作0x9E3779B9。但有时该常数会以减法的形式出现，即0x61C88647。<br>代码中均使用64bit(8byte)的明文作为加密数据，采用128bit(16byte)的值作为key，算法采用迭代的形式，推荐的迭代轮数是64轮，最少32轮，这里采用32轮。</p>
+<h4 id="RC5"><a href="#RC5" class="headerlink" title="RC5"></a>RC5</h4><h5 id="密钥扩展-1"><a href="#密钥扩展-1" class="headerlink" title="密钥扩展"></a>密钥扩展</h5><ul>
+<li>w - 一个字的长度（以bit为单位)，通常是16、32或64。加密以两个字为单位进行。</li>
+<li>u＝w/8-一个字的长度，以字节为单位。</li>
+<li>b-密钥的长度，字节为单位。</li>
+<li>K[]-密钥，可以看作是一个由字节数据组成的数组(下标从0开始)。</li>
+<li>c - 密钥的长度，以字为单位(如果b=0，取1).</li>
+<li>L[] - 一个在密钥生成的临时数组，用来按字初始化密钥</li>
+<li>r - 加密的轮数。</li>
+<li>t=2(r+1) - 需要的轮加密的子密钥个数。</li>
+<li>S[] - 伪随机S数组。</li>
+</ul>
+<p>不同w对应不同的$P_{w}$和$Q_{w}$。<br>|$w$|$P_{w}$|$Q_{w}$|<br>|—-|—-|—-|<br>|16|0xB7E1|0x9E37|<br>|32|0xB7E15163|0x9E3779B9|<br>|64|0xB7E151628AED2A6B|0x9E3779B97F4A7C15|</p>
+<figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">RC5_SETUP</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> *K)</span><br>&#123;<br>   <span class="hljs-comment">// w = 32, r = 12, b = 16</span><br>   <span class="hljs-comment">// c = max(1, ceil(8 * b/w))</span><br>   <span class="hljs-comment">// t = 2 * (r+1)</span><br>   WORD i, j, k, u = w/<span class="hljs-number">8</span>, A, B, L[c];<br>   <br>   <span class="hljs-keyword">for</span>(i = b<span class="hljs-number">-1</span>, L[c<span class="hljs-number">-1</span>] = <span class="hljs-number">0</span>; i != <span class="hljs-number">-1</span>; i--)<br>      L[i/u] = (L[i/u] &lt;&lt; <span class="hljs-number">8</span>) + K[i];<br>   <br>   <span class="hljs-keyword">for</span>(S[<span class="hljs-number">0</span>] = P, i = <span class="hljs-number">1</span>; i &lt; t; i++)<br>      S[i] = S[i<span class="hljs-number">-1</span>] + Q;<br>   <br>   <span class="hljs-keyword">for</span>(A = B = i = j = k = <span class="hljs-number">0</span>; k &lt; <span class="hljs-number">3</span> * t; k++, i = (i+<span class="hljs-number">1</span>) % t, j = (j+<span class="hljs-number">1</span>) % c)<br>   &#123;<br>      A = S[i] = ROTL(S[i] + (A + B), <span class="hljs-number">3</span>);<br>      B = L[j] = ROTL(L[j] + (A + B), (A + B));<br>   &#125;<br>&#125;<br></code></pre></div></td></tr></table></figure>
+<h5 id="加密"><a href="#加密" class="headerlink" title="加密"></a>加密</h5><p>建议12或20轮。<br><figure class="highlight c"><table><tr><td class="gutter hljs"><div class="hljs code-wrapper"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></div></td><td class="code"><div class="hljs code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ROTL(x,y) ((x<span class="hljs-string">&lt;&lt;(y&amp;0x3f))|(x&gt;</span>&gt;(64-y&amp;0x3f)))</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> ROTR(x,y) ((x&gt;&gt;(y&amp;0x3f))|(x&lt;&lt;(64-y&amp;0x3f)))</span><br><span class="hljs-comment">//加密</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">RC5_ENCRYPT</span><span class="hljs-params">(WORD *pt, WORD *ct)</span><br>&#123;<br>   WORD i, A = pt[<span class="hljs-number">0</span>] + S[<span class="hljs-number">0</span>], B = pt[<span class="hljs-number">1</span>] + S[<span class="hljs-number">1</span>];<br>   <br>   <span class="hljs-keyword">for</span>(i = <span class="hljs-number">1</span>; i &lt;= r; i++)<br>   &#123;<br>      A = ROTL(A ^ B, B) + S[<span class="hljs-number">2</span>*i];<br>      B = ROTL(B ^ A, A) + S[<span class="hljs-number">2</span>*i + <span class="hljs-number">1</span>];<br>   &#125;<br>   ct[<span class="hljs-number">0</span>] = A; ct[<span class="hljs-number">1</span>] = B;<br>&#125;<br><span class="hljs-comment">//解密</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">RC5_DECRYPT</span><span class="hljs-params">(WORD *ct, WORD *pt)</span><br>&#123;<br>   WORD i, B=ct[<span class="hljs-number">1</span>], A=ct[<span class="hljs-number">0</span>];<br>   <br>   <span class="hljs-keyword">for</span>(i = r; i &gt; <span class="hljs-number">0</span>; i--)<br>   &#123;<br>      B = ROTR(B - S[<span class="hljs-number">2</span>*i + <span class="hljs-number">1</span>], A) ^ A;<br>      A = ROTR(A - S[<span class="hljs-number">2</span>*i], B) ^ B;<br>   &#125;<br>   <br>   pt[<span class="hljs-number">1</span>] = B - S[<span class="hljs-number">1</span>]; pt[<span class="hljs-number">0</span>] = A - S[<span class="hljs-number">0</span>];<br>&#125;<br></code></pre></div></td></tr></table></figure></p>
+<h3 id="TEA系列"><a href="#TEA系列" class="headerlink" title="TEA系列"></a>TEA系列</h3><p>一种分组加密算法，此系列算法都使用了一个神秘常数作为倍数，程序中一般写作0x9E3779B9。但有时该常数会以减法的形式出现，即0x61C88647。<br>代码中均使用64bit(8byte)的明文作为加密数据，采用128bit(16byte)的值作为key，算法采用迭代的形式，推荐的迭代轮数是64轮，最少32轮，这里采用32轮。</p>
 <h4 id="TEA"><a href="#TEA" class="headerlink" title="TEA"></a>TEA</h4><p><a href="/img/code/crypto_code/TEA.c">TEA</a></p>
 <h4 id="XTEA"><a href="#XTEA" class="headerlink" title="XTEA"></a>XTEA</h4><p>加密逻辑有所变化，对每轮加密的key的选择也有所变化。</p>
 <p><a href="/img/code/crypto_code/XTEA.c">XTEA</a></p>
 <h4 id="XXTEA"><a href="#XXTEA" class="headerlink" title="XXTEA"></a>XXTEA</h4><p>加密的明文数据可以不再是64bit（两个32位无符号整数），并且其加密轮数是由n即待加密数据个数决定的。由于n决定加密轮数，所以对于多组同时加密的数据不能分开解密，同时分开加密的数据也不能同时解密，要注意是一组数据是一起加密还是分开加密。</p>
 <p><a href="/img/code/crypto_code/XXTEA.c">XXTEA</a></p>
-<h2 id="块加密"><a href="#块加密" class="headerlink" title="块加密"></a>块加密</h2><p>可以把块加密理解一种特殊的替代密码，但是其每次替代的是一大块。而正是由于一大块，明文空间巨大，而且对于不同的密钥，我们无法做一个表进行对应相应的密文，因此必须得有 复杂 的加解密算法来加解密明密文。</p>
+<h2 id="块加密"><a href="#块加密" class="headerlink" title="块加密"></a>块加密</h2><p>可以把块加密理解一种特殊的替代密码，但是其每次替代的是一大块。而正是由于一大块，明文空间巨大，而且对于不同的密钥，我们无法做一个表进行对应相应的密文，因此必须得有复杂的加解密算法来加解密明密文。</p>
 <p><strong>混淆</strong>，Confusion，将密文与密钥之间的统计关系变得尽可能复杂，使得攻击者即使获取了密文的一些统计特性，也无法推测密钥。<br>一般使用复杂的非线性变换可以得到很好的混淆效果，常见的方法：S盒、乘法</p>
 <p><strong>扩散</strong>，Diffusion，使得明文中的每一位影响密文中的许多位。<br>常见的方法有：线性变换、置换、移位，循环移位</p>
 <h3 id="ARX"><a href="#ARX" class="headerlink" title="ARX"></a>ARX</h3><p>ARX: Add-Rotate-Xor，即</p>
 <ul>
 <li>Add 有限域上的模加</li>
 <li>Rotate 循环移位</li>
-<li>Xor 异或<br>执行时间为常数，可以避免基于时间的测信道攻击，但是Rotate、Xor 对于单个 bit 来说均是完全线性的运算，可能会带来一定的脆弱性。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Rotational_cryptanalysis">Rotational cryptanalysis</a></li>
+<li>Xor 异或<br>执行时间为常数，可以避免基于时间的侧信道攻击，但是Rotate、Xor 对于单个 bit 来说均是完全线性的运算，可能会带来一定的脆弱性。<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Rotational_cryptanalysis">Rotational cryptanalysis</a></li>
 </ul>
 <h3 id="DES"><a href="#DES" class="headerlink" title="DES"></a>DES</h3><p>整体流程：<br>64bit划分为左右两部分L和R，R与key作为轮函数Feistel的参数，计算出结果与L异或，再交换左右两部分输出。此步骤进行16轮后，交换左右两部分，输出作为密文。</p>
 <p>具体而言，在轮函数Feistel中，R要expand后与key异或，此后经过S盒混淆与P盒扩散，得到最终结果。</p>
