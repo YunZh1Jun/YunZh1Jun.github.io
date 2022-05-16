@@ -16,21 +16,21 @@
   <meta name="author" content="云之君">
   <meta name="keywords" content="">
   
-    <meta name="description" content="记录一次WSL闪退的解决方案。 前言想跑一个ELF程序，但是WSL突然闪退，不论如何都打不开，于是去搜了一下，查到可能是因为使用过虚拟机，关闭了hyper-v。想起来确实昨天下了个安卓模拟器，提示我要关闭hyper-v，我当时没太在意，就直接点确认然后重启了。 解决可能是Win11更新了的缘故，我并没有找到Hyper-V这个选项，所以自己瞎找了一圈。按win搜索 启用或关闭Windows功能，进入">
+    <meta name="description" content="前言有人这辈子还没见过团建，而这个人大学还只加了一个协会。当这个人以为自己要因为疫情永远没有机会跟大家团建的时候，会长如神明一般出现了。  dbt：准备团建捏众人：团建gkddbt：那就秘书部长安排dbt：gkd@云之君☁️：真的搞🐎dbt：搞dbt：必须搞☁️：搞☁️：必须搞  ☁️就是那种说干就干直接莽的人，所以说搞就直接开搞！ 开始5.10 初步筛选说开搞的那天晚上，☁️就去美团翻了N家轰">
 <meta property="og:type" content="article">
-<meta property="og:title" content="win11解决WSL闪退">
-<meta property="og:url" content="http://yunzh1jun.com/2022/04/27/problem1/index.html">
+<meta property="og:title" content="XDSEC团建工作记录">
+<meta property="og:url" content="http://yunzh1jun.com/2022/05/17/XDSEC_work/index.html">
 <meta property="og:site_name" content="云之君">
-<meta property="og:description" content="记录一次WSL闪退的解决方案。 前言想跑一个ELF程序，但是WSL突然闪退，不论如何都打不开，于是去搜了一下，查到可能是因为使用过虚拟机，关闭了hyper-v。想起来确实昨天下了个安卓模拟器，提示我要关闭hyper-v，我当时没太在意，就直接点确认然后重启了。 解决可能是Win11更新了的缘故，我并没有找到Hyper-V这个选项，所以自己瞎找了一圈。按win搜索 启用或关闭Windows功能，进入">
+<meta property="og:description" content="前言有人这辈子还没见过团建，而这个人大学还只加了一个协会。当这个人以为自己要因为疫情永远没有机会跟大家团建的时候，会长如神明一般出现了。  dbt：准备团建捏众人：团建gkddbt：那就秘书部长安排dbt：gkd@云之君☁️：真的搞🐎dbt：搞dbt：必须搞☁️：搞☁️：必须搞  ☁️就是那种说干就干直接莽的人，所以说搞就直接开搞！ 开始5.10 初步筛选说开搞的那天晚上，☁️就去美团翻了N家轰">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-27T05:38:07.132Z">
-<meta property="article:modified_time" content="2022-04-27T05:48:00.000Z">
+<meta property="article:published_time" content="2022-05-16T17:15:47.538Z">
+<meta property="article:modified_time" content="2022-05-16T16:30:23.463Z">
 <meta property="article:author" content="云之君">
-<meta property="article:tag" content="WSL">
+<meta property="article:tag" content="XDSEC">
 <meta name="twitter:card" content="summary_large_image">
   
   
-  <title>win11解决WSL闪退 - 云之君</title>
+  <title>XDSEC团建工作记录 - 云之君</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
@@ -188,7 +188,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="win11解决WSL闪退">
+            <span class="h2" id="subtitle" title="XDSEC团建工作记录">
               
             </span>
 
@@ -198,8 +198,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-04-27 13:38" pubdate>
-        2022年4月27日 下午
+      <time datetime="2022-05-17 01:15" pubdate>
+        2022年5月17日 凌晨
       </time>
     </span>
   
@@ -209,7 +209,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      227 字
+      1.8k 字
     </span>
   
 
@@ -218,7 +218,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      2 分钟
+      16 分钟
     </span>
   
 
@@ -247,18 +247,57 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">win11解决WSL闪退</h1>
+            <h1 style="display: none">XDSEC团建工作记录</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年4月27日 下午
+                  本文最后更新于：2022年5月17日 凌晨
                 
               </p>
             
             <div class="markdown-body">
-              <p>记录一次WSL闪退的解决方案。</p>
-<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>想跑一个ELF程序，但是WSL突然闪退，不论如何都打不开，于是去搜了一下，查到可能是因为使用过虚拟机，关闭了<code>hyper-v</code>。<br>想起来确实昨天下了个安卓模拟器，提示我要关闭<code>hyper-v</code>，我当时没太在意，就直接点确认然后重启了。</p>
-<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><p>可能是Win11更新了的缘故，我并没有找到<code>Hyper-V</code>这个选项，所以自己瞎找了一圈。<br>按win搜索 启用或关闭Windows功能，进入这个页面：<br><img src=/img/code/pht/windows_i.jpg width=70% /><br>滚动条拉到底，勾选标蓝的地方，重启电脑。<br>Done!</p>
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有人这辈子还没见过团建，而这个人大学还只加了一个协会。当这个人以为自己要因为疫情永远没有机会跟大家团建的时候，会长<del>如神明一般</del>出现了。</p>
+<blockquote>
+<p>dbt：准备团建捏<br>众人：团建gkd<br>dbt：那就秘书部长安排<br>dbt：gkd@云之君<br>☁️：真的搞🐎<br>dbt：搞<br>dbt：必须搞<br>☁️：搞<br>☁️：必须搞</p>
+</blockquote>
+<p>☁️就是那种说干就干<del>直接莽</del>的人，所以说搞就直接开搞！</p>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><h3 id="5-10-初步筛选"><a href="#5-10-初步筛选" class="headerlink" title="5.10 初步筛选"></a>5.10 初步筛选</h3><p>说开搞的那天晚上，☁️就去美团翻了N家轰趴。考虑因素如下：<br>1.远贵于平均价格不考虑<br>2.容纳人数小于40不考虑<br>3.地理位置偏僻（交通不便）不考虑</p>
+<p>这样筛选出三家：</p>
+<ul>
+<li>枫丹白露苑的威廉古堡别墅轰趴（离学校近）</li>
+<li>阳明国际的逅·party轰趴馆（小寨附近）</li>
+<li>萨菲尔名邸的一米阳光轰趴馆（科技路附近）</li>
+</ul>
+<p>后来跟秘书部的humor交流了一下，我俩意见基本一致，最初的三家就这样定下来了。</p>
+<h3 id="5-12-🌶️个男人"><a href="#5-12-🌶️个男人" class="headerlink" title="5.12 🌶️个男人"></a>5.12 🌶️个男人</h3><p>这天☁️闲来无事，顺手打开了邮件，想康康有没有萌新给协会发邮件。康到一封没见过的邮件，但是已经有人回复了。仔细看了一下发的邮件，暂且称他为倚澜听风，说自己以前有过组织活动的经验，意向部门是秘书部或技术部。回复的邮件是让他选方向。</p>
+<blockquote>
+<p>☁️：？<br>☁️：这不拉来秘书部给我办团建？</p>
+</blockquote>
+<p>倚澜听风用的是QQ邮箱，可以直接找到QQ，所以我立刻加了他，并且给他安排面试。<br><del>哦，但是其实面试也并没有说什么，因为我们已经线上说好了。</del><br>然后我就光速把他拉进秘书部了。<br><strong>时到今日还是忍不住感叹，这个男人为什么来得如此及时。</strong></p>
+<h3 id="5-15-踩点-amp-订场地"><a href="#5-15-踩点-amp-订场地" class="headerlink" title="5.15 踩点 &amp; 订场地"></a>5.15 踩点 &amp; 订场地</h3><p>我、倚澜听风、洛千和飞飞鱼四个人去轰趴馆踩点。<br>在这里要说声抱歉，本来还有Twinkle和wushi两位同学，但是倚澜听风考虑打车的话只能坐四个人，说还是四个人去比较方便，所以最后没有带上两位。</p>
+<h4 id="威廉古堡别墅轰趴"><a href="#威廉古堡别墅轰趴" class="headerlink" title="威廉古堡别墅轰趴"></a>威廉古堡别墅轰趴</h4><p>这个没什么好说的，直接寄了。<br>到地方之后倚澜听风直接联系店家，<del>我们三个究极社恐在一旁瑟瑟发抖</del>店家说小区不允许举办25人以上的活动，推荐我们去雁塔区，所以我们也没去看店，就直接走了。</p>
+<h4 id="一米阳光轰趴馆"><a href="#一米阳光轰趴馆" class="headerlink" title="一米阳光轰趴馆"></a>一米阳光轰趴馆</h4><p>这个场地挺大，老板人也很厚道，四百平米，只要了1k场地费，酒水什么的可以自带。</p>
+<p>这里还是不得不说，每次去看场地都是倚澜听风在跟老板交流：场地费、水电费、清洁费、厨房费用、各种设备和项目等等，以及砍价和交涉各种事情。<br><del>我们三个负责当挂件，在轰趴馆到处玩</del></p>
+<p><strong>🌶️个男人究竟为什么来得如此及时</strong></p>
+<p>看完这个场地之后我们四个都表示很满意，甚至有人不想再去看下一家了，想直接订下打道回府，但这家店的老板还是劝我们再去看看别的店，所以我们还是出发去下一家店。</p>
+<h4 id="逅·party轰趴馆"><a href="#逅·party轰趴馆" class="headerlink" title="逅·party轰趴馆"></a>逅·party轰趴馆</h4><h5 id="0"><a href="#0" class="headerlink" title="0"></a>0</h5><p>这个场地是280平米，老板要1k3，这家店设备较上家店更好一些，我们四个又开始偏向这家店。</p>
+<blockquote>
+<p>洛千：有VR<br>☁️：地方小了点<br>洛千：他们有VR<br>☁️：而且贵了一些<br>洛千：但是他们有VR<br>洛千：而且有钢琴<br>☁️：好了好了我知道他们有VR了</p>
+</blockquote>
+<p>这家店确实设备更好一些，采光也更好一些，在小寨附近，所以周边交通肯定是很方便的。<br><del>而且洛千对上一家店的电脑配置其实是不太满意的，而且他心心念念着他的VR</del></p>
+<p>虽然我们四个比较偏向于这一家，但实际上也不是很极端的那种偏向，所以还是有一些犹豫纠结。<br>这时老板说他们还有另一家店（好像是连锁的吧，不懂），可能会更符合我们的要求，建议我们去看看。</p>
+<h5 id="1"><a href="#1" class="headerlink" title="1"></a>1</h5><p>这家店实际上就是最后订的店了。<br>400平，三层，可以露天烧烤（因为是在顶层），设施齐全，<del>电脑配置也不错</del>，离地铁口近，采光也好，我们四个又偏向于这家店了，就是有点小贵。</p>
+<p>倚澜听风想砍价，但是老板咬得比较死，洛千劝他别逼得太紧，毕竟我们基本上已经认定这家店了。</p>
+<h4 id="场地预定"><a href="#场地预定" class="headerlink" title="场地预定"></a>场地预定</h4><p>最后还是订了，不得不说倚澜听风是真的强。晚上我正在焦头烂额地调题（因为逆向开始的时候，某人突然让我复盘twin，然鹅我文件都已经删干净了x，只能全部重新patch），倚澜听风突然告诉我那家店不让自带酒水。<br>众所周知除了超市和小卖部的饮料都贵的离谱，但当时我只顾着紧张地调题了(x，让他复盘完再说，结果过了一会他说解决了。</p>
+<p><strong>倚澜听风！！！你！是！我！滴！神！！！</strong></p>
+<p>晚上在群里发了具体的团建时间和地点以及注意事项，还有招募一些同学来帮忙。</p>
+<h2 id="组织"><a href="#组织" class="headerlink" title="组织"></a>组织</h2><h3 id="5-16-事项安排"><a href="#5-16-事项安排" class="headerlink" title="5.16 事项安排"></a>5.16 事项安排</h3><p>我们预想的是分三拨人：</p>
+<ul>
+<li>买菜、肉等食材，负责人是☁️和倚澜听风</li>
+<li>买零食、饮料等，负责人是洛千和track <del>（本来是某会长，但是被咕咕咕了）</del></li>
+<li>直接去的，没负责人，飞飞鱼带路</li>
+</ul>
+<p>零食饮料什么的让track做了一个在线表格，征集大家想吃的零食，然后他们在线网购邮寄过去一部分，团建当天再去超市买一部分。<br>dbt建议订个大蛋糕，顺便加点小甜点，应该能优惠很多。</p>
 
             </div>
             <hr>
@@ -268,7 +307,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E6%97%A5%E5%B8%B8/">日常</a>
+                      <a class="hover-with-bg" href="/categories/%E5%B7%A5%E4%BD%9C%E8%AE%B0%E5%BD%95/">工作记录</a>
                     
                   </div>
                 
@@ -276,7 +315,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/WSL/">WSL</a>
+                      <a class="hover-with-bg" href="/tags/XDSEC/">XDSEC</a>
                     
                   </div>
                 
@@ -293,18 +332,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/04/28/dairy/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">日记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/04/26/beginOfReverse/">
-                        <span class="hidden-mobile">记录逆向起步之路</span>
+                      <a href="/2022/05/08/miniL/">
+                        <span class="hidden-mobile">miniL2022 WP 今晚恰烤lq！</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
