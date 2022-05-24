@@ -1,14 +1,14 @@
 
 
 <!DOCTYPE html>
-<html lang="zh-CN" data-default-color-scheme=auto>
+<html lang="zh-CN" data-default-color-scheme=dark>
 
 
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
-  <link rel="icon" href="/img/fluid.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
@@ -30,7 +30,7 @@
   
   <title>云之君</title>
 
-  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
 
 
 
@@ -60,7 +60,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"yunzh1jun.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"yunzh1jun.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -84,7 +84,7 @@
   <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand" href="/">
-      <strong>Fluid</strong>
+      <strong>云之君</strong>
     </a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
@@ -157,6 +157,18 @@
             </li>
           
         
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
         
           <li class="nav-item" id="search-btn">
             <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
@@ -179,13 +191,13 @@
   
 
 <div id="banner" class="banner" parallax=true
-     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+     style="background: url('/img/banner.png') no-repeat center center; background-size: cover;">
   <div class="full-bg-img">
     <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="An elegant Material-Design theme for Hexo"></span>
+            <span id="subtitle" data-typed-text="火冷灯稀霜露下，昏昏雪意云垂野"></span>
           
         </div>
 
@@ -231,7 +243,7 @@
       <a class="index-excerpt" href="/2022/05/24/witeup/" target="_self">
         <div>
           
-          VNCTFBabyMazepyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。  这个题可以很明显看出来，0处的指令就是跳转到4，而4处的指令是跳转到2，2处的指令是跳转到6，6处的指令就是正常的创建迷宫的指令了，所以把前三句patch掉。在十六进制编辑器里把这三句删掉，然后改字节码长度co_co
+          
         </div>
       </a>
 
@@ -296,7 +308,7 @@
       <a class="index-excerpt" href="/2022/05/24/WindowsSEH/" target="_self">
         <div>
           
-          一些闲话其实SEH的概念之前已经接触过几次了，第一次是在瞎翻track和含树师傅博客的时候，看到21年的miniL有涉及到这个东西，觉得还是含树师傅的方法（一个一个翻函数）最管用，所以就没太在意这个东西。直到寒假做hgame的题被教育了，后来刷buu逆向的时候做到SCTF2019的creakme又被教育了一通，觉得还是得了解这个东西吧。怎么说呢，做题毕竟只是做题，可能这道题可以嗯翻函数，另一个题可
+          
         </div>
       </a>
 
@@ -359,7 +371,7 @@
       <a class="index-excerpt" href="/2022/05/24/torment_writeup/" target="_self">
         <div>
           
-          记录一些比较折磨有趣的复现 hgame感觉做hgame还是学到了挺多的唯一难过的就是出题人的题解都写得有亿点简略，让我这个菜狗懵逼被折磨的痛不欲生…… hardened脱壳完了看主类，有一个显眼的加密： 12345678public void sendPwd(View view) &amp;#123;        Intent intent &#x3D; new Intent(this, rightpage.cl
+          
         </div>
       </a>
 
@@ -424,7 +436,7 @@
       <a class="index-excerpt" href="/2022/05/24/problem1/" target="_self">
         <div>
           
-          记录一次WSL闪退的解决方案。 前言想跑一个ELF程序，但是WSL突然闪退，不论如何都打不开，于是去搜了一下，查到可能是因为使用过虚拟机，关闭了hyper-v。想起来确实昨天下了个安卓模拟器，提示我要关闭hyper-v，我当时没太在意，就直接点确认然后重启了。 解决可能是Win11更新了的缘故，我并没有找到Hyper-V这个选项，所以自己瞎找了一圈。按win搜索 启用或关闭Windows功能，进入
+          
         </div>
       </a>
 
@@ -485,7 +497,7 @@
       <a class="index-excerpt" href="/2022/05/24/miniL/" target="_self">
         <div>
           
-          呜呜呜，被队友带飞了，☁️就是纯纯拖后腿的大废物差50分淦到1w分，没出wasm太遗憾了我以后一定不摸鱼了555555555还是太菜了，要更努力才行 Reversetwin | 云之君Tip1：fake flagIDA打开，看主函数。12345678910111213141516171819202122232425262728293031323334353637383940414243444546
+          
         </div>
       </a>
 
@@ -548,7 +560,7 @@
       <a class="index-excerpt" href="/2022/05/24/intro_phi/" target="_self">
         <div>
           
-          一些看这本书的思考、记录，以及对一些问题的回答。 导论苏格拉底最开始知道苏格拉底是因为不公平的审判被判决死刑，并且拒绝逃亡的时候，我就觉得离谱：既然是不公的审判，人们为何有义务要遵守？如果我是苏格拉底，我一定出逃。但是看了苏格拉底和克力同的谈话还是被说服了……审判确实是不公正的审判，但倘若我们自己遇到了不公正的审判，我们又该如何？假如现在就蒙冤被判处死刑，而恰有人可以帮助出逃，逃还是不逃？须知法
+          
         </div>
       </a>
 
@@ -609,7 +621,7 @@
       <a class="index-excerpt" href="/2022/05/24/his_of_wes_phi/" target="_self">
         <div>
           
-          古代哲学苏格拉底之前的哲学家希腊文明的崛起正常发展的社会都要经过君主制、贵族制、僭主制与民主制交替。  僭主制：权力不得世袭。 民主制：全体公民，除过女人和奴隶。  地域宗教都是部族而非个人的。人们举行仪式的过程中群情激昂，个人会消除孤独感，与部族合为一体。《荷马史诗》强调命运、定数而非众神，神明是贵族阶级的代表，宗教非常人性，其神明除了不死与常人无异。 文明人与野蛮人区别在于眼光更长远，即理性
+          
         </div>
       </a>
 
@@ -670,7 +682,7 @@
       <a class="index-excerpt" href="/2022/05/24/DASCTF/" target="_self">
         <div>
           
-          Apr X FATECrackme为什么我看图标第一反应是C#，离谱好吧，最后看题解发现是MFC写的……我感觉这玩意已经在某道题给我留下了难以磨灭的心理阴影 先跑一下，随便输个key和flag，弹窗报wrong，那么去IDA里搜字符串wrong，定位到常量段，刚好下面是success。去查交叉引用，定位到主要加密逻辑处：（主要变量和函数我已经修改名称）12345678910111213141516
+          
         </div>
       </a>
 
@@ -735,7 +747,7 @@
       <a class="index-excerpt" href="/2022/05/24/dairy/" target="_self">
         <div>
           
-          zai？为什么偷看我的日记？（x 4-27今天是一个重要的日子，验证了一些事情，也想通了很多事情。最重要的是下午可以出去恰饭。 中午出了个题给面试的小可爱。虽然是几分钟出完的，就是异或+RC4，感觉出不出来更简单的了（再简单就纯异或了），但是感觉对萌新来说似乎还是有些困难叭，呜呜呜。 不管了，睡一觉然后出去恰饭。 每到☁️出校的时候，必然会问的一个问题就是：  公交还是地铁？  等公交得四十分钟起
+          
         </div>
       </a>
 
@@ -796,7 +808,7 @@
       <a class="index-excerpt" href="/2022/05/24/crypto/" target="_self">
         <div>
           
-          古典密码仿射密码加密函数：$E(x)&#x3D;(ax+b)(mod \quad m)$，其中  X表示明文按照某种编码得到的数字 a和m互质 m是编码系统中字母的数目  加密 解密函数： $D(x)&#x3D;a^{-1}(x-b)(mod \quad m)$其中$a^{-1}$是a对m的乘法逆元，即gmpy2.invert(a,m)注意$a^{-1}$在括号外，不同于加密函数 解密 Playfair加密方法如下：
+          
         </div>
       </a>
 
@@ -909,8 +921,8 @@
 
   <!-- Scripts -->
   
-  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
-  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
 
   <script>
     NProgress.configure({"showSpinner":false,"trickleSpeed":100})
@@ -921,13 +933,13 @@
   </script>
 
 
-<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
-<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
 <script  src="/js/events.js" ></script>
 <script  src="/js/plugins.js" ></script>
 
 
-  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
   <script>
     (function (window, document) {
       var typing = Fluid.plugins.typing;
