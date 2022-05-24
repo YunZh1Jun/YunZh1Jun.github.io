@@ -1,0 +1,747 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="云之君">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言有人这辈子还没见过团建，而这个人大学还只加了一个协会。当这个人以为自己要因为疫情永远没有机会跟大家团建的时候，会长如神明一般出现了。  dbt：准备团建捏众人：团建gkddbt：那就秘书部长安排dbt：gkd@云之君☁️：真的搞🐎dbt：搞dbt：必须搞☁️：搞☁️：必须搞  ☁️就是那种说干就干直接莽的人，所以说搞就直接开搞！ 开始5.10 初步筛选说开搞的那天晚上，☁️就去美团翻了N家轰">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XDSEC团建工作记录">
+<meta property="og:url" content="http://yunzh1jun.com/2022/05/24/XDSEC_work/index.html">
+<meta property="og:site_name" content="云之君">
+<meta property="og:description" content="前言有人这辈子还没见过团建，而这个人大学还只加了一个协会。当这个人以为自己要因为疫情永远没有机会跟大家团建的时候，会长如神明一般出现了。  dbt：准备团建捏众人：团建gkddbt：那就秘书部长安排dbt：gkd@云之君☁️：真的搞🐎dbt：搞dbt：必须搞☁️：搞☁️：必须搞  ☁️就是那种说干就干直接莽的人，所以说搞就直接开搞！ 开始5.10 初步筛选说开搞的那天晚上，☁️就去美团翻了N家轰">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-24T10:48:00.665Z">
+<meta property="article:modified_time" content="2022-05-23T17:10:13.988Z">
+<meta property="article:author" content="云之君">
+<meta property="article:tag" content="XDSEC">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>XDSEC团建工作记录 - 云之君</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"yunzh1jun.com","root":"/","version":"1.9.0","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+
+  
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="XDSEC团建工作记录"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-05-24 18:48" pubdate>
+          2022年5月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          29 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">XDSEC团建工作记录</h1>
+            
+            <div class="markdown-body">
+              
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>有人这辈子还没见过团建，而这个人大学还只加了一个协会。当这个人以为自己要因为疫情永远没有机会跟大家团建的时候，会长<del>如神明一般</del>出现了。</p>
+<blockquote>
+<p>dbt：准备团建捏<br>众人：团建gkd<br>dbt：那就秘书部长安排<br>dbt：gkd@云之君<br>☁️：真的搞🐎<br>dbt：搞<br>dbt：必须搞<br>☁️：搞<br>☁️：必须搞</p>
+</blockquote>
+<p>☁️就是那种说干就干<del>直接莽</del>的人，所以说搞就直接开搞！</p>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><h3 id="5-10-初步筛选"><a href="#5-10-初步筛选" class="headerlink" title="5.10 初步筛选"></a>5.10 初步筛选</h3><p>说开搞的那天晚上，☁️就去美团翻了N家轰趴。考虑因素如下：<br>1.远贵于平均价格不考虑<br>2.容纳人数小于40不考虑<br>3.地理位置偏僻（交通不便）不考虑</p>
+<p>这样筛选出三家：</p>
+<ul>
+<li>枫丹白露苑的威廉古堡别墅轰趴（离学校近）</li>
+<li>阳明国际的逅·party轰趴馆（小寨附近）</li>
+<li>萨菲尔名邸的一米阳光轰趴馆（科技路附近）</li>
+</ul>
+<p>后来跟秘书部的humor交流了一下，我俩意见基本一致，最初的三家就这样定下来了。</p>
+<h3 id="5-12-🌶️个男人"><a href="#5-12-🌶️个男人" class="headerlink" title="5.12 🌶️个男人"></a>5.12 🌶️个男人</h3><p>这天☁️闲来无事，顺手打开了邮件，想康康有没有萌新给协会发邮件。康到一封没见过的邮件，但是已经有人回复了。仔细看了一下发的邮件，暂且称他为倚澜听风，说自己以前有过组织活动的经验，意向部门是秘书部或技术部。回复的邮件是让他选方向。</p>
+<blockquote>
+<p>☁️：？<br>☁️：这不拉来秘书部给我办团建？</p>
+</blockquote>
+<p>倚澜听风用的是QQ邮箱，可以直接找到QQ，所以我立刻加了他，并且给他安排面试。<br><del>哦，但是其实面试也并没有说什么，因为我们已经线上说好了。</del><br>然后我就光速把他拉进秘书部了。<br><strong>时到今日还是忍不住感叹，🌶️个男人为什么来得如此及时。</strong></p>
+<h3 id="5-15-踩点-amp-订场地"><a href="#5-15-踩点-amp-订场地" class="headerlink" title="5.15 踩点 &amp; 订场地"></a>5.15 踩点 &amp; 订场地</h3><p>我、倚澜听风、洛千和飞飞鱼四个人去轰趴馆踩点。<br>在这里要说声抱歉，本来还有Twinkle和wushi两位同学，但是倚澜听风考虑打车的话只能坐四个人，说还是四个人去比较方便，所以最后没有带上两位。</p>
+<h4 id="威廉古堡别墅轰趴"><a href="#威廉古堡别墅轰趴" class="headerlink" title="威廉古堡别墅轰趴"></a>威廉古堡别墅轰趴</h4><p>这个没什么好说的，直接寄了。<br>到地方之后倚澜听风直接联系店家，<del>我们三个究极社恐在一旁瑟瑟发抖</del>店家说小区不允许举办25人以上的活动，推荐我们去雁塔区，所以我们也没去看店，就直接走了。</p>
+<h4 id="一米阳光轰趴馆"><a href="#一米阳光轰趴馆" class="headerlink" title="一米阳光轰趴馆"></a>一米阳光轰趴馆</h4><p>这个场地挺大，配色好看，设施什么的也都有。<br>老板人很厚道，四百平米，只要了1k场地费，酒水什么的可以自带。</p>
+<p>这里还是不得不说，每次去看场地都是倚澜听风在跟老板交流：场地费、水电费、清洁费、厨房费用、各种设备和项目等等，以及砍价和交涉各种事情。<br><del>我们三个负责当挂件，在轰趴馆到处玩</del><br>飞飞鱼为洛千亲手带上了有三个问号的发箍，洛千站在贴着翅膀的墙前面，☁️给洛千拍了照片。</p>
+<p><strong>🌶️个男人究竟为什么来得如此及时</strong></p>
+<p>看完这个场地之后我们四个都表示很满意，甚至有人不想再去看下一家了，想直接订下打道回府，但这家店的老板还是劝我们再去看看别的店，<del>所以才有后面的故事。</del></p>
+<h4 id="逅·party轰趴馆"><a href="#逅·party轰趴馆" class="headerlink" title="逅·party轰趴馆"></a>逅·party轰趴馆</h4><h5 id="Time-1"><a href="#Time-1" class="headerlink" title="Time 1"></a>Time 1</h5><p>这个场地是280平米，老板要1k3，这家店设备较上家店更好一些，我们四个又开始偏向这家店。</p>
+<blockquote>
+<p>洛千：有VR<br>☁️：地方小了点<br>洛千：他们有VR<br>☁️：而且贵了一些<br>洛千：但是他们有VR<br>洛千：而且有钢琴<br>☁️：好了好了我知道他们有VR了</p>
+</blockquote>
+<p>这家店确实设备更好一些，在小寨附近，所以周边交通肯定是很方便的。<br><del>而且洛千对上一家店的电脑配置其实是不太满意的，而且他心心念念着他的VR</del></p>
+<p>跟看上一家店的时候一样，还是我们三个纯纯挂件在旁边玩，倚澜听风在和老板谈。<br>洛千和飞飞鱼比起了盲摸麻将。</p>
+<blockquote>
+<p>飞飞鱼：你摸这个（给洛千递八饼）<br>洛千：（摸了半天）什么玩意<br>☁️：你摸这个（拿起六万递给洛千）<br>洛千：这肯定是个万<br>☁️：确实<br>☁️：那你摸这个（拿起幺鸡递给洛千）<br>洛千：（摸了半天）这tm啥啊</p>
+</blockquote>
+<p>虽然我们四个比较偏向于这一家，但实际上也不是很极端的那种偏向，所以还是有一些犹豫纠结。<br>这时老板说他们还有另一家店（好像是连锁的吧，不懂），可能会更符合我们的要求，建议我们去看看。</p>
+<h5 id="Time-2"><a href="#Time-2" class="headerlink" title="Time 2"></a>Time 2</h5><p>这家店实际上就是最后订的店了，也就是上面老板推荐我们去的店。</p>
+<p>洛千和飞飞鱼看上了门口一只粉色的毛绒玩具，两个人抢着都要玩。</p>
+<blockquote>
+<p>飞飞鱼：洛千抢我玩偶<br>飞飞鱼：带恶人<br>洛千：我这是制止你乱玩人家玩偶<br>洛千：你老给拽出来，我给放回去<br>洛千：最后制止不了了，我只能上手rua，让你爬<br>飞飞鱼：《上手rua》<br>飞飞鱼：图穷匕见<br>☁️：你们不要再吵了<br><del>☁️：再吵我的博客素材太多写不完了</del><br>洛千：明明是有人看中了右边的白色HelloKitty不敢rua，只敢动旁边的</p>
+</blockquote>
+<p>400平，三层，可以露天烧烤（因为是在顶层），设施齐全，<del>电脑配置也不错</del>，离地铁口近，采光也好，我们四个又偏向于这家店了，就是有点小贵。</p>
+<p>倚澜听风想砍价，但是老板咬得比较死，洛千劝他别逼得太紧，毕竟我们基本上已经认定这家店了，只是洛千对VR比较遗憾。</p>
+<blockquote>
+<p>洛千：我的建议是：第一家店的配色，第二家店的VR，第三家的地方。</p>
+</blockquote>
+<h4 id="场地预定"><a href="#场地预定" class="headerlink" title="场地预定"></a>场地预定</h4><p>最后还是订了，不得不说倚澜听风是真的强。晚上我正在焦头烂额地调题（因为逆向开始的时候，某人突然让我复盘twin，然鹅我文件都已经删干净了x，只能全部重新patch），倚澜听风突然告诉我那家店不让自带酒水。<br>众所周知除了超市和小卖部的饮料都贵的离谱，但当时我只顾着紧张地调题了(x，让他复盘完再说，结果过了一会他说解决了。</p>
+<p><strong>倚澜听风！！！你！是！我！滴！神！！！</strong></p>
+<p>晚上在群里发了具体的团建时间和地点以及注意事项，还有招募一些同学来帮忙。</p>
+<h2 id="组织"><a href="#组织" class="headerlink" title="组织"></a>组织</h2><h3 id="5-16-事项安排"><a href="#5-16-事项安排" class="headerlink" title="5.16 事项安排"></a>5.16 事项安排</h3><p>我们预想的是分三拨人：</p>
+<ul>
+<li>买菜、肉等食材，负责人是☁️和倚澜听风</li>
+<li>买零食、饮料等，负责人是洛千和track <del>（本来是某会长，但是被咕咕咕了）</del></li>
+<li>直接去的，没有负责人，飞飞鱼带路</li>
+</ul>
+<p>零食饮料什么的让track做了一个在线表格，征集大家想吃的零食，然后他们在线网购邮寄过去一部分，团建当天再去超市买一部分。<br>dbt建议订个大蛋糕，顺便加点小甜点，应该能优惠很多。</p>
+<h3 id="5-20"><a href="#5-20" class="headerlink" title="5-20"></a>5-20</h3><p>网购零食，因为拖到最后两天了所以在京东买的，第二天就能到。<br><img src=/img/code/xdsec/snack.jpg width=50% /><br>以上总价715.74。<br>租了一辆车，主要用途是去京东自提点取零食，运到轰趴馆。<br>司机是秘书部同学lzm。</p>
+<h2 id="团建"><a href="#团建" class="headerlink" title="团建"></a>团建</h2><h3 id="具体安排"><a href="#具体安排" class="headerlink" title="具体安排"></a>具体安排</h3><p>（来自团建群公告）</p>
+<ul>
+<li>时间：周天（5月22日）12到20点</li>
+<li>地点：含光路和南二环交汇处东南角鹏豪商务区1号楼22楼2202室<br>  【地铁吉祥村A1口出，往北步行约600m至西安女子医院后右转进入鹏豪商务区进门左转为1号楼进楼后乘坐电梯至22楼出电梯左手边，逅.party空中露台轰趴馆】</li>
+<li>注意：轰趴馆不要抽烟</li>
+<li>招募：现在需要一些同学在轰趴之前买菜、肉和零食，请愿意帮忙的同学私信我（不用大家去讲价什么的，主要是帮忙提东西）</li>
+<li>备注：觉得自己路痴找不到地方的话可以跟买东西的组(x<br>  也可以找已经到了的同学接应or飞飞鱼带路</li>
+</ul>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><h4 id="买菜组"><a href="#买菜组" class="headerlink" title="买菜组"></a>买菜组</h4><p>九点集合出发去菜市场，买了一些肉和菜，一些丸子、调料、火锅底料。<br><del>倚澜听风全程solo，我们十个人站在旁边看着</del></p>
+<h4 id="零食组"><a href="#零食组" class="headerlink" title="零食组"></a>零食组</h4><p>买零食和饮料，一次性筷子、碗、油、刷子，一些调料。</p>
+<div class="note note-info">
+            <p>如果因为某些原因需要提着重物走路，可以开几辆共享单车，把东西挂上面推着车走，会减轻大家的压力。</p>
+          </div>
+<h4 id="后厨"><a href="#后厨" class="headerlink" title="后厨"></a>后厨</h4><p>洗菜洗肉、串肉、腌肉，把丸子和菜、肉等分成几分，七八个人一锅吃。</p>
+<h3 id="开销统计"><a href="#开销统计" class="headerlink" title="开销统计"></a>开销统计</h3><p>场地费：1800<br>煤炭：100<br>肉：93+288+268+196+448+100=1393<br>菜：35+46+17+9=107<br>瓜：81（然而最后忘了吃。。。<br>车费：15+20=35<br>水：392<br>蛋糕：259<br>网购零食：715.74<br>零食：1171.32+48.34=1219.66<br>租车：34+179=213<br><strong>合计：6316.4</strong></p>
+<h3 id="黑锅"><a href="#黑锅" class="headerlink" title="黑锅"></a>黑锅</h3><ul>
+<li>重中之重：<strong>水没买够！！！</strong><br>  这个真的是背大锅了🥀正常应该按一人三四瓶来买，买大瓶的，水不够了就赶快摇人去买，不要拖，渴了真的很影响团建体验！！！除了饮料，水也要多买一些，因为饮料不解渴🥀</li>
+<li><p>烤肉<br>  如果需要烤肉，务必买几双手套，好几次看到油溅到负责烤肉的同学手上真的很愧疚🥀<br>  最好自己买炭精和酒精蜡之类，负责烧烤的同学反应轰趴店的碳炉8太彳亍，很难烤。<br>  前几次烤肉最好切开确认一下生熟程度，避免同学们吃到生肉，可以烤焦一点但千万不能生&gt;_&lt;（更新：有人把烤了一半的肉拿走了<del>我不说是谁</del>下次烤肉的同学要看好肉x</p>
+</li>
+<li><p>时间<br>  时间可以稍微长一点，今天晚上烤肉时间（七点开始烤的）有些仓促。建议下次订轰趴十一点到九点，烤肉时间可以久一些。</p>
+</li>
+<li>蛋糕<br>  12寸完！全！不！够！吃！感觉再来一个一样大的蛋糕差不多。</li>
+<li>蔬菜<br>  种类买多一些。</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><div class="note note-info">
+            <p>请务必听track、Mikato和晚安唱歌<br>加上dbt跳舞，XDSEC男团原地出道(x</p>
+          </div>
+<p>（来自收集表中的同学建议，在黑锅里写过的就不提了）</p>
+<ul>
+<li>下次饭菜直接买现成的/选择加工步骤少的方法</li>
+<li>来点桌游、卡牌之类的</li>
+<li>烧烤的话，规划好腌肉和烧烤的时间</li>
+</ul>
+<p><img src=/img/code/xdsec/tj1.jpg width=50% /><br><img src=/img/code/xdsec/tj2.jpg width=50% /><br><img src=/img/code/xdsec/tj3.jpg width=50% /><br><img src=/img/code/xdsec/tj4.jpg width=50% /></p>
+
+              
+            </div>
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/XDSEC/">#XDSEC</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>XDSEC团建工作记录</div>
+      <div>http://yunzh1jun.com/2022/05/24/XDSEC_work/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>云之君</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年5月24日</div>
+        </div>
+      
+      
+      <div class="license-meta-item">
+        <div>许可协议</div>
+        <div>
+          
+            
+            
+              <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+              <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                <i class="iconfont icon-by"></i>
+              </span>
+              </a>
+            
+          
+        </div>
+      </div>
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.0/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      headingSelector : CONFIG.toc.headingSelector || 'h1,h2,h3,h4,h5,h6',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      collapseDepth   : CONFIG.toc.collapseDepth || 0,
+      scrollSmooth    : true,
+      headingsOffset  : -boardTop
+    });
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+  });
+</script>
+
+
+  <script>
+  (function() {
+    var enableLang = CONFIG.code_language.enable && CONFIG.code_language.default;
+    var enableCopy = CONFIG.copy_btn;
+    if (!enableLang && !enableCopy) {
+      return;
+    }
+
+    function getBgClass(ele) {
+      return Fluid.utils.getBackgroundLightness(ele) >= 0 ? 'code-widget-light' : 'code-widget-dark';
+    }
+
+    var copyTmpl = '';
+    copyTmpl += '<div class="code-widget">';
+    copyTmpl += 'LANG';
+    copyTmpl += '</div>';
+    jQuery('.markdown-body pre').each(function() {
+      var $pre = jQuery(this);
+      if ($pre.find('code.mermaid').length > 0) {
+        return;
+      }
+      if ($pre.find('span.line').length > 0) {
+        return;
+      }
+
+      var lang = '';
+
+      if (enableLang) {
+        lang = CONFIG.code_language.default;
+        if ($pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2 && $pre.children().hasClass('hljs')) {
+          lang = $pre[0].children[0].classList[1];
+        } else if ($pre[0].getAttribute('data-language')) {
+          lang = $pre[0].getAttribute('data-language');
+        } else if ($pre.parent().hasClass('sourceCode') && $pre[0].children.length > 0 && $pre[0].children[0].classList.length >= 2) {
+          lang = $pre[0].children[0].classList[1];
+          $pre.parent().addClass('code-wrapper');
+        } else if ($pre.parent().hasClass('markdown-body') && $pre[0].classList.length === 0) {
+          $pre.wrap('<div class="code-wrapper"></div>');
+        }
+        lang = lang.toUpperCase().replace('NONE', CONFIG.code_language.default);
+      }
+      $pre.append(copyTmpl.replace('LANG', lang).replace('code-widget">',
+        getBgClass($pre[0]) + (enableCopy ? ' code-widget copy-btn" data-clipboard-snippet><i class="iconfont icon-copy"></i>' : ' code-widget">')));
+
+      if (enableCopy) {
+        Fluid.utils.createScript('https://lib.baomitu.com/clipboard.js/2.0.10/clipboard.min.js', function() {
+          var clipboard = new window.ClipboardJS('.copy-btn', {
+            target: function(trigger) {
+              var nodes = trigger.parentNode.childNodes;
+              for (var i = 0; i < nodes.length; i++) {
+                if (nodes[i].tagName === 'CODE') {
+                  return nodes[i];
+                }
+              }
+            }
+          });
+          clipboard.on('success', function(e) {
+            e.clearSelection();
+            e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-copy', 'icon-success');
+            setTimeout(function() {
+              e.trigger.innerHTML = e.trigger.innerHTML.replace('icon-success', 'icon-copy');
+            }, 2000);
+          });
+        });
+      }
+    });
+  })();
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</body>
+</html>
