@@ -19,11 +19,11 @@
     <meta name="description" content="VNCTFBabyMazepyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。  这个题可以很明显看出来，0处的指令就是跳转到4，而4处的指令是跳转到2，2处的指令是跳转到6，6处的指令就是正常的创建迷宫的指令了，所以把前三句patch掉。在十六进制编辑器里把这三句删掉，然后改字节码长度co_co">
 <meta property="og:type" content="article">
 <meta property="og:title" content="日常随缘复现">
-<meta property="og:url" content="http://yunzh1jun.com/2022/05/24/witeup/index.html">
+<meta property="og:url" content="http://yunzh1jun.com/2022/05/27/witeup/index.html">
 <meta property="og:site_name" content="云之君">
 <meta property="og:description" content="VNCTFBabyMazepyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。  这个题可以很明显看出来，0处的指令就是跳转到4，而4处的指令是跳转到2，2处的指令是跳转到6，6处的指令就是正常的创建迷宫的指令了，所以把前三句patch掉。在十六进制编辑器里把这三句删掉，然后改字节码长度co_co">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-05-24T10:48:00.660Z">
+<meta property="article:published_time" content="2022-05-27T15:49:47.776Z">
 <meta property="article:modified_time" content="2022-04-25T13:32:00.000Z">
 <meta property="article:author" content="云之君">
 <meta property="article:tag" content="Reverse">
@@ -221,8 +221,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-05-24 18:48" pubdate>
-          2022年5月24日 晚上
+        <time datetime="2022-05-27 23:49" pubdate>
+          2022年5月27日 晚上
         </time>
       </span>
     
@@ -393,7 +393,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>日常随缘复现</div>
-      <div>http://yunzh1jun.com/2022/05/24/witeup/</div>
+      <div>http://yunzh1jun.com/2022/05/27/witeup/</div>
     </div>
     <div class="license-meta">
       
@@ -405,7 +405,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年5月24日</div>
+          <div>2022年5月27日</div>
         </div>
       
       
@@ -439,7 +439,7 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/05/24/WindowsSEH/" title="Windows-SEH学习笔记">
+                      <a href="/2022/05/27/WindowsSEH/" title="Windows-SEH学习笔记">
                         <span class="hidden-mobile">Windows-SEH学习笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
