@@ -358,11 +358,9 @@
 <p>最后还是万能的RX神告诉我，这是<a target="_blank" rel="noopener" href="https://nim-lang.org/">nim lang</a>，一种编程语言。</p>
 </blockquote>
 <p><del>所以字符串的引用这么抽象，反编译出来的代码更抽象</del></p>
-<p>47行sub_4026B0打印欢迎语，49行sub_4031E0接受输入，后面干什么不用管，91-97行验证是否为’flag{‘开头和’}’结尾，长度是否为42。<br>flag长度为42，那么数字长度为36，102和131行的两个while循环把flag分成两半（flag1和flag2），存到v13和v19里，然后调用sub_411340。这个函数被调用了4次，操作的对象都是数字字符，后两次是操作程序中的字符串（称为num1和num2），可以猜测是把字符转为数字的函数。<br>自己输flag{123456789012345678901234567890123456}测试一下</p>
+<p>47行sub_4026B0打印欢迎语，49行sub_4031E0接受输入，后面干什么不用管，91-97行验证是否为’flag{‘开头和’}’结尾，长度是否为42。<br>flag长度为42，那么数字长度为36，102和131行的两个while循环把flag分成两半（flag1和flag2），存到v13和v19里，然后调用sub_411340。这个函数被调用了4次，操作的对象都是数字字符，后两次是操作程序中的字符串（称为num1和num2），可以猜测是把字符转为数字的函数。<br>自己输flag{123456789012345678901234567890123456}测一下</p>
 <p>150和154行调用sub_412080，操作对象分别是flag1、num1和flag1、num2。<br>函数很长，静态分析根本不能看，因为是其他语言写的，不是C……只能动调。</p>
-<p>在150行下断点，跑到<code>call    sub_582080</code>，看v30，双击跳转，数据转地址再跳一次，往下翻一点就能看到数据。</p>
-<p><img src=/img/code/chall_photo/png/4.jpg width=100% /></p>
-<p>在这个数据开头的地方下硬件断点然后跑程序</p>
+<p>在150行下断点，跑到<code>call    sub_582080</code>，看v30，双击跳转，数据转地址再跳一次，往下翻一点就能看到数据。在这个数据开头的地方下硬件断点然后跑程序</p>
 <p>数据：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-built_in">hex</span>(<span class="hljs-number">72057594037927936</span>)<br><span class="hljs-string">&#x27;0x100000000000000&#x27;</span><br><span class="hljs-meta">&gt;&gt;&gt; </span><span class="hljs-built_in">hex</span>(<span class="hljs-number">1152921504606846976</span>)<br><span class="hljs-string">&#x27;0x1000000000000000&#x27;</span><br><span class="hljs-built_in">hex</span>(<span class="hljs-number">123456789012345678</span>)<br><span class="hljs-string">&#x27;0x1b69b4ba630f34e&#x27;</span><br></code></pre></td></tr></table></figure></p>
 <p><img src=/img/code/chall_photo/png/5.jpg width=100% /></p>
 <p>用的寄存器是32位的，可以看到edx里存的是flag1的高位，与num1的高位sub了一下，如果等于0就跳转。这里执行的操作就是检查flag1的高位是否等于num1的高位，等于就跳转。<br>我们可以改一下ZF的值来控制跳转，看看flag1的高位如果等于num1的高位会执行什么。</p>
