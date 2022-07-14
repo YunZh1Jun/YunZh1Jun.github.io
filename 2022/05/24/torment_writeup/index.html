@@ -369,7 +369,7 @@
 <p>判断不等于0之后，程序正常执行，到sub_582080的结尾处。</p>
 <p><img src=/img/code/chall_photo/png/7.jpg width=100% /></p>
 <p>此处是给rax右移了0x3f，即只保留最高位。eax里存的是num1，而edx存flag1，进行sub操作后，如果num1小于flag1，那么rax的最高位会变成1。<br>由此，如果num1小于flag1，函数返回1，否则返回0。</p>
-<p>根据主函数里的判断，此处是要求flag1大于num1，下面的一次调用同理，要求flag1大于num2。</p>
+<p>根据主函数里的判断，此处是要求flag1大于num1，下面的一次调用同理，要求flag1小于num2。</p>
 <p>后面调试过程大致相同，跑到sub_581270，在flag1处下硬件断点</p>
 <p><img src=/img/code/chall_photo/png/8.jpg width=100% /></p>
 <p>可以看到是一个相乘的操作，两个操作数均是flag1，即对flag1平方，结果保存在v32。</p>
