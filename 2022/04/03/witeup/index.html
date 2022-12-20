@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>日常随缘复现 - 云之君&#39;s Blog</title>
+  
+    <link rel="shortcut icon" href="/theme-img/fav/favicon.png">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+<link rel="stylesheet" href="/css/waline.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+ 
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body data-color-scheme="auto">
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">云之君&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">主页</a>
+            
+            
+            <a class="nav-item" href="/friends">Friends</a>
+            
+            
+            
+            <a class="nav-item" href="/CTF">CTF</a>
+            
+            
+            
+            <a class="nav-item" href="/Learn">Learn</a>
+            
+            
+            
+            <a class="nav-item" href="/Dairy">Dairy</a>
+            
+            
+            
+            <a class="nav-item" href="/Alkaid">Alkaid</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/YunZh1Jun" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+        <div class="date" id="date">
+            
+            
+            
+            
+            <span>April</span>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <span>3,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">日常随缘复现</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>如题</p>
+<span id="more"></span>
+
+<h2 id="VNCTF"><a href="#VNCTF" class="headerlink" title="VNCTF"></a>VNCTF</h2><h3 id="BabyMaze"><a href="#BabyMaze" class="headerlink" title="BabyMaze"></a>BabyMaze</h3><p>pyc加花。基本思路跟exe文件去花指令差不多，一般是各种跳来跳去的指令之间夹一些没用的指令，扰乱反编译器分析。直接dis看字节码，然后去修十六进制文件。</p>
+<p><img src="/img/code/chall_photo/pyc_flower.jpg"></p>
+<p>这个题可以很明显看出来，0处的指令就是跳转到4，而4处的指令是跳转到2，2处的指令是跳转到6，6处的指令就是正常的创建迷宫的指令了，所以把前三句patch掉。<br>在十六进制编辑器里把这三句删掉，然后改字节码长度co_code，减去6（因为上面三条指令是6个字节）。</p>
+<h4 id="pyc文件格式"><a href="#pyc文件格式" class="headerlink" title="pyc文件格式"></a>pyc文件格式</h4><ul>
+<li>开始4字节magic int，标识pyc版本信息</li>
+<li>4字节int，表示时间戳</li>
+<li>序列化了的PyCodeObject</li>
+<li>此后是opcode，0x73开头，之后4字节表示opcode所占字节</li>
+<li>此后，1字节表示存储类型，之后4字节表示该类型所占空间。</li>
+</ul>
+<blockquote>
+<p>如果实在不知道co_code在哪里，可以用<code>hex(len(code.co_code))</code>看一下指令长度，然后在十六进制编辑器前几行里找这个值。</p>
+</blockquote>
+<p><del>但是这个题很奇怪，为什么时间戳的地方都是0……</del><br>然后uncompyle6，看源码走迷宫就好了。</p>
+<h3 id="时空飞行"><a href="#时空飞行" class="headerlink" title="时空飞行"></a>时空飞行</h3><p><del>官方wp都有脚本，我就不抄过来了（逃</del><br>说一下中间那一步为什么要深搜：<br>因为那个方程是有很多组解的，直接逆向写脚本的话只能得到1组解，而z3也只能得到少数几组解，只有深搜能保证得到所有解。<br>此后对所有解中进行下一步逆向验证，符合条件的就正确，也就是在所有解里爆破了。</p>
+<h2 id="DASCTF"><a href="#DASCTF" class="headerlink" title="DASCTF"></a>DASCTF</h2><h3 id="easyre"><a href="#easyre" class="headerlink" title="easyre"></a>easyre</h3><p><del>脚本不贴了，都是抄IDA代码，懒得改那一坨很丑的代码了</del><br>简单说一下我遇到的问题：<br>1.我刚开始手动脱壳的，虽然跑不了，但是IDA可以反编译出来。后来去网上搜了搜，大部分都是脱壳机……我下了好几个脱壳机，都说没有ASPack，很迷。<del>有没有带师有什么很nb的脱壳机，请务必告诉我</del><br>2.加密是用的一个魔改的RC4，代码逻辑是什么不管，直接复制IDA代码，简单改一下然后跑。按道理来讲这种RC4不应该管他的逻辑，直接输入然后动调取值来异或，但是我手动脱的壳可能有些问题，（看别人说要用一个工具修复导入表，但是我摆弄了半天那个程序，没搞懂怎么玩的），跑不了所以没法动调。OD调试也8太会，输入之后直接退出了，麻。<br>3.刚开始跑出来是乱码，因为我最开始改的python，都用的range函数，改成C为了方便都用了while循环，结果我把计数器自增的代码写到最前面了，我是什么憨批。<br>3.改完之后跑是能跑出来了，但是中间有几个字符是乱码。虽然已经半夜两点多，但是不知道原因我是真！的！难！受！啊！！！网上找了份WP，两个代码一起调，发现是数据类型的锅。RC4里s盒正常人都用的unsigned char类型，我写脚本也顺手写成无符号字符型了，但是由于这个题是魔改，对s盒运算的时候有一些奇怪的运算，要用int才能保证运算结果的正确性，unsigned char会溢出而损失部分运算结果……我!#%^@$@^*#</p>
+<h2 id="HayyimCTF"><a href="#HayyimCTF" class="headerlink" title="HayyimCTF"></a>HayyimCTF</h2><h3 id="ezrev"><a href="#ezrev" class="headerlink" title="ezrev"></a>ezrev</h3><p>异或值不知道，后面有解base64，爆破一下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">enc=[<span class="number">0x73</span>, <span class="number">0x5A</span>, <span class="number">0x5C</span>, <span class="number">0x78</span>, <span class="number">0x76</span>, <span class="number">0x55</span>, <span class="number">0x48</span>, <span class="number">0x25</span>, <span class="number">0x76</span>, <span class="number">0x55</span>, <span class="number">0x7A</span>, <span class="number">0x7A</span>, <span class="number">0x70</span>, <span class="number">0x7F</span>, <span class="number">0x66</span>, <span class="number">0x68</span>, <span class="number">0x4A</span>, <span class="number">0x20</span>, <span class="number">0x48</span>,<span class="number">0x64</span>, <span class="number">0x71</span>, <span class="number">0x7E</span>, <span class="number">0x2B</span>, <span class="number">0x7E</span>, <span class="number">0x70</span>, <span class="number">0x7F</span>, <span class="number">0x62</span>, <span class="number">0x64</span>, <span class="number">0x77</span>,<span class="number">0x45</span>, <span class="number">0x7E</span>, <span class="number">0x67</span>, <span class="number">0x48</span>, <span class="number">0x23</span>, <span class="number">0x2B</span>, <span class="number">0x7D</span>, <span class="number">0x71</span>, <span class="number">0x20</span>, <span class="number">0x5C</span>,<span class="number">0x22</span>, <span class="number">0x48</span>, <span class="number">0x7B</span>, <span class="number">0x54</span>, <span class="number">0x2B</span>]</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">x=<span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> <span class="number">1</span>:</span><br><span class="line">    flag=<span class="string">&#x27;&#x27;</span></span><br><span class="line">    x+=<span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> enc:</span><br><span class="line">        flag+=<span class="built_in">chr</span>(i^x)</span><br><span class="line">    <span class="keyword">if</span> x&gt;<span class="number">0xff</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        f=base64.b64decode(flag.encode())</span><br><span class="line">        <span class="keyword">if</span> <span class="string">b&#x27;ctf&#123;&#x27;</span> <span class="keyword">in</span> f:</span><br><span class="line">            <span class="built_in">print</span>(f)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        <span class="keyword">continue</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="hgame"><a href="#hgame" class="headerlink" title="hgame"></a>hgame</h2><h3 id="upx0"><a href="#upx0" class="headerlink" title="upx0"></a>upx0</h3><p><del>没壳，被骗了</del><br>crc16，打表搜就行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">crc=[]</span><br><span class="line">v4=[<span class="number">36200</span>,<span class="number">40265</span>,<span class="number">10770</span>,<span class="number">43802</span>,<span class="number">52188</span>,<span class="number">47403</span>,<span class="number">11826</span>,<span class="number">40793</span>,<span class="number">56781</span>,<span class="number">40265</span>,<span class="number">43274</span>,<span class="number">3696</span>,<span class="number">62927</span>,<span class="number">2640</span>,<span class="number">23285</span>,<span class="number">65439</span>,<span class="number">40793</span>,<span class="number">48395</span>,<span class="number">22757</span>,<span class="number">14371</span>,<span class="number">48923</span>,<span class="number">30887</span>,<span class="number">43802</span>,<span class="number">18628</span>,<span class="number">43274</span>,<span class="number">11298</span>,<span class="number">40793</span>,<span class="number">23749</span>,<span class="number">24277</span>,<span class="number">30887</span>,<span class="number">9842</span>,<span class="number">22165</span>]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0x7f</span>):</span><br><span class="line">    t=i&lt;&lt;<span class="number">8</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">8</span>):</span><br><span class="line">        <span class="keyword">if</span> t&amp;<span class="number">0x8000</span>!=<span class="number">0</span>:</span><br><span class="line">            t=(t&lt;&lt;<span class="number">1</span>)^<span class="number">0x1021</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            t&lt;&lt;=<span class="number">1</span></span><br><span class="line">    crc.append(t&amp;<span class="number">0xffff</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> v4:</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">chr</span>(crc.index(i)),end=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="upx1"><a href="#upx1" class="headerlink" title="upx1"></a>upx1</h3><p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/6881">https://xz.aliyun.com/t/6881</a></p>
+<p>还能改magic，这波属实长见识了（什<br>解密都一样，就8说了，之后专门写一篇关于壳的（挖坑++</p>
+<h3 id="Answer’s-Windows"><a href="#Answer’s-Windows" class="headerlink" title="Answer’s Windows"></a>Answer’s Windows</h3><p>好大的文件……关键字符串<br><code>background-image: url(:/new/prefix1/C:/Users/Answer/Desktop/right.png);</code><br>定位到核心逻辑。往上翻可以翻到一个像密文的东东：<br><code>;&#39;&gt;B&lt;76\\=82@-8.@=T\&quot;@-7ZU:8*F=X2J&lt;G&gt;@=W^@-8.@9D2T:49U@1aa</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( v21 != <span class="number">56</span></span><br><span class="line">  || (<span class="type">unsigned</span> <span class="type">int</span>)((__int64 (__fastcall *)(__int64 *, <span class="type">const</span> <span class="type">char</span> *))unk_1408D7348)(</span><br><span class="line">                     v11,</span><br><span class="line">                     <span class="string">&quot;;&#x27;&gt;B&lt;76\\=82@-8.@=T\&quot;@-7ZU:8*F=X2J&lt;G&gt;@=W^@-8.@9D2T:49U@1aa&quot;</span>) )</span><br><span class="line">&#123;</span><br><span class="line">  ((<span class="type">void</span> (__fastcall *)(_QWORD))sub_1401F4D70)(*(_QWORD *)(*(_QWORD *)(a1 + <span class="number">48</span>) + <span class="number">16</span>i64));</span><br><span class="line">  ((<span class="type">void</span> (__fastcall *)(_QWORD))sub_1401F4D70)(*(_QWORD *)(*(_QWORD *)(a1 + <span class="number">48</span>) + <span class="number">24</span>i64));</span><br><span class="line">  v15 = (<span class="keyword">volatile</span> <span class="type">signed</span> __int32 *)sub_1406E43A0(</span><br><span class="line">                                     <span class="string">&quot;background-image: url(:/new/prefix1/C:/Users/Answer/Desktop/wrong.png);&quot;</span>,</span><br><span class="line">                                     <span class="number">71</span>i64);</span><br><span class="line">  sub_140200B40(*(_QWORD *)(*(_QWORD *)(a1 + <span class="number">48</span>) + <span class="number">8</span>i64), &amp;v15);</span><br><span class="line">  <span class="keyword">if</span> ( !*v15 || *v15 != <span class="number">-1</span> &amp;&amp; _InterlockedExchangeAdd(v15, <span class="number">0xFFFFFFFF</span>) == <span class="number">1</span> )</span><br><span class="line">    ((<span class="type">void</span> (__fastcall *)(<span class="keyword">volatile</span> <span class="type">signed</span> __int32 *, __int64, __int64))unk_1406DCF20)(v15, <span class="number">2</span>i64, <span class="number">8</span>i64);</span><br><span class="line">  sub_140202A00(*(_QWORD *)(*(_QWORD *)(a1 + <span class="number">48</span>) + <span class="number">32</span>i64));</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">  ((<span class="type">void</span> (__fastcall *)(_QWORD))sub_1401F4D70)(*(_QWORD *)(*(_QWORD *)(a1 + <span class="number">48</span>) + <span class="number">16</span>i64));</span><br><span class="line">  ((<span class="type">void</span> (__fastcall *)(_QWORD))sub_1401F4D70)(*(_QWORD *)(*(_QWORD *)(a1 + <span class="number">48</span>) + <span class="number">24</span>i64));</span><br><span class="line">  v14 = (<span class="keyword">volatile</span> <span class="type">signed</span> __int32 *)sub_1406E43A0(</span><br><span class="line">                                     <span class="string">&quot;background-image: url(:/new/prefix1/C:/Users/Answer/Desktop/right.png);&quot;</span>,</span><br><span class="line">                                     <span class="number">71</span>i64);</span><br><span class="line">  sub_140200B40(*(_QWORD *)(*(_QWORD *)(a1 + <span class="number">48</span>) + <span class="number">8</span>i64), &amp;v14);</span><br><span class="line">  <span class="keyword">if</span> ( !*v14 || *v14 != <span class="number">-1</span> &amp;&amp; _InterlockedExchangeAdd(v14, <span class="number">0xFFFFFFFF</span>) == <span class="number">1</span> )</span><br><span class="line">    ((<span class="type">void</span> (__fastcall *)(<span class="keyword">volatile</span> <span class="type">signed</span> __int32 *, __int64, __int64))unk_1406DCF20)(v14, <span class="number">2</span>i64, <span class="number">8</span>i64);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>看判断是v11，往上看，v11来源于v20，v20又经过<code>sub_140001F90(v10, v20);</code>，进去这个函数康，康到base64加密的特征，码表是<code>qword_140E82000</code>。康码表的交叉引用，有两个函数引用，<code>sub_140001000</code>和<code>sub_140001A50</code>。<br>看这两个函数的时候IDA有时候栈指针有问题……<br>按alt+k，自己算一下栈指针调一调就好了。<br>后者的核心逻辑如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ( !IsDebuggerPresent() )</span><br><span class="line">&#123;</span><br><span class="line">  sub_140001E20(&amp;qword_140E82000, &amp;unk_1408E9A50, <span class="number">0</span>i64);</span><br><span class="line">  <span class="keyword">for</span> ( i = <span class="number">33</span>; i &lt;= <span class="number">97</span>; ++i )</span><br><span class="line">  &#123;</span><br><span class="line">    v5 = qword_140E82010;</span><br><span class="line">    <span class="keyword">if</span> ( qword_140E82010 &gt;= (<span class="type">unsigned</span> __int64)qword_140E82018 )</span><br><span class="line">    &#123;</span><br><span class="line">      sub_140001800(&amp;qword_140E82000, <span class="number">1</span>i64, <span class="number">0</span>i64, (<span class="type">unsigned</span> __int8)i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      ++qword_140E82010;</span><br><span class="line">      v6 = &amp;qword_140E82000;</span><br><span class="line">      <span class="keyword">if</span> ( (<span class="type">unsigned</span> __int64)qword_140E82018 &gt;= <span class="number">0x10</span> )</span><br><span class="line">        v6 = (__int64 *)qword_140E82000;</span><br><span class="line">      *((_BYTE *)v6 + v5) = i;</span><br><span class="line">      *((_BYTE *)v6 + v5 + <span class="number">1</span>) = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>分析半天，感觉逻辑好复杂，没分析明白……直接上手动调。<br>（额……无意间回来看到这里，突然发现他码表不就是ASCII码从33打到97吗……我当时到底是哪里没看明白……）<br>if里有反调，下断到这一句，手动改ZF标志位跳过反调，然后调完for循环去康<code>qword_140E82000</code>，拿到码表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!&quot;#$%&amp;\&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`a</span><br></pre></td></tr></table></figure>
+<p>注意码表写到字符串里要转义一下。<br>直接去translate的话会报错：码表长度是65，与正常码表不一致……<br>这是因为最后的a是相当于原码表里的等号，是在最后padding用的，不属于码表范围。<br>把码表里最后的a删掉，密文里最后padding的a改成等号，写脚本解base：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> base64</span><br><span class="line">enc=<span class="string">&quot;;&#x27;&gt;B&lt;76\\=82@-8.@=T\&quot;@-7ZU:8*F=X2J&lt;G&gt;@=W^@-8.@9D2T:49U@1==&quot;</span></span><br><span class="line">table=<span class="string">&#x27;!&quot;#$%&amp;\&#x27;()*+,-./0123456789:;&lt;=&gt;?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`&#x27;</span></span><br><span class="line">model=<span class="string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/&quot;</span></span><br><span class="line"><span class="built_in">print</span>(base64.b64decode(enc.translate(<span class="built_in">str</span>.maketrans(table,model))))</span><br></pre></td></tr></table></figure>
+
+<h3 id="creakme3"><a href="#creakme3" class="headerlink" title="creakme3"></a>creakme3</h3><p>这是PCC架构的文件，和以往的arm，x86有所不同，由PowerPC编译，所以IDA不能分析，linux不能运行<br>此题有提示，使用<a target="_blank" rel="noopener" href="https://github.com/NationalSecurityAgency/ghidra">Ghidra</a>分析便可得知主体逻辑</p>
+<p>不过我用IDA还是能分析出来……<br>主逻辑：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> __cdecl <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> **argv, <span class="type">const</span> <span class="type">char</span> **envp)</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="type">int</span> i; <span class="comment">// [sp+1Ch] [-184h]</span></span><br><span class="line">  <span class="type">int</span> j; <span class="comment">// [sp+20h] [-180h]</span></span><br><span class="line">  <span class="type">int</span> k; <span class="comment">// [sp+24h] [-17Ch]</span></span><br><span class="line">  _BYTE v7[<span class="number">372</span>]; <span class="comment">// [sp+28h] [-178h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(v7, <span class="number">0</span>, <span class="number">0x164</span>u);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;Welcome my whitegive re task! This is your flag: &quot;</span>);</span><br><span class="line">  <span class="keyword">do</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">for</span> ( i = <span class="number">0</span>; i &lt;= <span class="number">88</span>; ++i )</span><br><span class="line">      *(_DWORD *)&amp;v7[<span class="number">4</span> * i] = rand() % <span class="number">89</span>;</span><br><span class="line">    <span class="keyword">for</span> ( j = <span class="number">1</span>; j &lt;= <span class="number">88</span> &amp;&amp; a[<span class="number">2</span> * *(_DWORD *)&amp;v7[<span class="number">4</span> * j] + <span class="number">1</span>] &gt;= a[<span class="number">2</span> * *(_DWORD *)&amp;v7[<span class="number">4</span> * j - <span class="number">4</span>] + <span class="number">1</span>]; ++j )</span><br><span class="line">      ;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">while</span> ( j != <span class="number">89</span> );</span><br><span class="line">  <span class="keyword">for</span> ( k = <span class="number">0</span>; k &lt;= <span class="number">88</span>; ++k )</span><br><span class="line">    <span class="built_in">putchar</span>(a[<span class="number">2</span> * *(_DWORD *)&amp;v7[<span class="number">4</span> * k]]);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在我的wsl上跑不起来……数组a里是一堆数据，两个一组，第一个1字节，第二个2字节。<br>看结果是直接输出偶数处的字符，而且前面的欢迎语也说了会直接给flag，应该就是那个随机数满足一定条件就会给……<br>看for里的逻辑，是要奇数处的数字满足2j处大于等于2j-1，所以后面的2字节数字应该是排序。对2字节数字排序然后按顺序输出前面的1字节数据，那么写个脚本排序输出。<br><del>不会写用含两个元素的元组排序呜呜呜</del></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">enc=[<span class="number">0x30</span>, <span class="number">0x4E7D</span>, <span class="number">0x30</span>, <span class="number">0x67BD</span>, <span class="number">0x30</span>, <span class="number">0x7A48</span>, <span class="number">0x30</span>, <span class="number">0x82A2</span>, <span class="number">0x30</span>, <span class="number">0x933E</span>, <span class="number">0x31</span>, <span class="number">0x9C18</span>, <span class="number">0x32</span>, <span class="number">0x5AFF</span>, <span class="number">0x32</span>, <span class="number">0x6CD7</span>, <span class="number">0x32</span>, <span class="number">0xA6CA</span>, <span class="number">0x32</span>, <span class="number">0xBD79</span>, <span class="number">0x32</span>, <span class="number">0xCEBD</span>, <span class="number">0x33</span>, <span class="number">0x324A</span>, <span class="number">0x33</span>, <span class="number">0x3292</span>, <span class="number">0x33</span>, <span class="number">0x3905</span>, <span class="number">0x33</span>, <span class="number">0x4291</span>, <span class="number">0x33</span>, <span class="number">0x5ADE</span>, <span class="number">0x33</span></span><br><span class="line">,<span class="number">0x6E9F</span>, <span class="number">0x33</span>, <span class="number">0xA52A</span>, <span class="number">0x33</span>, <span class="number">0xBE35</span>, <span class="number">0x33</span>, <span class="number">0xCB63</span>, <span class="number">0x35</span>, <span class="number">0x7F3B</span>, <span class="number">0x38</span>, <span class="number">0x3914</span>, <span class="number">0x38</span>, <span class="number">0xB2AD</span>, <span class="number">0x39</span>, <span class="number">0x38DA</span>, <span class="number">0x39</span>, <span class="number">0x4E50</span>, <span class="number">0x39</span>, <span class="number">0x6A02</span>, <span class="number">0x39</span>, <span class="number">0xB10F</span>, <span class="number">0x42</span>, <span class="number">0x78E5</span>, <span class="number">0x5F</span>, <span class="number">0x7EF6</span>, <span class="number">0x5F</span>, <span class="number">0x89A3</span>, <span class="number">0x5F</span>, <span class="number">0x8EBD</span>, <span class="number">0x5F</span>, <span class="number">0x95E3</span>, <span class="number">0x61</span>, <span class="number">0x73DA</span></span><br><span class="line">,<span class="number">0x64</span>, <span class="number">0x538C</span>, <span class="number">0x64</span>, <span class="number">0x633B</span>, <span class="number">0x64</span>, <span class="number">0x9E9C</span>, <span class="number">0x64</span>, <span class="number">0xB78B</span>, <span class="number">0x64</span>, <span class="number">0xC866</span>, <span class="number">0x65</span>, <span class="number">0x32AE</span>, <span class="number">0x65</span>, <span class="number">0x7679</span>, <span class="number">0x66</span>, <span class="number">0x2AE7</span>, <span class="number">0x66</span>, <span class="number">0x4D6A</span>, <span class="number">0x66</span>, <span class="number">0x5708</span>, <span class="number">0x66</span>, <span class="number">0x6610</span>, <span class="number">0x66</span>, <span class="number">0xA258</span>, <span class="number">0x66</span>, <span class="number">0xB80C</span>, <span class="number">0x66</span>, <span class="number">0xC885</span>, <span class="number">0x67</span>, <span class="number">0x710A</span>, <span class="number">0x67</span>, <span class="number">0x7CF4</span>, <span class="number">0x68</span></span><br><span class="line">,<span class="number">0x3F76</span>, <span class="number">0x68</span>, <span class="number">0x702B</span>, <span class="number">0x68</span>, <span class="number">0xA3EE</span>, <span class="number">0x68</span>, <span class="number">0xAD50</span>, <span class="number">0x68</span>, <span class="number">0xBAC7</span>, <span class="number">0x69</span>, <span class="number">0x4024</span>, <span class="number">0x69</span>, <span class="number">0x8A22</span>, <span class="number">0x69</span>, <span class="number">0xC055</span>, <span class="number">0x6A</span>, <span class="number">0x2B52</span>, <span class="number">0x6A</span>, <span class="number">0xC687</span>, <span class="number">0x6B</span>, <span class="number">0x5F00</span>, <span class="number">0x6B</span>, <span class="number">0xC417</span>, <span class="number">0x6C</span>, <span class="number">0x6182</span>, <span class="number">0x6D</span>, <span class="number">0x75DB</span>, <span class="number">0x6E</span>, <span class="number">0x3C61</span>, <span class="number">0x6E</span>, <span class="number">0x4996</span>, <span class="number">0x6E</span>, <span class="number">0x5DC1</span></span><br><span class="line">,<span class="number">0x6F</span>, <span class="number">0x2D76</span>, <span class="number">0x6F</span>, <span class="number">0x7D17</span>, <span class="number">0x6F</span>, <span class="number">0xA91B</span>, <span class="number">0x70</span>, <span class="number">0x9AED</span>, <span class="number">0x72</span>, <span class="number">0x45D0</span>, <span class="number">0x72</span>, <span class="number">0x8467</span>, <span class="number">0x72</span>, <span class="number">0xAB5D</span>, <span class="number">0x73</span>, <span class="number">0x5083</span>, <span class="number">0x73</span>, <span class="number">0x6222</span>, <span class="number">0x73</span>, <span class="number">0x8D93</span>, <span class="number">0x73</span>, <span class="number">0x923A</span>, <span class="number">0x73</span>, <span class="number">0x971E</span>, <span class="number">0x73</span>, <span class="number">0xB4BA</span>, <span class="number">0x73</span>, <span class="number">0xC785</span>, <span class="number">0x74</span>, <span class="number">0x3558</span>, <span class="number">0x74</span>, <span class="number">0x86BD</span>, <span class="number">0x74</span></span><br><span class="line">,<span class="number">0x9738</span>, <span class="number">0x75</span>, <span class="number">0x3710</span>, <span class="number">0x75</span>, <span class="number">0x9779</span>, <span class="number">0x77</span>, <span class="number">0x2F3F</span>, <span class="number">0x77</span>, <span class="number">0x44DD</span>, <span class="number">0x7B</span>, <span class="number">0x78E1</span>, <span class="number">0x7D</span>, <span class="number">0x9F42</span>]</span><br><span class="line">ptr=[]</span><br><span class="line">flag=[]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(enc),<span class="number">2</span>):</span><br><span class="line">    flag.append(enc[i])</span><br><span class="line">    ptr.append(enc[i+<span class="number">1</span>])</span><br><span class="line">sort_ptr=<span class="built_in">sorted</span>(ptr)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> sort_ptr:</span><br><span class="line">    <span class="built_in">print</span>(<span class="built_in">chr</span>(flag[ptr.index(i)]),end=<span class="string">&#x27;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>康题解说是猴子排序。搜了一下感觉这种排序好神必……不知道是谁想出来的哈哈哈哈</p>
+
+    </div>
+
+    <div class="about">
+        <h1>关于本文</h1>
+        <p>本文作者 云之君, 许可由 <a
+                target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+    </div>
+
+    
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/" class="item">Blog</a>
+                
+                <a href="/CTF" class="item">CTF</a>
+                
+                <a href="/Learn" class="item">Learn</a>
+                
+                <a href="/Dairy" class="item">Dairy</a>
+                
+                <a href="/Alkaid" class="item">Alkaid</a>
+                
+                <a href="/friends" class="item">Friends</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/YunZh1Jun" class="item">GitHub</a>
+                
+                <a href="yunzh1jun@qq.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 云之君<br >驱动由 <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+    </body>
+</html>

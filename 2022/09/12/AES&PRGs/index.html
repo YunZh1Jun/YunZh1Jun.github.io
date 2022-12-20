@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>AES &amp; PRGs构建块密码 - 云之君&#39;s Blog</title>
+  
+    <link rel="shortcut icon" href="/theme-img/fav/favicon.png">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+<link rel="stylesheet" href="/css/waline.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+ 
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body data-color-scheme="auto">
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">云之君&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">主页</a>
+            
+            
+            <a class="nav-item" href="/friends">Friends</a>
+            
+            
+            
+            <a class="nav-item" href="/CTF">CTF</a>
+            
+            
+            
+            <a class="nav-item" href="/Learn">Learn</a>
+            
+            
+            
+            <a class="nav-item" href="/Dairy">Dairy</a>
+            
+            
+            
+            <a class="nav-item" href="/Alkaid">Alkaid</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/YunZh1Jun" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+        <div class="date" id="date">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <span>September</span>
+            
+            
+            
+            
+            <span>12,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">AES &amp; PRGs构建块密码</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>给现代密码学讲课准备的文档……</p>
+<span id="more"></span>
+
+<h2 id="The-AES-Block-Cipher"><a href="#The-AES-Block-Cipher" class="headerlink" title="The AES Block Cipher"></a>The AES Block Cipher</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><table>
+<thead>
+<tr>
+<th>AES</th>
+<th>密钥长度(bit)</th>
+<th>分组长度(bit)</th>
+<th>加密轮数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AES-128</td>
+<td>128</td>
+<td>128</td>
+<td>10</td>
+</tr>
+<tr>
+<td>AES-192</td>
+<td>192</td>
+<td>128</td>
+<td>12</td>
+</tr>
+<tr>
+<td>AES-256</td>
+<td>256</td>
+<td>128</td>
+<td>14</td>
+</tr>
+</tbody></table>
+<p><strong>以下均以AES-128说明</strong></p>
+<p><strong>16字节 -&gt; 4*4矩阵</strong></p>
+<p>1.轮密钥加<br>2.AES encrypt<br>3.重复2若干轮<br>4.Last AES encrypt</p>
+<h3 id="详述"><a href="#详述" class="headerlink" title="详述"></a>详述</h3><h4 id="轮密钥加-AddRoundKey"><a href="#轮密钥加-AddRoundKey" class="headerlink" title="轮密钥加(AddRoundKey)"></a>轮密钥加(AddRoundKey)</h4><p>明文与轮密钥异或</p>
+<h4 id="AES-encrypt"><a href="#AES-encrypt" class="headerlink" title="AES encrypt"></a>AES encrypt</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SubBytes(state);            <span class="comment">//字节替换</span></span><br><span class="line">ShiftRows(state);           <span class="comment">//行移位</span></span><br><span class="line">MixColumns(state);          <span class="comment">//列混合</span></span><br><span class="line">AddRoundKey(state,&amp;key[<span class="number">4</span>]); <span class="comment">//轮密钥加</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="字节替换"><a href="#字节替换" class="headerlink" title="字节替换"></a>字节替换</h5><p>AES定义了一个<a href="#aes_sbox">S盒</a>和一个<a href="#aes_invsbox">逆S盒</a>（16*16的表）。<br>字节替换是将矩阵中每个字符在S盒中的映射进行替换，即一个简单的查表操作。</p>
+<p><strong>映射方法：把该字节的高4位作为行值，低4位作为列值，取出S盒中对应的行的元素作为输出。</strong><br>解密时从逆S盒取出元素。</p>
+<p><code>state = aes_sbox[state &gt;&gt; 4][state &amp; 0x0F];</code></p>
+<h5 id="行移位"><a href="#行移位" class="headerlink" title="行移位"></a>行移位</h5><p>第i行循环左移i字节。</p>
+<h5 id="列混合"><a href="#列混合" class="headerlink" title="列混合"></a>列混合</h5><p>每一列乘以一个固定的矩阵，得到新的一列密文<br><img src="/img/code/pht/AES-MixCol.png"></p>
+<p>其中，矩阵元素的乘法和加法都是定义在基于$GF(2^8)$上的二元运算,并不是通常意义上的乘法和加法。</p>
+<p>矩阵中的第j列(0≤j≤3)的列混合可以表示为下图所示：<br><img src="/img/code/pht/AES-MixCol2.png"></p>
+<p>逆运算只需要乘原矩阵的逆矩阵即可。</p>
+<h5 id="轮密钥加"><a href="#轮密钥加" class="headerlink" title="轮密钥加"></a>轮密钥加</h5><p>与轮密钥异或</p>
+<h4 id="Last-AES-encrypt"><a href="#Last-AES-encrypt" class="headerlink" title="Last AES encrypt"></a>Last AES encrypt</h4><p>进行字节替换、行移位、轮密钥加（不必进行列混合）</p>
+<h4 id="重复若干轮"><a href="#重复若干轮" class="headerlink" title="重复若干轮"></a>重复若干轮</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//aes_encrypt()</span></span><br><span class="line">&#123;</span><br><span class="line">    AddRoundKey(state,&amp;key[<span class="number">0</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">9</span>; i++)</span><br><span class="line">        SubBytes(state); ShiftRows(state); MixColumns(state); AddRoundKey(state,&amp;key[<span class="number">4</span> * i + <span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line">    SubBytes(state); ShiftRows(state); AddRoundKey(state,&amp;key[<span class="number">40</span>]);    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><h4 id="代码量-or-速度？"><a href="#代码量-or-速度？" class="headerlink" title="代码量 or 速度？"></a>代码量 or 速度？</h4><ul>
+<li>节约代码量<br>  如果不预先计算（S盒等大量数据），可以获得代码量最小的AES实现。但此时速度最慢。</li>
+<li>提高速度<br>  通过预先计算（S盒等大量数据）来提高运行速度。但此时代码量会稍微增大。<br>  通过预先计算轮函数（使整个AES加密变成一个查表和异或的过程）来大大提高运行速度。但此时代码量会大大增大。</li>
+</ul>
+<p>总而言之，AES总能在代码量和性能之间找到一个平衡点。</p>
+<h3 id="硬件支持"><a href="#硬件支持" class="headerlink" title="硬件支持"></a>硬件支持</h3><p><a target="_blank" rel="noopener" href="https://zh.m.wikipedia.org/zh-hans/AES%E6%8C%87%E4%BB%A4%E9%9B%86">AES指令集</a></p>
+<p>使用128bit的寄存器（对应AES加密块的位数） -&gt; 14倍加速</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">xmm1 = state    //result</span></span><br><span class="line"><span class="comment">xmm2 = round key</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">m = _mm_xor_si128       (m, k[<span class="number">0</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">1</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">2</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">3</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">4</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">5</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">6</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">7</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">8</span>]);</span><br><span class="line">m = _mm_aesenc_si128    (m, k[<span class="number">9</span>]);</span><br><span class="line">m = _mm_aesenclast_si128(m, k[<span class="number">10</span>]);</span><br></pre></td></tr></table></figure>
+
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><h4 id="还原密钥"><a href="#还原密钥" class="headerlink" title="还原密钥"></a>还原密钥</h4><p>AES的密钥只有126位，对这126bit进行穷举。<br>显然这不会伤害AES的安全性。</p>
+<h4 id="对AES-256的相关密钥攻击"><a href="#对AES-256的相关密钥攻击" class="headerlink" title="对AES-256的相关密钥攻击"></a>对AES-256的相关密钥攻击</h4><p>AES-256的密钥扩展设计上有弱点，针对此可以进行相关密钥攻击。<br>如果有大约$2^{99}$个AES的输入输出对，但有4个相关联的密钥（指相异位数很短，比如密钥之间只相差1bit）得出时，可以在$2^{99}$时间内恢复出密钥。<br>显然这仍不足以伤害AES的安全性。</p>
+<h2 id="Block-Ciphers-From-PRGs"><a href="#Block-Ciphers-From-PRGs" class="headerlink" title="Block Ciphers From PRGs"></a>Block Ciphers From PRGs</h2><p><strong>我们能否从一个PRG构建一个PRF？</strong></p>
+<h3 id="构建PRF"><a href="#构建PRF" class="headerlink" title="构建PRF"></a>构建PRF</h3><p>PRG：伪随机数发生器(输出与真随机序列不可区分)<br>PRF：伪随机函数</p>
+<p>设$G:K \rightarrow K^2$是一个安全的PRG<br>定义 $1bit$ 的 $PRF$<br>$F:K×{ \{ 0,1 \}  }\rightarrow K$<br>$F(k,x \in { \{ 0,1 \} })=G(k)[x]$<br><img src="/img/code/pht/PRG1.png"></p>
+<blockquote>
+<p>输入为1bit的值，输出为0或1任一个值。<br>输入为0时，用左边的输出（$G(k)[0]$），输入为1用右边的输出。</p>
+</blockquote>
+<p><strong>如果G是一个安全的PRG，那么F是一个安全的PRF。</strong><br><del>显然这是一句废话</del></p>
+<h3 id="扩展PRG"><a href="#扩展PRG" class="headerlink" title="扩展PRG"></a>扩展PRG</h3><p>$G:K \rightarrow K^2$<br>$\qquad G_1:K \rightarrow K^4,G_1(k)=G(G(k)[0])||G(G(k)[1])$</p>
+<p><img src="/img/code/pht/PRG2.png"></p>
+<p>得到一个 2bit 的 PRF：$F(k,x \in { \{ 0,1 \} }^2)=G_1(k)[x]$</p>
+<p><strong>如何证明$G_1$是一个安全的PRG？</strong><br><strong>如何证明这个四元组输出与随机序列不可区分？</strong><br><img src="/img/code/pht/PRG3.png"></p>
+<blockquote>
+</blockquote>
+<ol>
+<li>我们知道发生器G是安全的，因此第一层的输出与随机序列不可区分。换句话说，我们可以用真随机字符串来替换第一层。因此，我们从密钥空间中随机选取$r_0$和$r_1$来替代$G(G(k)[0])$和$G(G(k)[1])$。<strong>容易知道这两个分布是安全的，即没有有效的攻击可以区分这两个分布。</strong>如果存在这样的攻击，就说明G是不安全的，那么与PRG的定义矛盾。</li>
+<li>现在我们要对左边做同样的事情。换句话说，继续用真随机替$r_{00}$和$r_{01}$换左下角两个伪随机输出。这跟第1步一样，因为G是安全的，所以我们可以进行这样的替换。</li>
+<li>最后再对右边进行一次真随机的替换，我们就得到了一个真随机的四元组输出。</li>
+</ol>
+<h3 id="再次扩展"><a href="#再次扩展" class="headerlink" title="再次扩展"></a>再次扩展</h3><p>$G:K \rightarrow K^2$<br>$\qquad G_2:K \rightarrow K^8,G_2(k)=$</p>
+<p><img src="/img/code/pht/PRG4.png"></p>
+<p><strong>可以扩展3次，就可以扩展n次。</strong></p>
+<h3 id="GGM-PRF"><a href="#GGM-PRF" class="headerlink" title="GGM PRF"></a>GGM PRF</h3><blockquote>
+<p>GGM是这个PRF的3位发明者的首字母缩写</p>
+</blockquote>
+<p>$G:K \rightarrow K^2$<br>$\qquad F:K×{ \{ 0,1 \} } ^n \rightarrow K$</p>
+<p>$ x=x_0 x_1 … x_{n-1} \in { \{ 0,1 \} }^n$:<br><img src="/img/code/pht/PRG5.png"></p>
+<p>容易证明：G是一个安全的PRG $\rightarrow$ F在${ \{0,1\} }^n$上是一个安全的PRF。</p>
+<blockquote>
+<p>不过此函数在实际应用中并不多，因为它的速度太慢了。产生$n$ bit输出需要运行发生器n次。</p>
+</blockquote>
+<blockquote>
+</blockquote>
+<p><strong>能否从一个安全的PRG构建一个安全的分组密码 or 能否从一个安全的PRG构建一个安全的PRP？</strong><br>PRP：伪随机置换</p>
+<ul>
+<li><input disabled="" type="checkbox"> 不能。</li>
+<li><input checked="" disabled="" type="checkbox"> 可以，只要将GGM PRF应用Luby-Rackoff构造法（一个3轮的Feistel网络）即可。</li>
+<li><input disabled="" type="checkbox"> 这取决于PRG的实现。</li>
+</ul>
+<blockquote>
+<p>PRG $\rightarrow$ PRF $\rightarrow$ Luby-Rackoff(3轮Feistel) $\rightarrow$ PRP</p>
+</blockquote>
+<h2 id="引用到的数据"><a href="#引用到的数据" class="headerlink" title="引用到的数据"></a>引用到的数据</h2><p><span id="aes_sbox"></span></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">const</span> BYTE aes_sbox[<span class="number">16</span>][<span class="number">16</span>] = &#123;</span><br><span class="line">	&#123;<span class="number">0x63</span>,<span class="number">0x7C</span>,<span class="number">0x77</span>,<span class="number">0x7B</span>,<span class="number">0xF2</span>,<span class="number">0x6B</span>,<span class="number">0x6F</span>,<span class="number">0xC5</span>,<span class="number">0x30</span>,<span class="number">0x01</span>,<span class="number">0x67</span>,<span class="number">0x2B</span>,<span class="number">0xFE</span>,<span class="number">0xD7</span>,<span class="number">0xAB</span>,<span class="number">0x76</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xCA</span>,<span class="number">0x82</span>,<span class="number">0xC9</span>,<span class="number">0x7D</span>,<span class="number">0xFA</span>,<span class="number">0x59</span>,<span class="number">0x47</span>,<span class="number">0xF0</span>,<span class="number">0xAD</span>,<span class="number">0xD4</span>,<span class="number">0xA2</span>,<span class="number">0xAF</span>,<span class="number">0x9C</span>,<span class="number">0xA4</span>,<span class="number">0x72</span>,<span class="number">0xC0</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xB7</span>,<span class="number">0xFD</span>,<span class="number">0x93</span>,<span class="number">0x26</span>,<span class="number">0x36</span>,<span class="number">0x3F</span>,<span class="number">0xF7</span>,<span class="number">0xCC</span>,<span class="number">0x34</span>,<span class="number">0xA5</span>,<span class="number">0xE5</span>,<span class="number">0xF1</span>,<span class="number">0x71</span>,<span class="number">0xD8</span>,<span class="number">0x31</span>,<span class="number">0x15</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x04</span>,<span class="number">0xC7</span>,<span class="number">0x23</span>,<span class="number">0xC3</span>,<span class="number">0x18</span>,<span class="number">0x96</span>,<span class="number">0x05</span>,<span class="number">0x9A</span>,<span class="number">0x07</span>,<span class="number">0x12</span>,<span class="number">0x80</span>,<span class="number">0xE2</span>,<span class="number">0xEB</span>,<span class="number">0x27</span>,<span class="number">0xB2</span>,<span class="number">0x75</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x09</span>,<span class="number">0x83</span>,<span class="number">0x2C</span>,<span class="number">0x1A</span>,<span class="number">0x1B</span>,<span class="number">0x6E</span>,<span class="number">0x5A</span>,<span class="number">0xA0</span>,<span class="number">0x52</span>,<span class="number">0x3B</span>,<span class="number">0xD6</span>,<span class="number">0xB3</span>,<span class="number">0x29</span>,<span class="number">0xE3</span>,<span class="number">0x2F</span>,<span class="number">0x84</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x53</span>,<span class="number">0xD1</span>,<span class="number">0x00</span>,<span class="number">0xED</span>,<span class="number">0x20</span>,<span class="number">0xFC</span>,<span class="number">0xB1</span>,<span class="number">0x5B</span>,<span class="number">0x6A</span>,<span class="number">0xCB</span>,<span class="number">0xBE</span>,<span class="number">0x39</span>,<span class="number">0x4A</span>,<span class="number">0x4C</span>,<span class="number">0x58</span>,<span class="number">0xCF</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xD0</span>,<span class="number">0xEF</span>,<span class="number">0xAA</span>,<span class="number">0xFB</span>,<span class="number">0x43</span>,<span class="number">0x4D</span>,<span class="number">0x33</span>,<span class="number">0x85</span>,<span class="number">0x45</span>,<span class="number">0xF9</span>,<span class="number">0x02</span>,<span class="number">0x7F</span>,<span class="number">0x50</span>,<span class="number">0x3C</span>,<span class="number">0x9F</span>,<span class="number">0xA8</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x51</span>,<span class="number">0xA3</span>,<span class="number">0x40</span>,<span class="number">0x8F</span>,<span class="number">0x92</span>,<span class="number">0x9D</span>,<span class="number">0x38</span>,<span class="number">0xF5</span>,<span class="number">0xBC</span>,<span class="number">0xB6</span>,<span class="number">0xDA</span>,<span class="number">0x21</span>,<span class="number">0x10</span>,<span class="number">0xFF</span>,<span class="number">0xF3</span>,<span class="number">0xD2</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xCD</span>,<span class="number">0x0C</span>,<span class="number">0x13</span>,<span class="number">0xEC</span>,<span class="number">0x5F</span>,<span class="number">0x97</span>,<span class="number">0x44</span>,<span class="number">0x17</span>,<span class="number">0xC4</span>,<span class="number">0xA7</span>,<span class="number">0x7E</span>,<span class="number">0x3D</span>,<span class="number">0x64</span>,<span class="number">0x5D</span>,<span class="number">0x19</span>,<span class="number">0x73</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x60</span>,<span class="number">0x81</span>,<span class="number">0x4F</span>,<span class="number">0xDC</span>,<span class="number">0x22</span>,<span class="number">0x2A</span>,<span class="number">0x90</span>,<span class="number">0x88</span>,<span class="number">0x46</span>,<span class="number">0xEE</span>,<span class="number">0xB8</span>,<span class="number">0x14</span>,<span class="number">0xDE</span>,<span class="number">0x5E</span>,<span class="number">0x0B</span>,<span class="number">0xDB</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xE0</span>,<span class="number">0x32</span>,<span class="number">0x3A</span>,<span class="number">0x0A</span>,<span class="number">0x49</span>,<span class="number">0x06</span>,<span class="number">0x24</span>,<span class="number">0x5C</span>,<span class="number">0xC2</span>,<span class="number">0xD3</span>,<span class="number">0xAC</span>,<span class="number">0x62</span>,<span class="number">0x91</span>,<span class="number">0x95</span>,<span class="number">0xE4</span>,<span class="number">0x79</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xE7</span>,<span class="number">0xC8</span>,<span class="number">0x37</span>,<span class="number">0x6D</span>,<span class="number">0x8D</span>,<span class="number">0xD5</span>,<span class="number">0x4E</span>,<span class="number">0xA9</span>,<span class="number">0x6C</span>,<span class="number">0x56</span>,<span class="number">0xF4</span>,<span class="number">0xEA</span>,<span class="number">0x65</span>,<span class="number">0x7A</span>,<span class="number">0xAE</span>,<span class="number">0x08</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xBA</span>,<span class="number">0x78</span>,<span class="number">0x25</span>,<span class="number">0x2E</span>,<span class="number">0x1C</span>,<span class="number">0xA6</span>,<span class="number">0xB4</span>,<span class="number">0xC6</span>,<span class="number">0xE8</span>,<span class="number">0xDD</span>,<span class="number">0x74</span>,<span class="number">0x1F</span>,<span class="number">0x4B</span>,<span class="number">0xBD</span>,<span class="number">0x8B</span>,<span class="number">0x8A</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x70</span>,<span class="number">0x3E</span>,<span class="number">0xB5</span>,<span class="number">0x66</span>,<span class="number">0x48</span>,<span class="number">0x03</span>,<span class="number">0xF6</span>,<span class="number">0x0E</span>,<span class="number">0x61</span>,<span class="number">0x35</span>,<span class="number">0x57</span>,<span class="number">0xB9</span>,<span class="number">0x86</span>,<span class="number">0xC1</span>,<span class="number">0x1D</span>,<span class="number">0x9E</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xE1</span>,<span class="number">0xF8</span>,<span class="number">0x98</span>,<span class="number">0x11</span>,<span class="number">0x69</span>,<span class="number">0xD9</span>,<span class="number">0x8E</span>,<span class="number">0x94</span>,<span class="number">0x9B</span>,<span class="number">0x1E</span>,<span class="number">0x87</span>,<span class="number">0xE9</span>,<span class="number">0xCE</span>,<span class="number">0x55</span>,<span class="number">0x28</span>,<span class="number">0xDF</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x8C</span>,<span class="number">0xA1</span>,<span class="number">0x89</span>,<span class="number">0x0D</span>,<span class="number">0xBF</span>,<span class="number">0xE6</span>,<span class="number">0x42</span>,<span class="number">0x68</span>,<span class="number">0x41</span>,<span class="number">0x99</span>,<span class="number">0x2D</span>,<span class="number">0x0F</span>,<span class="number">0xB0</span>,<span class="number">0x54</span>,<span class="number">0xBB</span>,<span class="number">0x16</span>&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><span id="aes_invsbox"></span></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">const</span> BYTE aes_invsbox[<span class="number">16</span>][<span class="number">16</span>] = &#123;</span><br><span class="line">	&#123;<span class="number">0x52</span>,<span class="number">0x09</span>,<span class="number">0x6A</span>,<span class="number">0xD5</span>,<span class="number">0x30</span>,<span class="number">0x36</span>,<span class="number">0xA5</span>,<span class="number">0x38</span>,<span class="number">0xBF</span>,<span class="number">0x40</span>,<span class="number">0xA3</span>,<span class="number">0x9E</span>,<span class="number">0x81</span>,<span class="number">0xF3</span>,<span class="number">0xD7</span>,<span class="number">0xFB</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x7C</span>,<span class="number">0xE3</span>,<span class="number">0x39</span>,<span class="number">0x82</span>,<span class="number">0x9B</span>,<span class="number">0x2F</span>,<span class="number">0xFF</span>,<span class="number">0x87</span>,<span class="number">0x34</span>,<span class="number">0x8E</span>,<span class="number">0x43</span>,<span class="number">0x44</span>,<span class="number">0xC4</span>,<span class="number">0xDE</span>,<span class="number">0xE9</span>,<span class="number">0xCB</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x54</span>,<span class="number">0x7B</span>,<span class="number">0x94</span>,<span class="number">0x32</span>,<span class="number">0xA6</span>,<span class="number">0xC2</span>,<span class="number">0x23</span>,<span class="number">0x3D</span>,<span class="number">0xEE</span>,<span class="number">0x4C</span>,<span class="number">0x95</span>,<span class="number">0x0B</span>,<span class="number">0x42</span>,<span class="number">0xFA</span>,<span class="number">0xC3</span>,<span class="number">0x4E</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x08</span>,<span class="number">0x2E</span>,<span class="number">0xA1</span>,<span class="number">0x66</span>,<span class="number">0x28</span>,<span class="number">0xD9</span>,<span class="number">0x24</span>,<span class="number">0xB2</span>,<span class="number">0x76</span>,<span class="number">0x5B</span>,<span class="number">0xA2</span>,<span class="number">0x49</span>,<span class="number">0x6D</span>,<span class="number">0x8B</span>,<span class="number">0xD1</span>,<span class="number">0x25</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x72</span>,<span class="number">0xF8</span>,<span class="number">0xF6</span>,<span class="number">0x64</span>,<span class="number">0x86</span>,<span class="number">0x68</span>,<span class="number">0x98</span>,<span class="number">0x16</span>,<span class="number">0xD4</span>,<span class="number">0xA4</span>,<span class="number">0x5C</span>,<span class="number">0xCC</span>,<span class="number">0x5D</span>,<span class="number">0x65</span>,<span class="number">0xB6</span>,<span class="number">0x92</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x6C</span>,<span class="number">0x70</span>,<span class="number">0x48</span>,<span class="number">0x50</span>,<span class="number">0xFD</span>,<span class="number">0xED</span>,<span class="number">0xB9</span>,<span class="number">0xDA</span>,<span class="number">0x5E</span>,<span class="number">0x15</span>,<span class="number">0x46</span>,<span class="number">0x57</span>,<span class="number">0xA7</span>,<span class="number">0x8D</span>,<span class="number">0x9D</span>,<span class="number">0x84</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x90</span>,<span class="number">0xD8</span>,<span class="number">0xAB</span>,<span class="number">0x00</span>,<span class="number">0x8C</span>,<span class="number">0xBC</span>,<span class="number">0xD3</span>,<span class="number">0x0A</span>,<span class="number">0xF7</span>,<span class="number">0xE4</span>,<span class="number">0x58</span>,<span class="number">0x05</span>,<span class="number">0xB8</span>,<span class="number">0xB3</span>,<span class="number">0x45</span>,<span class="number">0x06</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xD0</span>,<span class="number">0x2C</span>,<span class="number">0x1E</span>,<span class="number">0x8F</span>,<span class="number">0xCA</span>,<span class="number">0x3F</span>,<span class="number">0x0F</span>,<span class="number">0x02</span>,<span class="number">0xC1</span>,<span class="number">0xAF</span>,<span class="number">0xBD</span>,<span class="number">0x03</span>,<span class="number">0x01</span>,<span class="number">0x13</span>,<span class="number">0x8A</span>,<span class="number">0x6B</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x3A</span>,<span class="number">0x91</span>,<span class="number">0x11</span>,<span class="number">0x41</span>,<span class="number">0x4F</span>,<span class="number">0x67</span>,<span class="number">0xDC</span>,<span class="number">0xEA</span>,<span class="number">0x97</span>,<span class="number">0xF2</span>,<span class="number">0xCF</span>,<span class="number">0xCE</span>,<span class="number">0xF0</span>,<span class="number">0xB4</span>,<span class="number">0xE6</span>,<span class="number">0x73</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x96</span>,<span class="number">0xAC</span>,<span class="number">0x74</span>,<span class="number">0x22</span>,<span class="number">0xE7</span>,<span class="number">0xAD</span>,<span class="number">0x35</span>,<span class="number">0x85</span>,<span class="number">0xE2</span>,<span class="number">0xF9</span>,<span class="number">0x37</span>,<span class="number">0xE8</span>,<span class="number">0x1C</span>,<span class="number">0x75</span>,<span class="number">0xDF</span>,<span class="number">0x6E</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x47</span>,<span class="number">0xF1</span>,<span class="number">0x1A</span>,<span class="number">0x71</span>,<span class="number">0x1D</span>,<span class="number">0x29</span>,<span class="number">0xC5</span>,<span class="number">0x89</span>,<span class="number">0x6F</span>,<span class="number">0xB7</span>,<span class="number">0x62</span>,<span class="number">0x0E</span>,<span class="number">0xAA</span>,<span class="number">0x18</span>,<span class="number">0xBE</span>,<span class="number">0x1B</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xFC</span>,<span class="number">0x56</span>,<span class="number">0x3E</span>,<span class="number">0x4B</span>,<span class="number">0xC6</span>,<span class="number">0xD2</span>,<span class="number">0x79</span>,<span class="number">0x20</span>,<span class="number">0x9A</span>,<span class="number">0xDB</span>,<span class="number">0xC0</span>,<span class="number">0xFE</span>,<span class="number">0x78</span>,<span class="number">0xCD</span>,<span class="number">0x5A</span>,<span class="number">0xF4</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x1F</span>,<span class="number">0xDD</span>,<span class="number">0xA8</span>,<span class="number">0x33</span>,<span class="number">0x88</span>,<span class="number">0x07</span>,<span class="number">0xC7</span>,<span class="number">0x31</span>,<span class="number">0xB1</span>,<span class="number">0x12</span>,<span class="number">0x10</span>,<span class="number">0x59</span>,<span class="number">0x27</span>,<span class="number">0x80</span>,<span class="number">0xEC</span>,<span class="number">0x5F</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x60</span>,<span class="number">0x51</span>,<span class="number">0x7F</span>,<span class="number">0xA9</span>,<span class="number">0x19</span>,<span class="number">0xB5</span>,<span class="number">0x4A</span>,<span class="number">0x0D</span>,<span class="number">0x2D</span>,<span class="number">0xE5</span>,<span class="number">0x7A</span>,<span class="number">0x9F</span>,<span class="number">0x93</span>,<span class="number">0xC9</span>,<span class="number">0x9C</span>,<span class="number">0xEF</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0xA0</span>,<span class="number">0xE0</span>,<span class="number">0x3B</span>,<span class="number">0x4D</span>,<span class="number">0xAE</span>,<span class="number">0x2A</span>,<span class="number">0xF5</span>,<span class="number">0xB0</span>,<span class="number">0xC8</span>,<span class="number">0xEB</span>,<span class="number">0xBB</span>,<span class="number">0x3C</span>,<span class="number">0x83</span>,<span class="number">0x53</span>,<span class="number">0x99</span>,<span class="number">0x61</span>&#125;,</span><br><span class="line">	&#123;<span class="number">0x17</span>,<span class="number">0x2B</span>,<span class="number">0x04</span>,<span class="number">0x7E</span>,<span class="number">0xBA</span>,<span class="number">0x77</span>,<span class="number">0xD6</span>,<span class="number">0x26</span>,<span class="number">0xE1</span>,<span class="number">0x69</span>,<span class="number">0x14</span>,<span class="number">0x63</span>,<span class="number">0x55</span>,<span class="number">0x21</span>,<span class="number">0x0C</span>,<span class="number">0x7D</span>&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="作业题"><a href="#作业题" class="headerlink" title="作业题"></a>作业题</h2><p>作业题跟正文无关</p>
+<p><a target="_blank" rel="noopener" href="https://mysterytwister.org/challenges/level-2/aes-key--encoded-in-the-machine-readable-zone-of-a-european-epassport">题目地址</a></p>
+<h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>1、 AES加密模式为CBC，初始化矢量即IV为零，填充为01-00）。此外，相应的密钥在身份证件上的机器可读区域（MRZ）等表格中，它与欧洲的电子护照一起使用时并不十分完整。<br>2、 目标是找到以下base64编码消息的明文：<br><code>9MgYwmuPrjiecPMx61O6zIuy3MtIXQQ0E59T3xB6u0Gyf1gYs2i3K9Jxaa0zj4gTMazJuApwd6+jdyeI5iGHvhQyDHGVlAuYTgJrbFDrfB22Fpil2NfNnWFBTXyf7SDI</code><br>3、 对于加密，已生成并应用基于基本访问控制（BAC）协议的密钥KENC。对于解密，已经发送了以下字符，从中可以导出KENC（这些字符的编码类型在[1]中描述）： <code>12345678 &lt;8 &lt;&lt;&lt; 1110182 &lt;111116？&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt; 4</code><br>4、 在传输过程中丢失了并且突出显示了一个’’？’’。可以在[2]的帮助下恢复它。<br>为了能够在之后计算密钥KENC，可以找到应用编码的概述<br>[3]，[4]中的协议和[5]中的一个例子。<br>5、 在解密之前解码base64代码。</p>
+<h3 id="解题步骤"><a href="#解题步骤" class="headerlink" title="解题步骤"></a>解题步骤</h3><h4 id="求未知数字"><a href="#求未知数字" class="headerlink" title="求未知数字"></a>求未知数字</h4><p>![](/img/code/pht/cry1.png width=100% /&gt;</p>
+<p>按照给出的步骤手搓脚本即可求出未知数</p>
+<h4 id="计算key"><a href="#计算key" class="headerlink" title="计算key"></a>计算key</h4><h5 id="Kseed"><a href="#Kseed" class="headerlink" title="Kseed"></a>Kseed</h5><p>对数字和校验位sha1后取<code>[:16]</code>即可。</p>
+<h5 id="Ka-Kb"><a href="#Ka-Kb" class="headerlink" title="Ka Kb"></a>Ka Kb</h5><p>Kseed+c然后sha1，ka是<code>[:16]</code>，kb是<code>[16:32]</code></p>
+<h5 id="key"><a href="#key" class="headerlink" title="key"></a>key</h5><p>对ka和kb奇偶校验即可</p>
+<h4 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"><span class="keyword">from</span> hashlib <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">import</span> binascii</span><br><span class="line"> </span><br><span class="line"><span class="keyword">def</span> <span class="title function_">check</span>(<span class="params">ka</span>):</span><br><span class="line">    k=[]</span><br><span class="line">    a=<span class="built_in">bin</span>(<span class="built_in">int</span>(ka,<span class="number">16</span>))[<span class="number">2</span>:]</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>,<span class="built_in">len</span>(a),<span class="number">8</span>):</span><br><span class="line">        <span class="keyword">if</span>(a[i:i+<span class="number">7</span>].count(<span class="string">&#x27;1&#x27;</span>)%<span class="number">2</span>==<span class="number">0</span>):</span><br><span class="line">           k.append(a[i:i+<span class="number">7</span>]+<span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">           k.append(a[i:i+<span class="number">7</span>]+<span class="string">&#x27;0&#x27;</span>)</span><br><span class="line">    knew=<span class="built_in">hex</span>(<span class="built_in">int</span>(<span class="string">&#x27;&#x27;</span>.join(k),<span class="number">2</span>))</span><br><span class="line">    <span class="keyword">return</span> knew[<span class="number">2</span>:]</span><br><span class="line"></span><br><span class="line">x1 = [<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>,<span class="number">6</span>]</span><br><span class="line">x2 = [<span class="number">7</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">7</span>,<span class="number">3</span>,<span class="number">1</span>]</span><br><span class="line">x = <span class="number">0</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(a)):</span><br><span class="line">    x += x1[i]*x2[i]</span><br><span class="line">    x %= <span class="number">10</span></span><br><span class="line"></span><br><span class="line">passport = <span class="string">&#x27;12345678&lt;8&lt;&lt;&lt;1110182&lt;1111167&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;4&#x27;</span></span><br><span class="line">no = passport[:<span class="number">10</span>]</span><br><span class="line">birth = passport[<span class="number">13</span>:<span class="number">20</span>]</span><br><span class="line">arrive = passport[<span class="number">21</span>:<span class="number">28</span>]</span><br><span class="line">mrz = no+birth+arrive</span><br><span class="line">h_mrz = sha1(mrz.encode()).hexdigest()</span><br><span class="line"></span><br><span class="line">k_seed = h_mrz[:<span class="number">32</span>]</span><br><span class="line">c = <span class="string">&#x27;00000001&#x27;</span></span><br><span class="line">d = k_seed + c</span><br><span class="line">h_d = sha1(<span class="built_in">bytes</span>.fromhex(d)).hexdigest()</span><br><span class="line"></span><br><span class="line">ka = check(h_d[:<span class="number">16</span>])</span><br><span class="line">kb = check(h_d[<span class="number">16</span>:<span class="number">32</span>])</span><br><span class="line">key = ka+kb</span><br><span class="line"> </span><br><span class="line">cipher = <span class="string">&#x27;9MgYwmuPrjiecPMx61O6zIuy3MtIXQQ0E59T3xB6u0Gyf1gYs2i3K9Jxaa0zj4gTMazJuApwd6+jdyeI5iGHvhQyDHGVlAuYTgJrbFDrfB22Fpil2NfNnWFBTXyf7SDI&#x27;</span></span><br><span class="line">cipher = base64.b64decode(cipher)</span><br><span class="line"> </span><br><span class="line">aes = AES.new(<span class="built_in">bytes</span>.fromhex(key),AES.MODE_CBC,<span class="built_in">bytes</span>.fromhex(<span class="string">&#x27;0&#x27;</span>*<span class="number">32</span>))</span><br><span class="line">result = aes.decrypt(cipher).decode()</span><br><span class="line"><span class="built_in">print</span>(result)</span><br><span class="line"><span class="comment"># Herzlichen Glueckwunsch. Sie haben die Nuss geknackt. Das Codewort lautet: Kryptographie!</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h4><p>感觉算是……解决了现实生活中的一个问题？hhhhhhhhhhhhhh</p>
+
+    </div>
+
+    <div class="about">
+        <h1>关于本文</h1>
+        <p>本文作者 云之君, 许可由 <a
+                target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+    </div>
+
+    
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/" class="item">Blog</a>
+                
+                <a href="/CTF" class="item">CTF</a>
+                
+                <a href="/Learn" class="item">Learn</a>
+                
+                <a href="/Dairy" class="item">Dairy</a>
+                
+                <a href="/Alkaid" class="item">Alkaid</a>
+                
+                <a href="/friends" class="item">Friends</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/YunZh1Jun" class="item">GitHub</a>
+                
+                <a href="yunzh1jun@qq.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 云之君<br >驱动由 <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+    </body>
+</html>

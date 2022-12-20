@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>C++异常处理 - 云之君&#39;s Blog</title>
+  
+    <link rel="shortcut icon" href="/theme-img/fav/favicon.png">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+<link rel="stylesheet" href="/css/waline.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+ 
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body data-color-scheme="auto">
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">云之君&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">主页</a>
+            
+            
+            <a class="nav-item" href="/friends">Friends</a>
+            
+            
+            
+            <a class="nav-item" href="/CTF">CTF</a>
+            
+            
+            
+            <a class="nav-item" href="/Learn">Learn</a>
+            
+            
+            
+            <a class="nav-item" href="/Dairy">Dairy</a>
+            
+            
+            
+            <a class="nav-item" href="/Alkaid">Alkaid</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/YunZh1Jun" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+        <div class="date" id="date">
+            
+            
+            
+            
+            
+            
+            
+            
+            <span>August</span>
+            
+            
+            
+            
+            
+            <span>29,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">C++异常处理</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>C++异常初探（当然了，自己学的还不是很明白</p>
+<span id="more"></span>
+
+<p>原文地址：<br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/catch/p/3604516.html">C++异常处理(1)</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/catch/p/3619379.html">C++异常处理(2)</a></p>
+<p>大多是对原文的一些总结和引用，建议阅读原文。后面的一些测试🌰是自己思考的一些东西。</p>
+<h2 id="异常处理过程"><a href="#异常处理过程" class="headerlink" title="异常处理过程"></a>异常处理过程</h2><ol>
+<li>抛出异常</li>
+<li>若没有在当前函数内被catch，就沿着调用链继续往上抛，直到走完整个调用链</li>
+<li>如果走完调用链都没有找到相应的 catch，那么 std::terminate() 就会被调用（用于直接终止程序）；如果找到相应的catch，就进入该catch执行相应的代码（称为<strong>Landing pad</strong>）。</li>
+</ol>
+<p><strong>stack unwind（栈展开）</strong>：从抛异常开始到执行landing pad的整个过程。<br>栈展开做的工作就是从抛出异常的地方开始，沿调用链找catch，然后从抛异常的地方开始，清理调用链上栈帧里的局部变量。<br>栈展开可以简单看成函数调用的逆过程。<br>这个过程在实现上由一个专门的 stack unwind 库来进行，在 intel 平台上，它属于 Itanium ABI 接口中的一部分，且与具体的语言无关，由系统提供实现，任何上层语言都可以在这个接口的基础上实现各自的异常处理，GCC 就基于这个接口来实现 c++ 的异常处理。</p>
+<h3 id="Itanium-C-ABI"><a href="#Itanium-C-ABI" class="headerlink" title="Itanium C++ ABI"></a>Itanium C++ ABI</h3><p>Itanium ABI 定义了一系列函数及相应的数据结构来建立整个异常处理的流程及框架。</p>
+<h4 id="Unwind-RaiseException"><a href="#Unwind-RaiseException" class="headerlink" title="_Unwind_RaiseException()"></a><code>_Unwind_RaiseException()</code></h4><p><code>_Unwind_RaiseException()</code> 函数用于进行 stack unwind，它在用户执行 throw 时被调用，主要功能是从当前函数开始，对调用链上每个函数都调用一个叫作 <code>personality routine</code> 的函数<code>（__gxx_personality_v0）</code>，该函数由上层的语言定义及提供实现。<br><code>_Unwind_RaiseException()</code> 会在内部把当前函数栈的调用现场重建，然后传给 <code>personality routine</code>。<br><code>personality routine</code>主要负责做两件事情：</p>
+<ul>
+<li>检查当前函数是否含有相应 catch 可以处理上面抛出的异常。</li>
+<li>清掉调用栈上的局部变量。<br>stack unwind 主要就是由 <code>personality routine</code> 来完成，它相当于一个 callback。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">_Unwind_Reason_Code (*__personality_routine)</span><br><span class="line">        (<span class="type">int</span> version,</span><br><span class="line">         _Unwind_Action actions,<span class="comment">//用来告诉 personality routine，当前处于 stack unwind 的哪个阶段</span></span><br><span class="line">         uint64 exceptionClass,</span><br><span class="line">         <span class="keyword">struct</span> _Unwind_Exception *exceptionObject,</span><br><span class="line">         <span class="keyword">struct</span> _Unwind_Context *context);</span><br><span class="line"><span class="comment">//它的参数则主要用来传递与异常相关的信息及当前函数的上下文</span></span><br></pre></td></tr></table></figure>
+
+<p>每个函数在 unwind 的过程中都会被 personality routine 遍历两次。<br>一次是寻找catch，一次是清理局部变量。</p>
+<p>如下伪代码展示了 _Unwind_RaiseException() 内部的大概实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">_Unwind_RaiseException(exception)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">bool</span> found = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">     &#123;</span><br><span class="line">         <span class="comment">// 建立上个函数的上下文</span></span><br><span class="line">         context = build_context();</span><br><span class="line">         <span class="keyword">if</span> (!context) <span class="keyword">break</span>;</span><br><span class="line">         found = personality_routine(exception, context, SEARCH);</span><br><span class="line">         <span class="keyword">if</span> (found or reach the end) <span class="keyword">break</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (found)</span><br><span class="line">    &#123;</span><br><span class="line">        context = build_context();</span><br><span class="line">        <span class="keyword">if</span> (!context) <span class="keyword">break</span>;</span><br><span class="line">        personality_routine(exception, context, UNWIND);</span><br><span class="line">        <span class="keyword">if</span> (reach_catch_function) <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ABI 中的函数使用到了两个自定义的数据结构，用来传递一些内部的信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Unwind_Context</span>;</span><span class="comment">//一个对调用者透明的结构，用于表示程序运行时的上下文</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> _<span class="title">Unwind_Exception</span> &#123;</span><span class="comment">//在 unwind 库内用于表示一个异常</span></span><br><span class="line">  uint64     exception_class;</span><br><span class="line">  _Unwind_Exception_Cleanup_Fn exception_cleanup;</span><br><span class="line">  uint64     private_1;</span><br><span class="line">  uint64     private_2;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="C-ABI"><a href="#C-ABI" class="headerlink" title="C++ ABI"></a>C++ ABI</h3><p>基于前面介绍的 Itanium ABI，编译器层面也定义了一系列的 ABI 来与之交互。当我们在代码中写下 “throw xxx” 时，编译器会分配一个数据结构来表示该异常，该异常有一个头部，定义如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">cxa_exception</span> &#123;</span> </span><br><span class="line">  <span class="built_in">std</span>::type_info *    exceptionType;</span><br><span class="line">  <span class="type">void</span> (*exceptionDestructor) (<span class="type">void</span> *); </span><br><span class="line">  unexpected_handler    unexpectedHandler;</span><br><span class="line">  terminate_handler    terminateHandler;</span><br><span class="line">  __cxa_exception *    nextException;</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span>     handlerCount;</span><br><span class="line">  <span class="type">int</span>     handlerSwitchValue;</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *     actionRecord;</span><br><span class="line">  <span class="type">const</span> <span class="type">char</span> *     languageSpecificData;</span><br><span class="line">  <span class="type">void</span> *     catchTemp;</span><br><span class="line">  <span class="type">void</span> *     adjustedPtr;</span><br><span class="line"></span><br><span class="line">  _Unwind_Exception    unwindHeader;<span class="comment">//Itanium 接口里提到的接口内部用的结构体</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>当用户throw一个异常，编译器会调用相应的函数分配出如下一个结构：</p>
+<table>
+<thead>
+<tr>
+<th>__cxa_exception</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>exception obj</strong></td>
+</tr>
+</tbody></table>
+<p>其中 _cxa_exception 就是头部，exception_obj 则是 “throw xxx” 中的 xxx，这两部分在内存中是连续的。异常对象由函数 __cxa_allocate_exception() 进行创建，最后由 __cxa_free_exception() 进行销毁。</p>
+<p>当我们在程序里执行了抛出异常后，编译器为我们做了如下的事情：</p>
+<ol>
+<li>调用 __cxa_allocate_exception 函数，分配一个异常对象。</li>
+<li>调用 __cxa_throw 函数，这个函数会将异常对象做一些初始化。</li>
+<li>__cxa_throw() 调用 Itanium ABI 里的 _Unwind_RaiseException() 从而开始 unwind。</li>
+<li>_Unwind_RaiseException() 对调用链上的函数进行 unwind 时，调用 personality routine。</li>
+<li>该异常如能被处理(有相应的 catch)，则 personality routine 会依次对调用链上的函数进行清理。</li>
+<li>_Unwind_RaiseException() 将控制权转到相应的catch代码。</li>
+<li>unwind 完成，用户代码继续执行。</li>
+</ol>
+<h3 id="不同编译器的实现"><a href="#不同编译器的实现" class="headerlink" title="不同编译器的实现"></a>不同编译器的实现</h3><h4 id="g-x64"><a href="#g-x64" class="headerlink" title="g++ x64"></a>g++ x64</h4><p>测试代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">test_func3</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">puts</span>( <span class="string">&quot;test func3&quot;</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">test_func2</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">puts</span>( <span class="string">&quot;test func2&quot;</span> );</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">test_func3</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">catch</span> (<span class="type">int</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">puts</span>( <span class="string">&quot;catch 2&quot;</span> );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">test_func1</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">puts</span>( <span class="string">&quot;test func1&quot;</span> );</span><br><span class="line">    <span class="keyword">try</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">test_func2</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">catch</span> (...)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">puts</span>( <span class="string">&quot;catch 1&quot;</span> );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">test_func1</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* output:</span></span><br><span class="line"><span class="comment">test func1</span></span><br><span class="line"><span class="comment">test func2</span></span><br><span class="line"><span class="comment">catch 2</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>fun3的结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">.text:0000000000401550 ; =============== S U B R O U T I N E =======================================</span><br><span class="line">.text:0000000000401550</span><br><span class="line">.text:0000000000401550 ; Attributes: noreturn bp-based frame</span><br><span class="line">.text:0000000000401550</span><br><span class="line">.text:0000000000401550 ; void __cdecl test_func3()</span><br><span class="line">.text:0000000000401550                 public _Z10test_func3v</span><br><span class="line">.text:0000000000401550 _Z10test_func3v proc near               ; CODE XREF: test_func2(void)+1A↓p</span><br><span class="line">.text:0000000000401550                                         ; DATA XREF: .pdata:000000000040506C↓o</span><br><span class="line">.text:0000000000401550                 push    rbp</span><br><span class="line">.text:0000000000401551                 mov     rbp, rsp</span><br><span class="line">.text:0000000000401554                 sub     rsp, 20h</span><br><span class="line">.text:0000000000401558                 mov     ecx, 4          ; thrown_size</span><br><span class="line">.text:000000000040155D                 call    __cxa_allocate_exception</span><br><span class="line">.text:0000000000401562                 mov     dword ptr [rax], 3</span><br><span class="line">.text:0000000000401568                 mov     r8d, 0          ; void (__fastcall *)(void *)</span><br><span class="line">.text:000000000040156E                 mov     rdx, cs:_refptr__ZTIi ; lptinfo</span><br><span class="line">.text:0000000000401575                 mov     rcx, rax        ; void *</span><br><span class="line">.text:0000000000401578                 call    __cxa_throw</span><br><span class="line">.text:0000000000401578 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:000000000040157D                 align 2</span><br><span class="line">.text:000000000040157D _Z10test_func3v endp</span><br></pre></td></tr></table></figure>
+
+<p>可以看到fun3中的throw对应了上述两个过程，即调用__cxa_allocate_exception分配一个异常对象，以及调用 __cxa_throw 函数对异常对象初始化。</p>
+<p>fun2的结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">.text:000000000040157E ; void __cdecl test_func2()</span><br><span class="line">.text:000000000040157E                 public _Z10test_func2v</span><br><span class="line">.text:000000000040157E _Z10test_func2v proc near               ; CODE XREF: test_func1(void)+1A↓p</span><br><span class="line">.text:000000000040157E                                         ; DATA XREF: .pdata:000000000040506C↓o ...</span><br><span class="line">.text:000000000040157E</span><br><span class="line">.text:000000000040157E var_14          = dword ptr -14h</span><br><span class="line">.text:000000000040157E</span><br><span class="line">.text:000000000040157E ; __unwind &#123; // __gxx_personality_seh0</span><br><span class="line">.text:000000000040157E                 push    rbp</span><br><span class="line">.text:000000000040157F                 push    rbx</span><br><span class="line">.text:0000000000401580                 sub     rsp, 38h</span><br><span class="line">.text:0000000000401584                 lea     rbp, [rsp+80h]</span><br><span class="line">.text:000000000040158C                 lea     rcx, Buffer     ; &quot;test func2&quot;</span><br><span class="line">.text:0000000000401593                 call    puts</span><br><span class="line">.text:0000000000401598 ;   try &#123;</span><br><span class="line">.text:0000000000401598                 call    _Z10test_func3v ; test_func3(void)</span><br><span class="line">.text:0000000000401598 ;   &#125; // starts at 401598</span><br><span class="line">.text:000000000040159D ; ---------------------------------------------------------------------------</span><br><span class="line">.text:000000000040159D                 jmp     short loc_4015E1</span><br><span class="line">.text:000000000040159F ; ---------------------------------------------------------------------------</span><br><span class="line">.text:000000000040159F ;   catch(int) // owned by 401598</span><br><span class="line">.text:000000000040159F                 cmp     rdx, 1</span><br><span class="line">.text:00000000004015A3                 jz      short loc_4015AD</span><br><span class="line">.text:00000000004015A5                 mov     rcx, rax</span><br><span class="line">.text:00000000004015A8                 call    _Unwind_Resume</span><br><span class="line">.text:00000000004015AD ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00000000004015AD</span><br><span class="line">.text:00000000004015AD loc_4015AD:                             ; CODE XREF: test_func2(void)+25↑j</span><br><span class="line">.text:00000000004015AD                 mov     rcx, rax        ; void *</span><br><span class="line">.text:00000000004015B0                 call    __cxa_begin_catch</span><br><span class="line">.text:00000000004015B5                 mov     eax, [rax]</span><br><span class="line">.text:00000000004015B7                 mov     [rbp-40h+var_14], eax</span><br><span class="line">.text:00000000004015BA                 lea     rcx, aCatch2    ; &quot;catch 2&quot;</span><br><span class="line">.text:00000000004015C1 ;   try &#123;</span><br><span class="line">.text:00000000004015C1                 call    puts</span><br><span class="line">.text:00000000004015C1 ;   &#125; // starts at 4015C1</span><br><span class="line">.text:00000000004015C6                 call    __cxa_end_catch</span><br><span class="line">.text:00000000004015CB                 jmp     short loc_4015E1</span><br><span class="line">.text:00000000004015CD ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00000000004015CD ;   cleanup() // owned by 4015C1</span><br><span class="line">.text:00000000004015CD                 mov     rbx, rax</span><br><span class="line">.text:00000000004015D0                 call    __cxa_end_catch</span><br><span class="line">.text:00000000004015D5                 mov     rax, rbx</span><br><span class="line">.text:00000000004015D8                 mov     rcx, rax</span><br><span class="line">.text:00000000004015DB                 call    _Unwind_Resume</span><br><span class="line">.text:00000000004015DB ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00000000004015E0                 db 90h</span><br><span class="line">.text:00000000004015E1 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00000000004015E1</span><br><span class="line">.text:00000000004015E1 loc_4015E1:                             ; CODE XREF: test_func2(void)+1F↑j</span><br><span class="line">.text:00000000004015E1                                         ; test_func2(void)+4D↑j</span><br><span class="line">.text:00000000004015E1                 add     rsp, 38h</span><br><span class="line">.text:00000000004015E5                 pop     rbx</span><br><span class="line">.text:00000000004015E6                 pop     rbp</span><br><span class="line">.text:00000000004015E7                 retn</span><br><span class="line">.text:00000000004015E7 ; &#125; // starts at 40157E</span><br><span class="line">.text:00000000004015E7 _Z10test_func2v endp</span><br></pre></td></tr></table></figure>
+
+<p>try块包裹fun3，不抛出异常的话就跳转到<code>loc_4015E1</code>来正常结束函数。<br>抛出异常的话检测异常是否为int类型，不是的话调用<code>_Unwind_Resume</code>恢复现场，是的话调用<code>__cxa_begin_catch</code>开始处理异常。<br>调用puts的代码编译器自动生成了一个try块来包裹，下面的cleanup()基本上是相当于它的catch块吧。<br>若正常调用结束，就按流程往下走，调用<code>__cxa_end_catch</code>来结束异常处理，然后正常结束fun2；<br>若发生异常，就调用<code>__cxa_end_catch</code>来结束异常处理，调用<code>_Unwind_Resume</code>恢复现场，然后正常结束fun2。<br>注意此处<code>__cxa_end_catch</code>处理的应该是上层try块里的fun3中抛出的异常，不是puts函数抛出的异常。如果puts抛出异常，那就相当于是只执行到了抛异常的部分。而cleanup()中的<code>_Unwind_Resume</code>恢复的现场是由puts抛出的异常。<br>这样就能够处理catch块中又抛出异常的情况。</p>
+<h4 id="g-x86"><a href="#g-x86" class="headerlink" title="g++ x86"></a>g++ x86</h4><p>与x64基本一样。</p>
+<h4 id="MSVC-x64"><a href="#MSVC-x64" class="headerlink" title="MSVC x64"></a>MSVC x64</h4><p>康不懂，爬了</p>
+<h4 id="MSVC-x86"><a href="#MSVC-x86" class="headerlink" title="MSVC x86"></a>MSVC x86</h4><p>跟这个不一样，学了再来补。</p>
+<p>先贴个代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">.text:00401100 ?test_func3@@YAXXZ proc near            ; CODE XREF: test_func2(void)+3E↑p</span><br><span class="line">.text:00401100</span><br><span class="line">.text:00401100 pExceptionObject= dword ptr -4</span><br><span class="line">.text:00401100</span><br><span class="line">.text:00401100                 push    ebp</span><br><span class="line">.text:00401101                 mov     ebp, esp</span><br><span class="line">.text:00401103                 push    ecx</span><br><span class="line">.text:00401104                 mov     [ebp+pExceptionObject], 3</span><br><span class="line">.text:0040110B                 push    offset __TI1H   ; pThrowInfo</span><br><span class="line">.text:00401110                 lea     eax, [ebp+pExceptionObject]</span><br><span class="line">.text:00401113                 push    eax             ; pExceptionObject</span><br><span class="line">.text:00401114                 call    __CxxThrowException@8 ; _CxxThrowException(x,x)</span><br><span class="line">.text:00401114 ?test_func3@@YAXXZ endp</span><br><span class="line">.text:00401114</span><br><span class="line">.text:00401119 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:00401119                 push    offset aTestFunc3 ; &quot;test func3&quot;</span><br><span class="line">.text:0040111E                 call    ds:__imp__puts</span><br><span class="line">.text:00401124                 add     esp, 4</span><br><span class="line">.text:00401127                 mov     esp, ebp</span><br><span class="line">.text:00401129                 pop     ebp</span><br><span class="line">.text:0040112A                 retn</span><br><span class="line">.text:0040112A ; ---------------------------------------------------------------------------</span><br><span class="line">.text:0040112B                 align 10h</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">.text:00401080 ; void __cdecl test_func2()</span><br><span class="line">.text:00401080 ?test_func2@@YAXXZ proc near            ; CODE XREF: test_func1(void)+3E↑p</span><br><span class="line">.text:00401080</span><br><span class="line">.text:00401080 var_10          = dword ptr -10h</span><br><span class="line">.text:00401080 var_C           = dword ptr -0Ch</span><br><span class="line">.text:00401080 var_4           = dword ptr -4</span><br><span class="line">.text:00401080 arg_4           = dword ptr  0Ch</span><br><span class="line">.text:00401080</span><br><span class="line">.text:00401080 ; FUNCTION CHUNK AT .text:00401E30 SIZE 0000001D BYTES</span><br><span class="line">.text:00401080</span><br><span class="line">.text:00401080 ; __unwind &#123; // __ehhandler$?test_func2@@YAXXZ</span><br><span class="line">.text:00401080                 push    ebp</span><br><span class="line">.text:00401081                 mov     ebp, esp</span><br><span class="line">.text:00401083                 push    0FFFFFFFFh</span><br><span class="line">.text:00401085                 push    offset __ehhandler$?test_func2@@YAXXZ</span><br><span class="line">.text:0040108A                 mov     eax, large fs:0</span><br><span class="line">.text:00401090                 push    eax</span><br><span class="line">.text:00401091                 push    ecx</span><br><span class="line">.text:00401092                 push    ebx</span><br><span class="line">.text:00401093                 push    esi</span><br><span class="line">.text:00401094                 push    edi</span><br><span class="line">.text:00401095                 mov     eax, ___security_cookie</span><br><span class="line">.text:0040109A                 xor     eax, ebp</span><br><span class="line">.text:0040109C                 push    eax</span><br><span class="line">.text:0040109D                 lea     eax, [ebp+var_C]</span><br><span class="line">.text:004010A0                 mov     large fs:0, eax</span><br><span class="line">.text:004010A6                 mov     [ebp+var_10], esp</span><br><span class="line">.text:004010A9                 push    offset aTestFunc2 ; &quot;test func2&quot;</span><br><span class="line">.text:004010AE                 call    ds:__imp__puts</span><br><span class="line">.text:004010B4                 add     esp, 4</span><br><span class="line">.text:004010B7 ;   try &#123;</span><br><span class="line">.text:004010B7                 mov     [ebp+var_4], 0</span><br><span class="line">.text:004010BE                 call    ?test_func3@@YAXXZ ; test_func3(void)</span><br><span class="line">.text:004010C3 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:004010C3                 jmp     short loc_4010D9</span><br><span class="line">.text:004010C5 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:004010C5</span><br><span class="line">.text:004010C5 __catch$?test_func2@@YAXXZ$0:           ; DATA XREF: .rdata:stru_402638↓o</span><br><span class="line">.text:004010C5 ;   catch(int) // owned by 4010B7</span><br><span class="line">.text:004010C5                 push    offset aCatch2  ; &quot;catch 2&quot;</span><br><span class="line">.text:004010CA                 call    ds:__imp__puts</span><br><span class="line">.text:004010D0                 add     esp, 4</span><br><span class="line">.text:004010D3                 mov     eax, offset $LN7_0</span><br><span class="line">.text:004010D8                 retn</span><br><span class="line">.text:004010D8 ;   &#125; // starts at 4010B7</span><br><span class="line">.text:004010D9 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:004010D9</span><br><span class="line">.text:004010D9 loc_4010D9:                             ; CODE XREF: test_func2(void)+43↑j</span><br><span class="line">.text:004010D9                 mov     [ebp+var_4], 0FFFFFFFFh</span><br><span class="line">.text:004010E0                 jmp     short loc_4010E9</span><br><span class="line">.text:004010E2 ; ---------------------------------------------------------------------------</span><br><span class="line">.text:004010E2</span><br><span class="line">.text:004010E2 $LN7_0:                                 ; CODE XREF: test_func2(void)+58↑j</span><br><span class="line">.text:004010E2                                         ; DATA XREF: test_func2(void)+53↑o</span><br><span class="line">.text:004010E2                 mov     [ebp+var_4], 0FFFFFFFFh</span><br><span class="line">.text:004010E9</span><br><span class="line">.text:004010E9 loc_4010E9:                             ; CODE XREF: test_func2(void)+60↑j</span><br><span class="line">.text:004010E9                 mov     ecx, [ebp+var_C]</span><br><span class="line">.text:004010EC                 mov     large fs:0, ecx</span><br><span class="line">.text:004010F3                 pop     ecx</span><br><span class="line">.text:004010F4                 pop     edi</span><br><span class="line">.text:004010F5                 pop     esi</span><br><span class="line">.text:004010F6                 pop     ebx</span><br><span class="line">.text:004010F7                 mov     esp, ebp</span><br><span class="line">.text:004010F9                 pop     ebp</span><br><span class="line">.text:004010FA                 retn</span><br><span class="line">.text:004010FA ; ---------------------------------------------------------------------------</span><br><span class="line">.text:004010FB                 align 10h</span><br><span class="line">.text:004010FB ; &#125; // starts at 401080</span><br><span class="line">.text:004010FB ?test_func2@@YAXXZ endp</span><br></pre></td></tr></table></figure>
+
+<h2 id="eh-frame区域"><a href="#eh-frame区域" class="headerlink" title=".eh_frame区域"></a><code>.eh_frame</code>区域</h2><p>刚开始疑惑了好久为什么我g++编译出来的程序没有<code>.eh_frame</code>段。<br><del>后来发现，啊，只有ELF文件有这玩意啊，那煤逝了。</del></p>
+<p>对一个elf文件通过如下命令：<code>readelf -Wwf xxx</code>，可以读取其中关于 <code>.eh_frame</code> 的数据</p>
+<p>🕊️🕊️🕊️<br>后面的学了再来补充</p>
+
+    </div>
+
+    <div class="about">
+        <h1>关于本文</h1>
+        <p>本文作者 云之君, 许可由 <a
+                target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+    </div>
+
+    
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/" class="item">Blog</a>
+                
+                <a href="/CTF" class="item">CTF</a>
+                
+                <a href="/Learn" class="item">Learn</a>
+                
+                <a href="/Dairy" class="item">Dairy</a>
+                
+                <a href="/Alkaid" class="item">Alkaid</a>
+                
+                <a href="/friends" class="item">Friends</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/YunZh1Jun" class="item">GitHub</a>
+                
+                <a href="yunzh1jun@qq.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 云之君<br >驱动由 <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+    </body>
+</html>

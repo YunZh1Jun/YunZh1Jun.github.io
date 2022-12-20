@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>记录逆向起步之路 - 云之君&#39;s Blog</title>
+  
+    <link rel="shortcut icon" href="/theme-img/fav/favicon.png">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+<link rel="stylesheet" href="/css/waline.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+ 
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body data-color-scheme="auto">
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">云之君&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">主页</a>
+            
+            
+            <a class="nav-item" href="/friends">Friends</a>
+            
+            
+            
+            <a class="nav-item" href="/CTF">CTF</a>
+            
+            
+            
+            <a class="nav-item" href="/Learn">Learn</a>
+            
+            
+            
+            <a class="nav-item" href="/Dairy">Dairy</a>
+            
+            
+            
+            <a class="nav-item" href="/Alkaid">Alkaid</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/YunZh1Jun" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+        <div class="date" id="date">
+            
+            
+            
+            
+            <span>April</span>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <span>26,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">记录逆向起步之路</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>记录一下自己是怎么走上逆向这条路的。</p>
+<span id="more"></span>
+
+<p>今天是信号期中考试的日子。<br>昨天基本没怎么复习，只是看了一下速成网课的第一章，然后早上起来一直在摸鱼，稍微看了一点第二章，但是实际上也没看完。<br>去考场差点迟到了，考了一个小时左右开始对着十分抽象的题目发呆，然后肚子开始剧痛……</p>
+<p>好吧，这一定是为了给我考的这么拉一个合理的理由。</p>
+<p>信了。</p>
+<p>不过我还是硬坐到快下考，因为最后一个题二阶微分方程死活没化出来。我在那嗯化了半个多小时，快下考的时候才想起来这玩意是二阶的，得化二阶。<br>提前一分钟交卷走人，不用下考等老师收完所有卷子才能走，又充分利用了考试时间，我真是个小机灵鬼。<br>我思考了很久是去恰冒菜还是小酥肉，来安抚一下因为考试受伤的心灵，然后突然想起来我似乎还有一个叫做信安数基作业的东西还没交。</p>
+<p>打开学校的破APP一看，还有两小时截止。<br>行吧，看来这顿饭是吃不上了。</p>
+<p><del>写完</del>抄完信安数基作业，我已经没有丝毫出门的欲望，只想在宿舍躺尸了。<br>想起来昨天半夜睡不着，也不想复习，想起来RX在群里推Aidai👴的博客，就去看了一下，更笑得睡不着了，怎么会有这么有趣的人。</p>
+<p>Aidai👴说得真对：</p>
+<blockquote>
+<p>CTF可以让人暂时忘掉很多事情，比赛时👴只想把题扬了，不再去想那些晦气，走出比赛，👴，👴只想睡觉。</p>
+</blockquote>
+<p>而我，走出比赛和刷题，只想吃和睡。<br>确实感觉最爽的时候还是去年九月打moe，还有今年年初打抗疫CTF，虽然都是校内赛，但是难度适合我这种菜鸡，比较有参与感。</p>
+<p>回想起我是怎么走上这条路的，只能说是刻骨铭心。</p>
+<p>大一最初刚来学校，对我这种小地方（虽然我是西安人，陕西省会，但是我一直在那种类似于城乡结合部的地方上学，西安的繁华我基本没怎么感受过，去小寨的次数屈指可数）来的人，从前基本没摸过电脑，感觉自己根本跟不上周围人。<br>上大学之前，我家里只有一台台式电脑，而且是十年前的那种，还不能联网，唯一的作用就是小学每周末让我打打PVZ。<br>至于为什么上初中不打了，因为实在玩腻了，副本我已经刷了二三十遍了，还开了三个号玩了好几遍。那是我唯一能玩的了。</p>
+<p>其实那会我已经知道CTF了，也隐约知道学校有个协会是专门搞这玩意的，但是那会我还啥都不会，命令行都不知道是什么意思，C语言也根本没学过。<br>我不能理解为什么写C语言程序开头必须写<code>#include&lt;stdio.h&gt;</code>，不能理解为什么print后面要加个f，不能理解什么叫声明变量，不能理解为什么要写<code>int main()</code>，不能理解为什么<code>void swap(int a,int b)&#123;int t=a;a=b;b=t;&#125;</code>不能交换两个变量。<br>学的实在很痛苦，有时候觉得自己似乎不应该学这个。</p>
+<p>不过之后室友推荐看了浙大翁恺老师的C语言网课，感觉自己好像突然顿悟了，翻翻书就基本掌握语法了。之后C语言上机，看别人痛不欲生写程序的样子，我突然感觉自己似乎还是能学会这玩意的。</p>
+<p>之后在网上搜了很多，怎么入门CTF，各个方向都是干啥的。<br>看到介绍，最好入门的是web，最难学的是pwn。<br>于是我一拍脑袋：那必要学pwn啊！</p>
+<p>然后看看学pwn需要什么基础，嗯，需要逆向基础……</p>
+<blockquote>
+<p>☁️：？？？逆向不是一个方向吗？？</p>
+</blockquote>
+<p>行吧，那先学逆向吧。<br>然后学着学着，发现逆向也挺有意思的，结果就把自己最初学逆向的目的给忘了。</p>
+<p>又去看逆向需要什么基础，嗯，要学汇编。<br>我就抱着王爽的《汇编语言》啃，看一半忘一半，忘了再回头重新看，翻来覆去看了好几遍，浪费了很久时间，现在汇编功底也还是拉的一批。</p>
+<p>然后又去看《逆向工程核心原理》，按照书上的指引下OD。</p>
+<blockquote>
+<p>但那时年轻懵懂的☁️，并不知道OD只能调32位程序。</p>
+</blockquote>
+<p>看到调试hello world的部分，我十分高兴，打开我的Dev，行云流水般敲出了hello world，编译运行一气呵成。<br>我打开OD，握着鼠标的手微微颤抖，似乎只要把这个程序拖入OD，我就能迈入逆向的大门。</p>
+<p>但遗憾的是，它拖不进去。</p>
+<p><img src="/img/code/pht/od_error.jpg"></p>
+<p>那一天，我对着报错搜了很久，重装了十几次OD，下了能找到的所有版本的OD，直到精疲力竭磨光所有耐心。<br>那天晚上关了电脑，我满脑子只有一个念头：也许我真的不适合学这玩意吧。</p>
+<p>我很长一段时间没有再碰OD，只是偶尔还会翻一翻《汇编语言》，想着也许以后会用到。</p>
+<p>后来，快到网安实验班选拔考试的日子了，看着墙上贴的已经落灰的三个目标的第一个：考进网安实验班，我心里五味杂陈。因为这个选拔考试，一半是考CTF。</p>
+<p>我又去搜逆向入门，这次我决定按照别人的建议先刷题。<br>不过我去的平台是bugku，当时我并不知道，bugku上面的题目难度是随机分布的。</p>
+<p>我按照题解的指引，先去找IDA。<br>搜了一通，只有官网的IDA，我是好孩子，当然要从官网下载。</p>
+<p>安装完成，我怀着激动的心情把程序拖进IDA，然后按F5，没有反应。<br>我又找了好几篇WP，开篇都是摁F5，但是我把F5摁烂了IDA也没有反应。</p>
+<p>于是我又在其他WP里找到了shift+f12可以查看字符串，试了一下这个可以，然后用这个功能找到了第一个flag。<br>于是我的逆向水平有了一点点改变：按shift+f12，查看字符串，再多的就不会了。</p>
+<p>经过上一次被OD折磨的经历，这次我对失败已经看淡很多了。<br>虽然血压依旧拉满，至少不会再想砸电脑了。</p>
+<p>逆向不行，我得想点别的办法。于是又去学了一些古典密码，编码什么的，这种东西倒是没什么技术含量，搜集一些解密网站就行，或者直接现场搜都可以。</p>
+<p>我的CTF水平：只会一些简单的编码。<br>这样，我就上考场了（网安实验班选拔考试）。</p>
+<p>这次考试老师大发慈悲，给了几道编程题。不过我还是先下了逆向的附件，确定没办法直接搜到flag之后，我默默删了附件，劝自己不要想太多，随便考考就好。</p>
+<p>编程题还是挺白给的，难度还不如C语言期末考试第二题。我慢慢悠悠写完编程，然后去找找看有没有我能写的题。</p>
+<p>嗯，找到一个题，给了一些数字，提示是“我只是用一字节去异或隐藏了信息”。<br>一字节异或，应该不难吧，实在不行可以爆破。<br>但是这个题过去两个多小时还是0解，我心里有点害怕。<br>虽然我当时已经上了一学期的python课，不过显然我还是8会用这玩意，所以我还是慢慢悠悠用C写。<br>刚开始我是从0写到100，异或结果全部按字符打出来，但是显然没有flag。<br>我当时还8太能理解异或，又去搜异或的性质。后来突然想到，如果这串数字跟某个数字异或之后的结果是flag，那么这串数字开头四个跟flag异或应该就是我要找的数字吧。</p>
+<p>好吧，就是这么简单的逻辑，我当时并不能理解。<br>我小心翼翼地写脚本，生怕出问题，然后拿到那个数字，是233。<br>我至今都记得那个flag，内容是my favorite number is 233。<br>就这样，我复制了flag返回题目页面一看，还是0解，我当时手都在抖。<br>交了，拿到一血。</p>
+<p>然后又做了一个word题，去搜了很多，按照各种总结的套路挨个试。<br>最后发现里面是压缩包，藏了一些文件。一个一个翻，终于翻到有一个文件下面有一行像base64的东西，拿去解密，成了。</p>
+<p>然后又看了一些题，不过感觉没有能做的了。<br>看了一下排名，14名，离下考还有一个小时，我已经饿的不行，就润了。</p>
+<p>走出考场，虽然感觉进实验班应该稳了，但还是有些心情复杂，也许自己真的不适合学这玩意吧。<br>但是为什么更想学了呢。</p>
+<p>后来进了实验班，认识了Noir。我说想进协会，他叫我去加会长。<br>那时候会长还是RX，不过当时已经快期末考试了，RX简单问了我一些情况，然后说快期末考试了，要不等考完试再说。好吧，确实，我只能先放下此事准备期末考试。</p>
+<p>到了暑假，可能rx已经忘了这事，我也不好意思再问。知道协会每年暑假到九月会办moectf，而这个比赛正是作为协会招新依据，我就准备打一打再看。</p>
+<p>然而彼时我的水平并没有什么长进，做了一道只需要hex就能拿到flag的题，就8会了。<br>然后暑假整个摆烂，等开学，彻底放弃了。</p>
+<p>快开学的时候，dbt加了我好友，上来就是一顿输出：</p>
+<p>&lt;img src=/img/code/pht/chat1.png)</p>
+<p>然后他建议我去做做密码，我就去试了试，还真做出来一两道，确实是学了就能做出来的。<br>我非常感动，似乎自己也还是能学会的。</p>
+<p>我继续做密码，dbt有时会告诉我考点然后让我自己去学。好在我数学功底还算不太拉，勉勉强强能看懂，然后慢慢做题。</p>
+<p>不过我还是没有放弃逆向。<br>某一天，我又把树师傅写的逆向工程入门指北下载下来认真读了一遍。<br>这一次树师傅在最后放了一个下载东西的链接。我点进那个链接，发现了新世界的大门。</p>
+<blockquote>
+<p>那一天，☁️下了能F5的IDA。<br>那一天，☁️终于走上了逆向这条不归路。</p>
+</blockquote>
+<p>这段时间可能是上大学以来最快乐的日子了。<br>CTF确实能让人暂时忘记很多，只用想着怎么把题扬了。</p>
+<p>有dbt和树师傅指引，进步快了许多，也没有以前那么折磨了。<br>我突然觉得，也许我还是能学会这玩意的吧。</p>
+<p>&lt;img src=/img/code/pht/chat2.jpg)</p>
+<p>之后顺理成章地进入协会，继续学习。<br>期间也是自闭过，emo过，不过比起我最开始的起步之路都还是好了不少。<br>有过那样的经历，让我放弃恐怕都难了。</p>
+
+    </div>
+
+    <div class="about">
+        <h1>关于本文</h1>
+        <p>本文作者 云之君, 许可由 <a
+                target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+    </div>
+
+    
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/" class="item">Blog</a>
+                
+                <a href="/CTF" class="item">CTF</a>
+                
+                <a href="/Learn" class="item">Learn</a>
+                
+                <a href="/Dairy" class="item">Dairy</a>
+                
+                <a href="/Alkaid" class="item">Alkaid</a>
+                
+                <a href="/friends" class="item">Friends</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/YunZh1Jun" class="item">GitHub</a>
+                
+                <a href="yunzh1jun@qq.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2022 云之君<br >驱动由 <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+    </body>
+</html>
