@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>图神经网络代码实现 - 云之君&#39;s Blog</title>
+  
+    <link rel="shortcut icon" href="/img/fav/favicon.png">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+<link rel="stylesheet" href="/css/waline.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+ 
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body data-color-scheme="auto">
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">云之君&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">主页</a>
+            
+            
+            <a class="nav-item" href="/friends">Friends</a>
+            
+            
+            
+            <a class="nav-item" href="/CTF">CTF</a>
+            
+            
+            
+            <a class="nav-item" href="/Learn">Learn</a>
+            
+            
+            
+            <a class="nav-item" href="/Dairy">Dairy</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/YunZh1Jun" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+        <div class="date" id="date">
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <span>December</span>
+            
+            <span>2,</span>
+            <span>2022</span>
+        </div>
+        
+
+        <h2 class="title">图神经网络代码实现</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <h2 id="安装工具"><a href="#安装工具" class="headerlink" title="安装工具"></a>安装工具</h2><p>不得不说本人是把能踩的坑都踩了一遍。</p>
+<h3 id="有啥坑？"><a href="#有啥坑？" class="headerlink" title="有啥坑？"></a>有啥坑？</h3><p>首先是CUDA版本不够，去更新CUDA，按照官网教程就彳亍，没什么好说的，就8记了，注意C盘空间要留大。<br>我第一次安装的时候就是C盘空间不够，后来只能重装系统清理，把D盘空间给C盘分了200个G，顺便清了好多垃圾 &#x3D; &#x3D;</p>
+<p>如果直接去搜怎么安装PyTorch，大家会告诉你去[PyTorch官网]下载PyTorch，选好自己的版本，用python pip下，我得到的命令是<br><code>pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116</code>，这样装的PyTorch版本是1.13.0</p>
+<p>下好之后，装pytorch-geometric，按照教程换好命令之后死活下不下来，最开始是pip报错：<code>error: subprocess-exited-with-error</code>。<br>根据报错加一个参数<code>--use-pep517</code>，然后又报错HTTP 403，搜了一下发现是没有权限访问。<br>我干脆打开<a target="_blank" rel="noopener" href="https://pytorch-geometric.com/">pytorch-geometric</a>，进wheel，发现里面根！本！没！有1.13.0版本的！！！</p>
+<p>之前装ruby也是这个问题 &#x3D; &#x3D;</p>
+<h3 id="安装PyTorch"><a href="#安装PyTorch" class="headerlink" title="安装PyTorch"></a>安装PyTorch</h3><p>去PyTorch的github找怎么安装旧版本PyTorch（我直接手动在python包里删新版本了，懒得找卸载命令），发现是在<a target="_blank" rel="noopener" href="https://pytorch.org/get-started/previous-versions/%EF%BC%8C%E6%89%BE%E5%88%B0Windows">https://pytorch.org/get-started/previous-versions/，找到Windows</a> CUDA11.6的安装命令是<code>conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.6 -c pytorch -c conda-forge</code></p>
+<p><code>python -c &quot;import torch; print(torch.__version__)&quot;</code>测一下，是1.12.1没错，泪目</p>
+<h3 id="安装pytorch-geometric"><a href="#安装pytorch-geometric" class="headerlink" title="安装pytorch-geometric"></a>安装pytorch-geometric</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pip install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.12.1+cu116.html</span><br><span class="line">pip install torch-sparse -f https://pytorch-geometric.com/whl/torch-1.12.1+cu116.html</span><br><span class="line">pip install torch-cluster -f https://pytorch-geometric.com/whl/torch-1.12.1+cu116.html</span><br><span class="line">pip install torch-spline-conv -f https://pytorch-geometric.com/whl/torch-1.12.1+cu116.html</span><br><span class="line">pip install torch-geometric</span><br></pre></td></tr></table></figure>
+
+<p>终于success了，泪目</p>
+<p>测试一下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"><span class="keyword">from</span> torch_geometric.data <span class="keyword">import</span> Data</span><br><span class="line">edge_index = torch.tensor([[<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">                           [<span class="number">1</span>, <span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>]], dtype=torch.long)</span><br><span class="line">x = torch.tensor([[-<span class="number">1</span>], [<span class="number">0</span>], [<span class="number">1</span>]], dtype=torch.<span class="built_in">float</span>)</span><br><span class="line">data = Data(x=x, edge_index=edge_index)</span><br><span class="line"><span class="built_in">print</span>(data)</span><br></pre></td></tr></table></figure>
+
+<p>输出<code>Data(edge_index=[2, 4], x=[3, 1])</code><br>bingo~</p>
+<p>$\hat A&#x3D; \tilde D^{-1&#x2F;2} \tilde A \tilde D^{-1&#x2F;2}$</p>
+<h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><p><a target="_blank" rel="noopener" href="https://pytorch-geometric.readthedocs.io/en/latest/notes/introduction.html">官方教程</a></p>
+<h3 id="图数据处理"><a href="#图数据处理" class="headerlink" title="图数据处理"></a>图数据处理</h3><p>图被用来训练一对对象（点）之间的关系（边）。PyG中一个单独的图是用实例<code>torch_geometric.data.Data</code>描述的，它默认有以下属性：</p>
+<ul>
+<li><code>data.x</code>：节点特征矩阵，形如<code>[num_nodes, num_node_features]</code></li>
+<li><code>data.edge_index</code>：图的连接，COO格式，形如<code>[2, num_edges]</code>，类型为<code>torch.long</code></li>
+<li><code>data.edge_attr</code>：边缘特征矩阵，形如<code>[num_edges, num_edge_features]</code></li>
+<li><code>data.y</code>：训练目标，形状任意，节点级或图形级均可。</li>
+<li><code>data.pos</code>：形如<code>[num_nodes, num_dimensions]</code>的节点位置矩阵。</li>
+</ul>
+<blockquote>
+<h4 id="COO"><a href="#COO" class="headerlink" title="COO"></a>COO</h4><p>这是一种存储稀疏矩阵的方式。将图写成邻接矩阵的形式后，用三组数据来存储图，这三组数据分别为行、列、权，此处只需要两组数据，即行、列。</p>
+</blockquote>
+<h3 id="GCN"><a href="#GCN" class="headerlink" title="GCN"></a>GCN</h3><h4 id="model-py"><a href="#model-py" class="headerlink" title="model.py"></a>model.py</h4><p>双层GCN公式：<br>$Z&#x3D;f(X,A)&#x3D;softmax(\hat A ReLU(\hat AXW^{(0)})W^{(1)})$</p>
+<p>图卷积：forward计算了一个$\hat AXW^{(0)}$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GraphConvolution</span>(<span class="title class_ inherited__">Module</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, in_features, out_features, bias=<span class="literal">True</span></span>):</span><br><span class="line">        <span class="built_in">super</span>(GraphConvolution, self).__init__()</span><br><span class="line">        self.in_features = in_features</span><br><span class="line">        self.out_features = out_features  <span class="comment"># 注意：torch.FloatTensor生成的元素数值非常接近0;torch.Long生成的元素数值非常大</span></span><br><span class="line">        self.weight = Parameter(torch.FloatTensor(in_features, out_features))</span><br><span class="line">        <span class="comment"># self.weight2 = Parameter(torch.FloatTensor(in_features, out_features))</span></span><br><span class="line">        <span class="keyword">if</span> bias:</span><br><span class="line">            self.bias = Parameter(torch.FloatTensor(out_features))</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            self.register_parameter(<span class="string">&quot;bias&quot;</span>, <span class="literal">None</span>)</span><br><span class="line">        self.reset_parameters()  <span class="comment"># 此处表示生成变量后(即上面的语句运行后),将会进行变量初始化(即执行该语句)</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">reset_parameters</span>(<span class="params">self</span>):  <span class="comment"># 经测试,重写可覆盖</span></span><br><span class="line">        stdv = <span class="number">1</span>/math.sqrt(self.weight.size(<span class="number">1</span>))</span><br><span class="line">        self.weight.data.uniform_(-stdv, stdv)</span><br><span class="line">        <span class="comment"># self.weight2.data.uniform_(-stdv, stdv)</span></span><br><span class="line">        <span class="keyword">if</span> self.bias <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            self.bias.data.uniform_(-stdv, stdv)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, <span class="built_in">input</span>, adj</span>):</span><br><span class="line">        <span class="comment"># torch.mm(a, b)是矩阵a和b矩阵相乘</span></span><br><span class="line">        <span class="comment"># torch.mul(a, b)是矩阵a和b对应位相乘</span></span><br><span class="line">        support = torch.mm(adj, <span class="built_in">input</span>)    <span class="comment"># 返回的adj为dense A*input</span></span><br><span class="line">        output = torch.mm(support, self.weight)      <span class="comment"># A*input*W</span></span><br><span class="line">        <span class="keyword">if</span> self.bias <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:         <span class="comment"># adj是稀疏矩阵</span></span><br><span class="line">            <span class="keyword">return</span> output +self.bias</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> output</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__repr__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="keyword">return</span> self.__class__.__name__+<span class="string">&quot;(&quot;</span>+<span class="built_in">str</span>(self.in_features)+<span class="string">&quot;-&gt;&quot;</span>+<span class="built_in">str</span>(self.out_features)+<span class="string">&quot;)&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>双层GCN：下面的代码计算$softmax(\hat A ReLU(\hat AXW^{(0)})W^{(1)})$，其中$\hat AXW^{(0)}$是第一层图卷积（gc1），把它当成第二层的输入进行第二次图卷积，log_softmax之后得到输出。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">GCN</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, nfeat, nhid, nclass, dropout</span>):</span><br><span class="line">        <span class="built_in">super</span>(GCN, self).__init__()</span><br><span class="line">        self.gc1 = GraphConvolution(nfeat, nhid)</span><br><span class="line">        self.gc2 = GraphConvolution(nhid, nclass)</span><br><span class="line">        self.dropout = dropout</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x, adj</span>):</span><br><span class="line">        x = F.relu(self.gc1(x, adj))</span><br><span class="line">        x = F.dropout(x, self.dropout, training=self.training)</span><br><span class="line">        x = self.gc2(x, adj)</span><br><span class="line">        <span class="keyword">return</span> F.log_softmax(x, dim=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="load-data-py"><a href="#load-data-py" class="headerlink" title="load_data.py"></a>load_data.py</h4><h5 id="one-hot编码"><a href="#one-hot编码" class="headerlink" title="one-hot编码"></a>one-hot编码</h5><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/146117421">什么是one-hot编码</a><br>简而言之，能够将现实生活中的变量类别转为机器学习算法易于利用的矩阵形式。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">先将所有由字符串表示的标签数组用set保存，set的重要特征就是元素没有重复，</span></span><br><span class="line"><span class="string">因此表示成set后可以直接得到所有标签的总数，随后为每个标签分配一个编号，创建一个单位矩阵，</span></span><br><span class="line"><span class="string">单位矩阵的每一行对应一个one-hot向量，也就是np.identity(len(classes))[i, :]，</span></span><br><span class="line"><span class="string">再将每个数据对应的标签表示成的one-hot向量，类型为numpy数组</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encode_onehot</span>(<span class="params">labels</span>):</span><br><span class="line">    classes = <span class="built_in">sorted</span>(<span class="built_in">list</span>(<span class="built_in">set</span>(labels))) <span class="comment"># 去重</span></span><br><span class="line">    classes_dict = &#123;c:np.identity(<span class="built_in">len</span>(classes))[i, :] <span class="keyword">for</span> i, c <span class="keyword">in</span> <span class="built_in">enumerate</span>(classes)&#125;</span><br><span class="line">    labels_onehot = np.array(<span class="built_in">list</span>(<span class="built_in">map</span>(classes_dict.get, labels)), dtype=np.int32) <span class="comment"># 按照label值排序，构建one-hot向量</span></span><br><span class="line">    <span class="keyword">return</span> labels_onehot</span><br></pre></td></tr></table></figure>
+
+<h5 id="加载数据"><a href="#加载数据" class="headerlink" title="加载数据"></a>加载数据</h5><p>读取文件cora.content。<br>genfromtxt运行两个主循环：第一个循环以字符串序列转换文件的每一行。第二个循环将（按照delimiter划分行得到的字符串（默认情况下，任何连续的空格充当分隔符））每个字符串转换为适当的数据类型。<br>sp.csr_matrix对数据进行压缩处理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">load_data</span>(<span class="params">path=<span class="string">&quot;./cora/&quot;</span>, dataset=<span class="string">&quot;cora&quot;</span></span>):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Loading &#123;&#125; dataset...&quot;</span>.<span class="built_in">format</span>(dataset))</span><br><span class="line">    idx_features_labels = np.genfromtxt(<span class="string">&quot;&#123;&#125;&#123;&#125;.content&quot;</span>.<span class="built_in">format</span>(path, dataset), dtype=np.dtype(<span class="built_in">str</span>))</span><br><span class="line">    features = sp.csr_matrix(idx_features_labels[:, <span class="number">1</span>:-<span class="number">1</span>], dtype=np.float32)</span><br><span class="line">    labels = encode_onehot(idx_features_labels[:, -<span class="number">1</span>])</span><br><span class="line">    <span class="comment"># 这里的label为onthot格式，如第一类代表[1,0,0,0,0,0,0]</span></span><br><span class="line">    <span class="comment"># content file的每一行的格式为 ： &lt;paper_id&gt; &lt;word_attributes&gt;+ &lt;class_label&gt;</span></span><br><span class="line">    <span class="comment">#    分别对应 0, 1:-1, -1</span></span><br><span class="line">    <span class="comment"># feature为第二列到倒数第二列，labels为最后一列</span></span><br></pre></td></tr></table></figure>
+<p>其中<code>[:,1:-1]</code>表示取矩阵第2列到倒数第2列，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: <span class="keyword">import</span> numpy</span><br><span class="line"></span><br><span class="line">In [<span class="number">2</span>]: matrix = [[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>], [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>]]</span><br><span class="line"></span><br><span class="line">In [<span class="number">3</span>]: matrix = numpy.array(matrix)</span><br><span class="line"></span><br><span class="line">In [<span class="number">4</span>]: matrix[:,<span class="number">1</span>]</span><br><span class="line">Out[<span class="number">4</span>]: array([<span class="number">1</span>, <span class="number">5</span>])</span><br><span class="line"></span><br><span class="line">In [<span class="number">5</span>]: matrix[:,<span class="number">1</span>:-<span class="number">1</span>]</span><br><span class="line">Out[<span class="number">5</span>]:</span><br><span class="line">array([[<span class="number">1</span>, <span class="number">2</span>],</span><br><span class="line">       [<span class="number">5</span>, <span class="number">6</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>取矩阵第一列建立图。<br>由于文件中节点并非是按顺序排列的，因此建立一个编号为0-(node_size-1)的哈希表idx_map，idx_map哈希表中每一项为id: number，即节点id对应的编号为number。如</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">6</span>]: idx = [<span class="string">&#x27;a&#x27;</span>,<span class="string">&#x27;b&#x27;</span>,<span class="string">&#x27;c&#x27;</span>]</span><br><span class="line"></span><br><span class="line">In [<span class="number">7</span>]: idx_map = &#123;j: i <span class="keyword">for</span> i, j <span class="keyword">in</span> <span class="built_in">enumerate</span>(idx)&#125;</span><br><span class="line"></span><br><span class="line">In [<span class="number">8</span>]: idx_map</span><br><span class="line">Out[<span class="number">8</span>]: &#123;<span class="string">&#x27;a&#x27;</span>: <span class="number">0</span>, <span class="string">&#x27;b&#x27;</span>: <span class="number">1</span>, <span class="string">&#x27;c&#x27;</span>: <span class="number">2</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">idx = np.array(idx_features_labels[:, <span class="number">0</span>], dtype=np.int32)</span><br><span class="line">idx_map = &#123;j:i <span class="keyword">for</span> i, j <span class="keyword">in</span> <span class="built_in">enumerate</span>(idx)&#125;</span><br></pre></td></tr></table></figure>
+
+<p><del>看不懂了</del></p>
+<p>读取文件cora.cities<br>edges_unordered为直接从边表文件中直接读取的结果，是一个(edge_num, 2)的数组，每一行表示一条边两个端点的idx (被引用论文,引用论文)。<br>边的edges_unordered中存储的是端点id，要将每一项的id换成编号。<br>在idx_map中以idx作为键查找得到对应节点的编号，reshape成与edges_unordered形状一样的数组。<br>获得邻接矩阵，sp.coo_matrix((data,(row,col)),shape) 返回一个压缩后的matrix<br>根据coo矩阵性质，这一段的作用就是，网络有多少条边，邻接矩阵就有多少个1，<br>所以先创建一个长度为edge_num的全1数组，每个1的填充位置就是一条边中两个端点的编号，<br>即edges[:, 0], edges[:, 1]，矩阵的形状为(node_size, node_size)</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">edges_unordered = np.genfromtxt(<span class="string">&quot;&#123;&#125;&#123;&#125;.cites&quot;</span>.<span class="built_in">format</span>(path, dataset), dtype=np.int32)</span><br><span class="line"> edges = np.array(<span class="built_in">list</span>(<span class="built_in">map</span>(idx_map.get, edges_unordered.flatten())), dtype=np.int32).reshape(edges_unordered.shape)</span><br><span class="line"> adj = sp.coo_matrix((np.ones(edges.shape[<span class="number">0</span>]), (edges[:, <span class="number">0</span>], edges[:, <span class="number">1</span>])), shape=(labels.shape[<span class="number">0</span>], labels.shape[<span class="number">0</span>]), dtype=np.float32)</span><br></pre></td></tr></table></figure>
+
+<p>构建对称邻接矩阵（把构建的有向图邻接矩阵转换为无向图邻接矩阵）。<br>对feature进行规范化。<br>normalize($\tilde A$)：$\tilde D^{-1&#x2F;2} \tilde A \tilde D^{-1&#x2F;2}$<br><code>adj + sp.eye(adj.shape[0])</code>：$\tilde A &#x3D; A + I$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">adj = adj + adj.T.multiply(adj.T&gt;adj) - adj.multiply(adj.T&gt;adj) <span class="comment"># 最后减的那一项目的是去除负边</span></span><br><span class="line">features = normalize_features(features)</span><br><span class="line">adj = normalize_adj(adj + sp.eye(adj.shape[<span class="number">0</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>分别构建训练集、验证集、测试集的范围</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">idx_train = <span class="built_in">range</span>(<span class="number">140</span>)</span><br><span class="line">idx_val = <span class="built_in">range</span>(<span class="number">200</span>, <span class="number">500</span>)</span><br><span class="line">idx_test = <span class="built_in">range</span>(<span class="number">500</span>, <span class="number">1500</span>)</span><br></pre></td></tr></table></figure>
+<p><code>features.todense()</code>：将稀疏矩阵转为稠密矩阵（即将压缩的矩阵转为未压缩的矩阵），类型是matrix</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adj = torch.FloatTensor(np.array(adj.todense()))</span><br><span class="line">features = torch.FloatTensor(np.array(features.todense()))</span><br></pre></td></tr></table></figure>
+
+<p><code>np.where(labels)[1]</code>取labels中非零元素的列索引构成一维元组，此时labels变为一维的LongTensor，每个元素为对应<code>&lt;class_label&gt;</code>在onehot后的索引。<br>邻接矩阵转为tensor处理。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">labels = torch.LongTensor(np.where(labels)[<span class="number">1</span>])</span><br><span class="line">idx_train = torch.LongTensor(idx_train)</span><br><span class="line">idx_val = torch.LongTensor(idx_val)</span><br><span class="line">idx_test = torch.LongTensor(idx_test)</span><br><span class="line"><span class="keyword">return</span> adj, features, labels, idx_train, idx_val, idx_test</span><br></pre></td></tr></table></figure>
+
+<p>将矩阵进行行规范化，即每个元素除以这一行的和</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">normalize_features</span>(<span class="params">mx</span>):</span><br><span class="line">    rowsum = np.array(mx.<span class="built_in">sum</span>(<span class="number">1</span>))  <span class="comment"># 求每行和</span></span><br><span class="line">    r_inv = np.power(rowsum, -<span class="number">1</span>).flatten()  <span class="comment"># 获得每行和对应倒数构成的一维np数组</span></span><br><span class="line">    r_inv[np.isinf(r_inv)] = <span class="number">0.</span>  <span class="comment"># 将分母为零（即行和为0）的数据设为0</span></span><br><span class="line">    r_mat_inv = sp.diags(r_inv)  <span class="comment"># 以r_inv为对角线上数据绘制对角矩阵</span></span><br><span class="line">    mx = r_mat_inv.dot(mx) <span class="comment"># 注意.dot为矩阵乘法,不是对应元素相乘 </span></span><br><span class="line">    <span class="comment"># 对输入矩阵进行按行规范化</span></span><br><span class="line">    <span class="keyword">return</span> mx</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">sparse_mx_to_torch_sparse_tensor</span>(<span class="params">sparse_mx</span>):</span><br><span class="line">    sparse_mx = sparse_mx.tocoo().astype(np.float32) <span class="comment">#矩阵转为COO格式</span></span><br><span class="line">    indices = torch.from_numpy(np.vstack((sparse_mx.row, sparse_mx.col)).astype(np.int64))   <span class="comment"># np.vstack(a,b)将a和b按行堆叠</span></span><br><span class="line">    values = torch.from_numpy(sparse_mx.data)  <span class="comment"># numpy中的ndarray转化成pytorch中的tensor : torch.from_numpy()</span></span><br><span class="line">    shape = sparse_mx.shape</span><br><span class="line">    <span class="keyword">return</span> torch.sparse.FloatTensor(indices, values, shape)</span><br></pre></td></tr></table></figure>
+
+<p><del>后面看不动了</del></p>
+
+    </div>
+
+    <div class="about">
+        <h1>关于本文</h1>
+        <p>本文作者 云之君, 许可由 <a
+                target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+    </div>
+
+    
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/" class="item">Blog</a>
+                
+                <a href="/CTF" class="item">CTF</a>
+                
+                <a href="/Learn" class="item">Learn</a>
+                
+                <a href="/Dairy" class="item">Dairy</a>
+                
+                <a href="/friends" class="item">Friends</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/YunZh1Jun" class="item">GitHub</a>
+                
+                <a href="mailto:yunzh1jun@qq.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2023 云之君<br >驱动由 <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+    </body>
+</html>
