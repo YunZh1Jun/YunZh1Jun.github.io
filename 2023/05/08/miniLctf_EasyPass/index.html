@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>miniLctf EasyPass出题记录 - 云之君&#39;s Blog</title>
+  
+    <link rel="shortcut icon" href="/img/fav/favicon.png">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+<link rel="stylesheet" href="/css/waline.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+ 
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body data-color-scheme="auto">
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">云之君&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">主页</a>
+            
+            
+            <a class="nav-item" href="/friends">Friends</a>
+            
+            
+            
+            <a class="nav-item" href="/CTF">CTF</a>
+            
+            
+            
+            <a class="nav-item" href="/Learn">Learn</a>
+            
+            
+            
+            <a class="nav-item" href="/Diary">Diary</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/YunZh1Jun" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+        <div class="date" id="date">
+            
+            
+            
+            
+            
+            <span>May</span>
+            
+            
+            
+            
+            
+            
+            
+            
+            <span>8,</span>
+            <span>2023</span>
+        </div>
+        
+
+        <h2 class="title">miniLctf EasyPass出题记录</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>额……实在不知道出什么题，正好最近在看LLVM Pass，就顺手糊了一个题（雾</p>
+<p>Usage.md里写了使用方法，实际上就是运行了一个LLVM Pass，处理的ir是main.bc。<br>主逻辑实际上在EasyPass.so里，main.bc里是一些有用的数据。</p>
+<p>题目使用一个LLVM Pass处理了作为ir的main.bc，加密逻辑使用与非虚拟机，通过<code>llvm::Value::getName()</code>获取ir里的函数名作为opcode，一个函数名加密一位flag，加密逻辑为前半段异或后半段，后半段异或0xff。<br>想要知道此函数获取了什么数据作为opcode，可以查询LLVM的文档或下载相应版本的LLVM进行调试。<br>至于如何从main.bc中获取函数名，可以将main.bc编译后获取符号表，按以下方式操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ llc main.bc -o main.s</span><br><span class="line">$ clang main.s</span><br><span class="line">$ readelf a.out -s</span><br></pre></td></tr></table></figure>
+
+<p>或者直接去看main.bc的hex，在偏移为0x1e9e的地方也可获得函数名。<br>或者也可以调试获取opcode。</p>
+<p>由于笨人出题的时候没看LLVM Pass的版本直接出了，导致我出好之后才发现自己的LLVM Pass竟然是10.0.0的远古版本……<br>而且更诡异的是，新版LLVM Pass竟然不兼容旧版本，所以这个pass是没办法在新版LLVM Pass上跑的……<br>而且更更诡异的是，后来新的LLVM发行版都没有Ubuntu的，所以笨人直接下的release只有10.0.0的远古版本……………………<br><del>总而言之都是LLVM的错！</del></p>
+<p>不过其实解题很简单，如果不知道pass里对ir的处理函数做了什么，安装一个10.0.0的LLVM调试一下这个pass就好</p>
+<p><del>解题部分抄自dr3的wp</del><br>这可不是我偷懒，是他答应我写的！</p>
+<h2 id="如何解题"><a href="#如何解题" class="headerlink" title="如何解题"></a>如何解题</h2><h3 id="运行尝试"><a href="#运行尝试" class="headerlink" title="运行尝试"></a>运行尝试</h3><p>由于出题人的高超技巧，使得这个pass只能在非常稳（yuan）定（gu）的llvm 10上面运行。然而，由于我的kali最旧最旧的版本也是13，而奇怪的是这个老版本压根就没法运行</p>
+<p>反正我是不懂得，没办法，装呗</p>
+<p><a target="_blank" rel="noopener" href="https://packages.ubuntu.com/focal/llvm-10">https://packages.ubuntu.com/focal/llvm-10</a></p>
+<p>直接用这个装就行，带dpkg的都可以</p>
+<p><img src="/./img/code/chall_photo/img_1.png" alt="img_1.png"></p>
+<h3 id="静态分析"><a href="#静态分析" class="headerlink" title="静态分析"></a>静态分析</h3><p>进入load函数，可以发现注册了一个pass</p>
+<p>最后的pass传到了sub_2660</p>
+<p>打开发现函数很大，没法直接反编译</p>
+<p>函数的头部全是函数调用。但是仔细看可以发现每个函数都只做了<br>一件事，就是return了一个1</p>
+<p>所以其实就是干扰的花指令，全部nop掉就可以</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0x2673</span>,<span class="number">0x6C9B</span>):</span><br><span class="line">    patch_byte(i,<span class="number">0x90</span>)</span><br></pre></td></tr></table></figure>
+<p>之后就可以f5</p>
+<p><img src="/./img/code/chall_photo/img_2.png" alt="img_2.png"></p>
+<p>首先是通过getName找到了16个string放到了数组里</p>
+<p><img src="/./img/code/chall_photo/img_3.png" alt="img_3.png"><br>之后进入一个函数对数组进行加密</p>
+<p><img src="/./img/code/chall_photo/img_4.png" alt="img_4.png"><br>最后从数组的最后几位进行对比</p>
+<h3 id="getName"><a href="#getName" class="headerlink" title="getName"></a>getName</h3><p>其实开始不知道得到了什么，不过好在配好了环境可以调试</p>
+<p>虽然是llvm加载的so，但是配置好了输入的参数就可以直接进行调试<br>就像下面这张图一样<br><img src="/./img/code/chall_photo/img_5.png" alt="img_5.png"><br>之后其实可以发现，那个循环就是获得了函数的名称。</p>
+<p>因此，加密之后应该是固定的。只需要把加密算法抠出来，之后直接初始化flag，然后用z3跑一下就能出来了</p>
+<p>还有一点就是提取数据的时候注意要小端序</p>
+<p>以下是完整脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> z3 <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">str0 = [<span class="number">0x01</span>, <span class="number">0x61</span>, <span class="number">0x61</span>, <span class="number">0x43</span>, <span class="number">0x43</span>, <span class="number">0x7A</span>, <span class="number">0x43</span>, <span class="number">0x7A</span>, <span class="number">0x7A</span>, <span class="number">0x4D</span>,</span><br><span class="line">        <span class="number">0x4D</span>, <span class="number">0x61</span>, <span class="number">0x4D</span>, <span class="number">0x43</span>, <span class="number">0x4D</span>, <span class="number">0x61</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,</span><br><span class="line">        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,</span><br><span class="line">        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,</span><br><span class="line">        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,</span><br><span class="line">        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,</span><br><span class="line">        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,</span><br><span class="line">        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,</span><br><span class="line">        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,</span><br><span class="line">        <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0xFF</span>, <span class="number">0x00</span>, <span class="number">0x79</span>, <span class="number">0x6F</span>, <span class="number">0x75</span>,</span><br><span class="line">        <span class="number">0x5F</span>, <span class="number">0x73</span>, <span class="number">0x68</span>, <span class="number">0x6F</span>, <span class="number">0x75</span>, <span class="number">0x6C</span>, <span class="number">0x64</span>, <span class="number">0x5F</span>, <span class="number">0x70</span>, <span class="number">0x61</span>,</span><br><span class="line">        <span class="number">0x74</span>, <span class="number">0x63</span>, <span class="number">0x68</span>, <span class="number">0x5F</span>, <span class="number">0x74</span>, <span class="number">0x68</span>, <span class="number">0x69</span>, <span class="number">0x73</span>, <span class="number">0x5F</span>, <span class="number">0x66</span>,</span><br><span class="line">        <span class="number">0x6C</span>, <span class="number">0x61</span>, <span class="number">0x67</span>]</span><br><span class="line"></span><br><span class="line">text1 = [BitVec(<span class="string">f&quot;<span class="subst">&#123;i&#125;</span>&quot;</span>, <span class="number">8</span>) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">124</span> - <span class="number">97</span>)]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">97</span>, <span class="number">123</span>):</span><br><span class="line">    str0[i] = text1[i - <span class="number">97</span>]</span><br><span class="line">str0[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">names = [<span class="string">&quot;aaCCzCzzMMaMCMa&quot;</span>,</span><br><span class="line">         <span class="string">&quot;bbMMyMyyZZbZMZb&quot;</span>,</span><br><span class="line">         <span class="string">&quot;ccCCxCxxJJcJCJc&quot;</span>,</span><br><span class="line">         <span class="string">&quot;ddQQwQwwMMdMQMd&quot;</span>,</span><br><span class="line">         <span class="string">&quot;eeYYvYvvKKeKYKe&quot;</span>,</span><br><span class="line">         <span class="string">&quot;ffHHuHuuCCfCHCf&quot;</span>,</span><br><span class="line">         <span class="string">&quot;ggDDtDttKKgKDKg&quot;</span>,</span><br><span class="line">         <span class="string">&quot;hhDDsDssOOhODOh&quot;</span>,</span><br><span class="line">         <span class="string">&quot;iiCCrCrrIIiICIi&quot;</span>,</span><br><span class="line">         <span class="string">&quot;jjOOqOqqDDjDODj&quot;</span>,</span><br><span class="line">         <span class="string">&quot;kkSSpSppEEkESEk&quot;</span>,</span><br><span class="line">         <span class="string">&quot;llXXoXooTTlTXTl&quot;</span>,</span><br><span class="line">         <span class="string">&quot;mmLLnLnnVVmVLVm&quot;</span>,</span><br><span class="line">         <span class="string">&quot;nnII_I__HHnHIHn&quot;</span>,</span><br><span class="line">         <span class="string">&quot;ooOO_O__CCoCOCo&quot;</span>,</span><br><span class="line">         <span class="string">&quot;ppFF_F__NNpNFNp&quot;</span>,</span><br><span class="line">         <span class="string">&quot;qqDD_D__BBqBDBq&quot;</span>,</span><br><span class="line">         <span class="string">&quot;rrTT_T__BBrBTBr&quot;</span>,</span><br><span class="line">         <span class="string">&quot;ssJJ_J__CCsCJCs&quot;</span>,</span><br><span class="line">         <span class="string">&quot;ttGG_G__XXtXGXt&quot;</span>,</span><br><span class="line">         <span class="string">&quot;uuDD_D__OOuODOu&quot;</span>,</span><br><span class="line">         <span class="string">&quot;vvUU_U__JJvJUJv&quot;</span>,</span><br><span class="line">         <span class="string">&quot;wwOO_O__SSwSOSw&quot;</span>,</span><br><span class="line">         <span class="string">&quot;xxRR_R__SSxSRSx&quot;</span>,</span><br><span class="line">         <span class="string">&quot;yyEE_E__KKyKEKy&quot;</span>,</span><br><span class="line">         <span class="string">&quot;zzJJ_J__TTzTJTz&quot;</span>,</span><br><span class="line">         ]</span><br><span class="line"><span class="keyword">for</span> str1 <span class="keyword">in</span> names:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="built_in">len</span>(str1) + <span class="number">1</span>):</span><br><span class="line">        str0[i] = <span class="built_in">ord</span>(str1[i - <span class="number">1</span>])</span><br><span class="line">    str0[<span class="number">0</span>] = <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">5</span>):</span><br><span class="line">        v4 = str0[str0[<span class="number">0</span>] + <span class="number">1</span>]</span><br><span class="line">        v3 = str0[str0[<span class="number">0</span>]]</span><br><span class="line">        v2 = str0[str0[<span class="number">0</span>] + <span class="number">2</span>]</span><br><span class="line">        str0[<span class="number">0</span>] += <span class="number">3</span></span><br><span class="line">        str0[v2] = (~(str0[v4] &amp; str0[v3])) &amp; <span class="number">0xff</span></span><br><span class="line">s = Solver()</span><br><span class="line">cipher = [<span class="number">0x64</span>, <span class="number">0x04</span>, <span class="number">0x65</span>, <span class="number">0x0F</span>, <span class="number">0x2C</span>, <span class="number">0x5D</span>, <span class="number">0x39</span>, <span class="number">0x23</span>, <span class="number">0x23</span>, <span class="number">0x00</span>,</span><br><span class="line">          <span class="number">0x16</span>, <span class="number">0x05</span>, <span class="number">0x1D</span>, <span class="number">0x8F</span>, <span class="number">0x93</span>, <span class="number">0x9A</span>, <span class="number">0xA0</span>, <span class="number">0xB3</span>, <span class="number">0x93</span>, <span class="number">0xA9</span>,</span><br><span class="line">          <span class="number">0x92</span>, <span class="number">0xA0</span>, <span class="number">0xAF</span>, <span class="number">0xCB</span>, <span class="number">0x8C</span>, <span class="number">0xCA</span>]</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">97</span>, <span class="number">123</span>):</span><br><span class="line">    s.add(cipher[i - <span class="number">97</span>] == str0[i])</span><br><span class="line"><span class="built_in">print</span>(s.check())</span><br><span class="line">m = s.model()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> d <span class="keyword">in</span> m.decls():</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;<span class="subst">&#123;d.name()&#125;</span> = <span class="subst">&#123;m[d]&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># final = &#123;20: 109,</span></span><br><span class="line"><span class="comment">#          18: 108,</span></span><br><span class="line"><span class="comment">#          13: 112,</span></span><br><span class="line"><span class="comment">#          17: 76,</span></span><br><span class="line"><span class="comment">#          10: 115,</span></span><br><span class="line"><span class="comment">#          21: 95,</span></span><br><span class="line"><span class="comment">#          15: 101,</span></span><br><span class="line"><span class="comment">#          23: 52,</span></span><br><span class="line"><span class="comment">#          7: 79,</span></span><br><span class="line"><span class="comment">#          5: 48,</span></span><br><span class="line"><span class="comment">#          6: 111,</span></span><br><span class="line"><span class="comment">#          8: 111,</span></span><br><span class="line"><span class="comment">#          0: 81,</span></span><br><span class="line"><span class="comment">#          2: 81,</span></span><br><span class="line"><span class="comment">#          12: 109,</span></span><br><span class="line"><span class="comment">#          3: 95,</span></span><br><span class="line"><span class="comment">#          16: 95,</span></span><br><span class="line"><span class="comment">#          14: 108,</span></span><br><span class="line"><span class="comment">#          22: 80,</span></span><br><span class="line"><span class="comment">#          9: 95,</span></span><br><span class="line"><span class="comment">#          11: 105,</span></span><br><span class="line"><span class="comment">#          1: 119,</span></span><br><span class="line"><span class="comment">#          25: 53,</span></span><br><span class="line"><span class="comment">#          19: 86,</span></span><br><span class="line"><span class="comment">#          24: 115,</span></span><br><span class="line"><span class="comment">#          4: 115,</span></span><br><span class="line"><span class="comment">#          &#125;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后就可以了</p>
+<h2 id="出题部分"><a href="#出题部分" class="headerlink" title="出题部分"></a>出题部分</h2><p>实际上出题人没活了，用的还是单指令虚拟机(x<br>本来预期解是插桩打log观察逻辑，奈何你们逆向壬全是一个z3走天下<br><del>哼哼，下次必要制裁你们z3党</del></p>
+<p>这里贴个纯享版代码（x，方便以后继续整活（不是</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;llvm/IR/Function.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;llvm/Pass.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;llvm/Support/raw_ostream.h&quot;</span></span></span><br><span class="line">using namespace llvm;</span><br><span class="line"></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> unk_51B0[] = &#123;</span><br><span class="line"><span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,</span><br><span class="line"><span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>,<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0xff</span>, <span class="number">0</span>,</span><br><span class="line"><span class="comment">//flag</span></span><br><span class="line"><span class="number">121</span>, <span class="number">111</span>, <span class="number">117</span>, <span class="number">95</span>, <span class="number">115</span>, <span class="number">104</span>, <span class="number">111</span>, <span class="number">117</span>, <span class="number">108</span>, <span class="number">100</span>, <span class="number">95</span>, <span class="number">112</span>, <span class="number">97</span>, <span class="number">116</span>, <span class="number">99</span>, <span class="number">104</span>, <span class="number">95</span>, <span class="number">116</span>, <span class="number">104</span>, <span class="number">105</span>, <span class="number">115</span>, <span class="number">95</span>, <span class="number">102</span>, <span class="number">108</span>, <span class="number">97</span>, <span class="number">103</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//unsigned char* flag[] = &#123;&quot;miniLctf&#123;QwQ_s0oOo_simple_LlVm_P4s5&#125;&quot;&#125;;</span></span><br><span class="line"><span class="comment">//miniLctf&#123;you_should_patch_this_flag&#125;</span></span><br><span class="line"><span class="type">int</span> l = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">namespace&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">YunZh1Jun</span> :</span> public FunctionPass&#123;</span><br><span class="line">        <span class="type">static</span> <span class="type">char</span> ID;</span><br><span class="line">        YunZh1Jun() : FunctionPass(ID)&#123;&#125;</span><br><span class="line">        <span class="comment">//void vm(); func319</span></span><br><span class="line">        <span class="comment">//bool check(); func629</span></span><br><span class="line"></span><br><span class="line">		<span class="type">void</span> <span class="title function_">func319</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">		<span class="type">bool</span> <span class="title function_">func629</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="type">bool</span> <span class="title function_">runOnFunction</span><span class="params">(Function &amp;F)</span> override&#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//outs() &lt;&lt; &quot;Function: &quot; &lt;&lt; F.getName() ;</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">15</span>;i++)</span><br><span class="line">                unk_51B0[i+<span class="number">1</span>]=F.getName().str().c_str()[i];</span><br><span class="line"></span><br><span class="line">            <span class="type">unsigned</span> <span class="type">char</span> right[]=&#123;<span class="number">75</span>, <span class="number">112</span>, <span class="number">126</span>, <span class="number">113</span>, <span class="number">109</span>, <span class="number">56</span>, <span class="number">57</span>, <span class="number">93</span>, <span class="number">118</span>, <span class="number">119</span>, <span class="number">62</span>, <span class="number">109</span>, <span class="number">57</span>, <span class="number">127</span>, <span class="number">118</span>, <span class="number">107</span>, <span class="number">126</span>, <span class="number">124</span>, <span class="number">109</span>, <span class="number">57</span>, <span class="number">116</span>, <span class="number">112</span>, <span class="number">119</span>, <span class="number">112</span>, <span class="number">85</span>, <span class="number">122</span>, <span class="number">109</span>, <span class="number">127</span>, <span class="number">98</span>, <span class="number">100</span>, <span class="number">103</span>,<span class="number">0</span>&#125;;</span><br><span class="line">            <span class="type">unsigned</span> <span class="type">char</span> wrong[]=&#123;<span class="number">72</span>, <span class="number">110</span>, <span class="number">72</span>, <span class="number">53</span>, <span class="number">57</span>, <span class="number">105</span>, <span class="number">117</span>, <span class="number">99</span>, <span class="number">57</span>, <span class="number">109</span>, <span class="number">107</span>, <span class="number">96</span>, <span class="number">57</span>, <span class="number">120</span>, <span class="number">126</span>, <span class="number">120</span>, <span class="number">112</span>, <span class="number">119</span>, <span class="number">103</span>, <span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">            func319();</span><br><span class="line">            l++;</span><br><span class="line">            <span class="keyword">if</span>(l == <span class="number">26</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(func629())&#123;</span><br><span class="line">                    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">31</span>;i++)&#123;</span><br><span class="line">                        right[i] ^= <span class="number">0x19</span>;</span><br><span class="line">                        outs() &lt;&lt; *(right + i);</span><br><span class="line">                    &#125;</span><br><span class="line">                    outs() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span>&#123;</span><br><span class="line">                    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">19</span>;i++)&#123;</span><br><span class="line">                        wrong[i] ^= <span class="number">0x19</span>;</span><br><span class="line">                        outs() &lt;&lt; *(wrong + i);</span><br><span class="line">                    &#125;</span><br><span class="line">                    outs() &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">YunZh1Jun::func319</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> *p_unk_51B0 = unk_51B0;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> PC, a, b, f, r;</span><br><span class="line">    unk_51B0[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">        PC = *p_unk_51B0;</span><br><span class="line">        a = p_unk_51B0[PC + <span class="number">1</span>];</span><br><span class="line">        b = p_unk_51B0[PC];</span><br><span class="line">        r = p_unk_51B0[PC + <span class="number">2</span>];</span><br><span class="line">		*p_unk_51B0 = PC + <span class="number">3</span>;</span><br><span class="line">        f = ~(p_unk_51B0[b] &amp; p_unk_51B0[a]);</span><br><span class="line">        p_unk_51B0[r] = f;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">bool</span> <span class="title function_">YunZh1Jun::func629</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> check_num[<span class="number">30</span>] = &#123;<span class="number">100</span>, <span class="number">4</span>, <span class="number">101</span>, <span class="number">15</span>, <span class="number">44</span>, <span class="number">93</span>, <span class="number">57</span>, <span class="number">35</span>, <span class="number">35</span>, <span class="number">0</span>, <span class="number">22</span>, <span class="number">5</span>, <span class="number">29</span>, <span class="number">143</span>, <span class="number">147</span>, <span class="number">154</span>, <span class="number">160</span>, <span class="number">179</span>, <span class="number">147</span>, <span class="number">169</span>, <span class="number">146</span>, <span class="number">160</span>, <span class="number">175</span>, <span class="number">203</span>, <span class="number">140</span>, <span class="number">202</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j&lt;<span class="number">26</span>;j++)</span><br><span class="line">    <span class="keyword">if</span>(unk_51B0[<span class="number">97</span>+j]!=check_num[j])</span><br><span class="line">    &#123;    </span><br><span class="line">        <span class="comment">//outs() &lt;&lt; j;</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">char</span> YunZh1Jun::ID = <span class="number">0</span>;</span><br><span class="line"><span class="type">static</span> RegisterPass&lt;YunZh1Jun&gt; <span class="title function_">X</span><span class="params">(<span class="string">&quot;YunZh1Jun&quot;</span>, <span class="string">&quot;YunZh1Jun&#x27;s simple pass&quot;</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>虚拟机的逻辑和预期exp等在github仓库都有，可以自己去看。<br>产生opcode的代码在<a target="_blank" rel="noopener" href="https://github.com/XDSEC/miniLCTF_2023/blob/main/Challenges/EasyLLVMPass/src/gen_fun_name.py">miniLctf的github仓库</a><br>注意r0和r1作为寄存器是用random生成的，当生成的opcode达到一定数量时就会有很大的概率生成两个一样的字符，而这必然会导致错误（检查了好久问题在哪……）所以生成opcode之后自己看一下，如果一个循环内有一样的寄存器要手动改一下。<br>总而言之是个简单题 &#x3D; &#x3D;</p>
+
+    </div>
+
+    <div class="about">
+        <h1>关于本文</h1>
+        <p>本文作者 云之君, 许可由 <a
+                target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+    </div>
+
+    
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/" class="item">Blog</a>
+                
+                <a href="/CTF" class="item">CTF</a>
+                
+                <a href="/Learn" class="item">Learn</a>
+                
+                <a href="/Diary" class="item">Diary</a>
+                
+                <a href="/friends" class="item">Friends</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/YunZh1Jun" class="item">GitHub</a>
+                
+                <a href="mailto:yunzh1jun@qq.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2023 云之君<br >驱动由 <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+    </body>
+</html>

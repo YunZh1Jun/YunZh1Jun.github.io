@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+  <meta name="color-scheme" content="light dark">
+  
+  <title>MoeCTF &amp; MSSCTF 出题验题记录 - 云之君&#39;s Blog</title>
+  
+    <link rel="shortcut icon" href="/img/fav/favicon.png">
+  
+  
+    <link rel='manifest' href='/manifest.json'>
+  
+
+  
+<link rel="stylesheet" href="/css/var.css">
+
+  
+<link rel="stylesheet" href="/css/main.css">
+
+  
+<link rel="stylesheet" href="/css/typography.css">
+
+  
+<link rel="stylesheet" href="/css/code-highlighting.css">
+
+  
+<link rel="stylesheet" href="/css/components.css">
+
+  
+<link rel="stylesheet" href="/css/nav.css">
+
+  
+<link rel="stylesheet" href="/css/paginator.css">
+
+  
+<link rel="stylesheet" href="/css/footer.css">
+
+  
+<link rel="stylesheet" href="/css/post-list.css">
+
+  
+<link rel="stylesheet" href="/css/waline.css">
+
+  
+  
+  
+<link rel="stylesheet" href="/css/post.css">
+
+  
+
+  
+    
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+ 
+  
+
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+    <body data-color-scheme="auto">
+        <nav id="theme-nav">
+    <div class="inner">
+        <a class="title" href="/">云之君&#39;s Blog</a>
+        <div class="nav-arrow"></div>
+        <div class="nav-items">
+            <a class="nav-item nav-item-home" href="/">主页</a>
+            
+            
+            <a class="nav-item" href="/friends">Friends</a>
+            
+            
+            
+            <a class="nav-item" href="/CTF">CTF</a>
+            
+            
+            
+            <a class="nav-item" href="/Learn">Learn</a>
+            
+            
+            
+            <a class="nav-item" href="/Diary">Diary</a>
+            
+            
+            
+            <a class="nav-item nav-item-github nav-item-icon" href="https://github.com/YunZh1Jun" target="_blank">&nbsp;</a>
+            
+            
+        </div>
+    </div>
+</nav>
+        <article class="post">
+    <div class="meta">
+        
+        <div class="date" id="date">
+            
+            <span>January</span>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <span>8,</span>
+            <span>2023</span>
+        </div>
+        
+
+        <h2 class="title">MoeCTF &amp; MSSCTF 出题验题记录</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="content">
+        <p>本来打算等mss办了之后两个一起发的，但是mss的题都快烂手里了，还是算了先把moe扔这。。。（（（</p>
+<h2 id="MoeCTF-2022"><a href="#MoeCTF-2022" class="headerlink" title="MoeCTF 2022"></a>MoeCTF 2022</h2><p>MoeCTF算是我第一次做题的比赛，也是第一次出题的比赛了。<del>自从总被出题人折磨之后就一直想着我什么时候也能出题折磨别人</del><br>不过这次下手还是挺轻的吧，<del>没有把我那些奇奇怪怪的想法加进去，</del>按照track神给的知识点按部就班出的。</p>
+<p>checkin和begin就不说了，都是点击即送。</p>
+<h3 id="D-flat"><a href="#D-flat" class="headerlink" title="D flat"></a>D flat</h3><p>其实很早就想出一个C#的题，类似于写一个小游戏那种，<del>就算做不出来题还可以玩玩游戏</del><br>不过track神当时写异架构只写了RISC-V和安卓，所以我是最后出完题了看逆向题好像有点少就整了一个C#。<br>出这题最犹豫的不是写什么加密算法，而是题目叫什么名字（<br>苦思冥想的时候突然想起<del>我断了一年多还没修的琴弦</del>我学的稀烂的乐理，C#也可以解读为升C（？，跟降D同音，于是就有了这个题目名233</p>
+<p>嗯，然后就是去简单学了一下C#语法，出了一道白给题。<br>DLL拖进DnSpy，把那一串数字拿出来转字符就是flag。</p>
+<p>不过其实出这题最麻烦的大概是在linux配置.NET的环境吧，主要是答应了track神每一题都放一个ELF的附件的。</p>
+<h3 id="EquationPy"><a href="#EquationPy" class="headerlink" title="EquationPy"></a>EquationPy</h3><p>pyc逆向解方程，算是每年moe逆向必备节目了吧（逃</p>
+<h3 id="fake-key"><a href="#fake-key" class="headerlink" title="fake key"></a>fake key</h3><p>track神说要出一个必须用调试器才能做的题目，那么当然最初想到的就是随机数，不过感觉单一个随机数好像太简单了（？<br>后来加了一个init函数，在运行过程中会改掉最初的key，调试起来的话就会发现key被追加了一段字符，在题目描述里也强调了key会被偷偷改掉（连题目都是fake key</p>
+<p>动态调试去取真正的key和随机数写解密即可。</p>
+<h3 id="寄汤来咯"><a href="#寄汤来咯" class="headerlink" title="寄汤来咯"></a>寄汤来咯</h3><p>逆向必备节目之花指令。</p>
+<p>最初是搜了一下花指令，随便去当了一段汇编代码过来贴在函数里，但是死活报错。去搜了一下，都是说内联汇编要用att啥的，<del>但是att实在是太反人类了啊啊啊啊啊啊啊啊啊，</del>没耐心看了，主要是看别人的代码插花指令都插的x86，所以我坚信这样是可以过编译的（逃</p>
+<p>后来忘了在哪个犄角旮瘩看到的，要用VS的32位平台才行，试了一下，一遍过，芜湖</p>
+<p>源代码里写了两个加密函数，后来验题的时候发现VS给我两个函数全扬了，代码都在主函数里，非常的抽象，后来出完fake code把编译优化全关了又试了一下，总算是正常了一些，没那么抽象了。<br>要出简单真是不容易啊</p>
+<h3 id="Art"><a href="#Art" class="headerlink" title="Art"></a>Art</h3><p>track神说要出一道异或取模爆破的题目，某个傻子恍惚间想起了VNCTF，似乎回到了当初被时空飞行支配的恐惧。<br>当时辣鸡的我就是因为不会写深搜爆破，遂放弃了这道题。<del>时隔多年</del>我不再是被支配的傻子，而成了要把这玩意出到题里的出题人。<br>说实话还是有点心理压力的，<del>毕竟要不是带善人PZ师傅在VNCTF的WP里贴了深搜爆破的代码，我可能也还是不会写深搜爆破</del>感觉算法对于萌新还是太难了吧呜呃呃<br>而且异或取模有多解，顺便用一个哈希验证，就把哈希算法识别也考了（虽然没什么用，可以直接越过哈希来爆破所有字符&#x3D; &#x3D;</p>
+<p>验题的时候往IDA里一拖，核心代码就两行，<del>看起来那么的人畜无害</del>感觉太朴素了，想起来还没出过壳的题目，遂整了个UPX壳。<br>不过考虑到写算法的难度（指难受程度）以及哈希算法的考点，正在学魔改壳的我还是没有对这个壳做什么奇怪的事情（不然我就把UPX头和入口的pushad扬了</p>
+<p>问题就在于，当我整ELF附件的时候，upx压缩给我报错了！<br>去搜了一下，说是upx不能压缩低于40kb的文件，因为太小了没法再压缩了。我看着我没压缩前的exe文件，19kb，和压缩后的exe文件陷入沉思。在自我怀疑和怀疑这说法之前来回徘徊之际，突然发现人家说的是Linux，也就是说只有ELF有这要求。好的，那没事了（逃</p>
+<p>所以怎么办呢，当然是静态链接来增加可执行文件的大小啦。<br>但是抽象的事情来了。<br>首先是静态编译去符号表，main都被扣没了，IDA反编译出来start函数里面一堆抽象的sub。不过这个问题都不大，因为通过字符串还是能很快定位主函数。</p>
+<p>但是更抽象的事情来了。</p>
+<p>exe拖进IDA反编译的核心代码是这样的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ( i = <span class="number">1</span>; i &lt;= <span class="number">27</span>; ++i )</span><br><span class="line">  Str1[i - <span class="number">1</span>] ^= (Str1[i - <span class="number">1</span>] % <span class="number">17</span> + Str1[i]) ^ <span class="number">0x19</span>;</span><br></pre></td></tr></table></figure>
+<p>跟源码不能说是一模一样，只能说是毫无区别。如此简介，如此朴素，如此稚嫩（啊不是</p>
+<p>但是elf反编译的核心代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> ( j = <span class="number">1</span>; j &lt;= <span class="number">27</span>; ++j )</span><br><span class="line">&#123;</span><br><span class="line">  v11 = (<span class="type">unsigned</span> __int8)v17[j - <span class="number">1</span>];</span><br><span class="line">  LOWORD(v10) = (<span class="type">char</span>)v11;</span><br><span class="line">  v12 = <span class="number">121</span> * v10;</span><br><span class="line">  LOWORD(v12) = (<span class="type">unsigned</span> __int16)(<span class="number">121</span> * (<span class="type">char</span>)v11) &gt;&gt; <span class="number">8</span>;</span><br><span class="line">  v13 = v12;</span><br><span class="line">  LOBYTE(v13) = (<span class="type">char</span>)v12 &gt;&gt; <span class="number">3</span>;</span><br><span class="line">  v10 = v11 - <span class="number">17</span> * (v13 - (<span class="type">unsigned</span> __int8)(v17[j - <span class="number">1</span>] &gt;&gt; <span class="number">7</span>));</span><br><span class="line">  v17[j - <span class="number">1</span>] ^= (<span class="type">unsigned</span> __int8)(v10 + v17[j]) ^ <span class="number">0x19</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>额……<br>只能说，作为一个出题人，我差点以为我是不是放错了代码……</p>
+<p>异或和加都还好，但是对17取余变成这么抽象的一堆？…… <del>不知道的会不会以为我在欺负萌新啊喂</del><br>编译优化关了也没用，放弃 <code>:)</code> let it go~</p>
+<h3 id="fake-code"><a href="#fake-code" class="headerlink" title="fake code"></a>fake code</h3><p>track神给的考点里有汇编。其实最初想的是编写一段代码，然后用IDA反汇编，把汇编代码当出来存到一个txt里当作附件发出来。<br>以前也做过这样的题目，但是自从国赛之后就对这种印度人题深恶痛绝了，想了很久还是觉得SEH比较适合，因为只有except块中的内容不会被反编译，只需要看except里的几句汇编代码就可以了，还能顺便让萌新适应一下伪代码和汇编一起看。<br>这题本来是交给DX的，不过他写平台太忙了（因为DX实在是太强了），所以我就接过来这题了。<br>九点多开始出题，本来以为十点能出完，结果搞到两点多……</p>
+<p>VS里写好SEH，然后也测试好了，debug版本跑起来一切正常，但是一release就全g了。我真的是百思不得其解啊，去搜为什么debug版和release版行为不一致，一堆人说是变量名写错了或者没有初始化之类的问题。</p>
+<blockquote>
+<p>☁️：我8可能写错。</p>
+</blockquote>
+<p>当时真是想自暴自弃直接用debug版算了，但是当我把debug版的程序拖进IDA，看到那一堆熟悉的抽象代码，我突然明白了为什么以前做过的有些题的代码能那么抽象，因为那些出题人绝对绝对用的是debug版<code>:)</code></p>
+<p>但是我不能这么做，我不能欺负萌新，我要往简单了出呜呜呜呜呜呜呜呜</p>
+<p>没辙，只能怀疑是SEH的问题。在谷歌某个角落找到了，说是编译器会把SEH优化掉，必须把编译优化关了才行。<br>关掉编译优化，一遍过</p>
+<h3 id="Broken-hash"><a href="#Broken-hash" class="headerlink" title="Broken hash"></a>Broken hash</h3><p>啊我实在是太菜了太菜了太菜了</p>
+<p>题目的大概思路就是取输入的每一个字符算哈希（用的是SHA1，改了一些常数），取出前64bit跟密文比较，然后输出wrong或者right。<br>解题思路就是把输出patch成check过的长度，然后写python脚本交互爆破。</p>
+<p>感觉这样太简单了所以整了点活：如果check失败就触发一个除零异常，然后在catch块里解码（按位取非，就是异或0xff）真正输出的字符串wrong并且输出。所以说patch后面的wrong是没用的，因为后面那个wrong根本没用到，要patch catch块里的输出才行。<br>wrong字符串的密文是附在哈希密文后面的，整体是一个数组。也就是说我密文开了长度为九十几的一个数组，前88位存flag的哈希，后面是字符串wrong的密文。</p>
+<p>嗯，然后这样调试过去会触发除零异常，又感觉这样有点明显。所以本来想写一个只有调试会触发的catch块，把触发除零异常的函数hook掉，但是因为一些原因中间一部分写的有些问题，改了好多次也还是不行，wtcl wtcl，遂放弃了,555555555555。<br>最后写了个TLS，设置了一个标志位，如果在调试就更改标志位，然后根据标志位来hook触发异常的函数。（但是直接写在主函数里，太明显了啊喂</p>
+<p>这样子如果patch了后面的输出，调试过程中没有绕过反调的话，输出的就是ptach过的结果，但是正常运行还是会输出wrong，所以就这样造成调试结果和实际运行结果不一致。</p>
+<h2 id="MssCTF"><a href="#MssCTF" class="headerlink" title="MssCTF"></a>MssCTF</h2><p>mss还没办，你在期待什么（x</p>
+<!-- 
+### EzPython
+
+知道树师傅之前出过python字节码的题目，想着出个字节码应该不会超纲。还有一个是从pyc包里导函数的题，感觉也很有意思。
+不过我当然不能也整个3.10的pyc，那不就跟去年一样了，于是整点花活(x
+
+想着要把上面两个东西整合在一起，又想起了VNCTF被BabyMaze支配的恐惧。
+当时我uncompyle6之后就一直扔在那去看其他题了，直到等了半个多小时都没反编译出来，我才察觉到不对劲。虽然做是做出来了，不过是dis看字节码的，拿到了迷宫的4个控制字符，但是dis字节码前面创建迷宫的几句会gg（不知道为什么
+我直接没耐心管了去hex里直接当数据。拿到迷宫和控制字符，迷宫题基本就算做完了。
+
+后来才知道这玩意是pyc的花指令，于是一直想出一道。当然，mss的难度可是要求非常低的，我也不可能在这里考个修复pyc的花指令，于是自己整了两个3.8的pyc，都加了花指令，主逻辑就是一个异或，要导入的包负责产生一组异或值。这样dis看字节码也不算很印度人题（毕竟主逻辑就是一个异或，然后另一个包也根本不用看，直接import就彳亍。
+
+不过主的pyc文件加完花指令之后死活运行不起来，一直报错，刚开始打印的提示信息倒是有的，输入完处理数据就会报错。去网上搜报错，都跟我的问题八竿子打不着，当时想着这题可能是要寄了吧（悲
+
+后来又仔细思考了一下，既然打印提示信息是正常的，只是在处理数据的时候报错，那应该是我在前面加花指令会造成后面的什么东西崩溃掉。
+dis了一下去看字节码，看到`JUMP_ABSOLUTE`才恍然大悟：pyc字节码跳转用的是绝对地址，我在前面加几句字节码，后面的所有字节码就会被后推几句，所以跳转地址就会跳到别的地方去，造成程序崩溃。
+要修复也好修，把所有跳转的地址都加上前面加的字节码长度就好了。
+还好，我编译出来的pyc绝对地址只有3处，改起来也不算太麻烦（虽然还是有点麻烦（逃
+
+修改之后就可以正常运行了233
+
+### jump
+
+就是动态调试修改跳转条件，改一下zf或者直接patch就好哩。
+题目欢迎语也说了，生成随机数，等于我给定的数字就打印flag，就是妥妥的强制跳转嘛。
+
+感觉非常白给，但是track神说高中生可能想不到这一点，所以还算是比较难的题吧。
+
+### gift
+
+本来没打算出这道题的，但是他们非要往miniL难度上靠……好么，~~那就整个阴间点的~~ 但其实我下手也不重吧？这比miniL可差远了`~_~`
+
+最初是想写一个树，给出后序和中序输出前序，但是因为一些原因放弃了（我太菜了我太菜了
+后来就有了这个版本，仿射密码 + 魔改的UPX壳
+
+先写了一段仿射密码，然后写一个假flag，用init函数把假flag替换掉。之后验track神的题发现他也考了init函数这个考点，为了不重复考点，我就换成异常触发替换了。
+> 但是这样8太好，因为对着假的flag按一下x，就能找到替换的部分了，这也太🌶️🐔了。
+
+再改：用一个指针，从假flag第7位开始替换，前7位是没问题的。这样就不能通过交叉引用定位密文🌶️
+最近在学异常，想考一下栈展开，但是也不知道怎么考呢？就在throw下面写了个假flag的异或。由于是在throw之后，所以这玩意永远也不会被调用，算是个干扰项吧。
+
+> 哎，突然想到我不应该写假flag，我应该在那随便写一堆数据，这样解密出来是乱码，选手只会怀疑是自己哪一步写错了，而不是我把密文换掉了。~~下次实践一下~~
+
+然后加UPX壳，扬了区段名，扬了UPX的标识信息，加了一个垃圾区段。
+本来不想改特征码的，测了一下发现吾爱的静态脱壳机还能脱出来，心态爆炸，直接开搞。
+
+噢但其实也就是把入口点的pushad扬了，后面的没改。
+测了一下，静态脱壳机gg了，收工！✌
+
+### brainfxxk
+
+killtimer神出的题，他写的难度为3，但是我完全被橄榄了555555555
+
+**killtimer神最后把这道题的密文稍微改短了一点（改简单了一些），我下面用的还是最初的版本，所以具体的代码可能有些出入，但是用这个思路都是可以做出来的。**
+
+看了一下，大概知道是个brainfxxk写的虚拟机，全部输入之后check。
+其实本人作为一个懒🐶，根本没怎么正经做过虚拟机的题，基本都是angr一把梭，然后在Tet的一道题被教育了。当时track神也打了Tet，就拜托他复现了这道题（这个思路也是从这里得到的灵感）。
+[TetCTF magicbox](https://blog.trackonyou.top/2022/01/13/0f448c3e88dc/)
+
+全部输入之后check的话，基本上退出之后只有两种状态：
+
+- 像Tet那道题一样用一个标志位check全部字符，标志位等于特定值（一般是0）的时候就正确
+- check到错误字符之后退出
+
+简单调试了一下，不是第1种方法，那么就只能是第2种。
+调试一下可以发现，对input指针进行自增操作的只有`','`这个标志这里。多次调试就可以发现，sub_140001000退出时，input指针会在正确输入的第2个字符处（这就是说，如果输入正确7个字符，那么input指针会在第9个字符）。观察其对应的汇编代码，可以发现input指针存在rbx里。
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> <span class="string">&#x27;,&#x27;</span>:</span><br><span class="line">  v11 = *input++;</span><br><span class="line">  *(_BYTE *)v8 = v11;</span><br><span class="line">  <span class="keyword">goto</span> LABEL_29;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.text:00000001400010CA loc_1400010CA:                          ; CODE XREF: sub_140001000+51↑j</span><br><span class="line">.text:00000001400010CA                 mov     al, [rbx]</span><br><span class="line">.text:00000001400010CC                 add     rbx, rsi</span><br><span class="line">.text:00000001400010CF                 mov     [r10], al</span><br><span class="line">.text:00000001400010D2                 jmp     short loc_1400010D7</span><br></pre></td></tr></table></figure>
+
+<p>然后观察一下整个函数，对rbx有后续操作的只有函数结尾处</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">.text:00000001400010E3 loc_1400010E3:                          ; CODE XREF: sub_140001000+30↑j</span><br><span class="line">.text:00000001400010E3                 lea     r11, [rsp+148h+var_8]</span><br><span class="line">.text:00000001400010EB                 mov     al, dl</span><br><span class="line">.text:00000001400010ED                 mov     rbx, [r11+10h]</span><br><span class="line">.text:00000001400010F1                 mov     rsi, [r11+20h]</span><br><span class="line">.text:00000001400010F5                 mov     rsp, r11</span><br><span class="line">.text:00000001400010F8                 pop     rdi</span><br><span class="line">.text:00000001400010F9                 retn</span><br></pre></td></tr></table></figure>
+
+<p>把对rbx操作的语句patch掉，这样就可以保留input指针。</p>
+<p>再来到main函数，sub_140001000结束之后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.text:0000000140001178                 call    sub_140001000</span><br><span class="line">.text:000000014000117D                 lea     rdx, aCongratulation ; &quot;Congratulations!!!&quot;</span><br><span class="line">.text:0000000140001184                 test    al, al</span><br><span class="line">.text:0000000140001186                 cmovz   rdx, rbx</span><br><span class="line">.text:000000014000118A                 mov     rbx, rdx</span><br><span class="line">.text:000000014000118D</span><br><span class="line">.text:000000014000118D loc_14000118D:                          ; CODE XREF: start+69↑j</span><br><span class="line">.text:000000014000118D                 mov     rcx, rbx        ; Buffer</span><br><span class="line">.text:0000000140001190                 call    cs:puts</span><br></pre></td></tr></table></figure>
+
+<p>call指令直到loc_14000118D可以全部扬了（只要nop掉对rbx进行修改的部分即可），这样puts出来的就是input指针之后的内容，我们可以根据输出长度判断当前字符是否正确。</p>
+<p>爆破脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"><span class="comment"># 32-i</span></span><br><span class="line">model = <span class="string">b&#x27;abcdefghijklmnopqrstuvwxyz_,./;@!~0123456789&#x27;</span></span><br><span class="line">flag = <span class="string">&#x27;mssctf&#123;&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(flag), <span class="number">32</span>):</span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> model:</span><br><span class="line">        tmp = flag + <span class="built_in">chr</span>(j) + (<span class="number">31</span> - i) * <span class="string">&#x27;-&#x27;</span></span><br><span class="line"></span><br><span class="line">        p = subprocess.Popen([<span class="string">&quot;chall.exe&quot;</span>], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)</span><br><span class="line">        p.stdin.write(tmp.encode())</span><br><span class="line">        p.stdin.close()</span><br><span class="line">        out = p.stdout.read()</span><br><span class="line">        s = out[<span class="number">58</span>:]</span><br><span class="line">        p.stdout.close()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(s) &lt;= <span class="number">32</span> - i:</span><br><span class="line">            flag += <span class="built_in">chr</span>(j)</span><br><span class="line">            <span class="built_in">print</span>(flag)</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">flag += <span class="string">&#x27;&#125;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(flag)</span><br></pre></td></tr></table></figure>
+
+<p>不过后来看了hzlg神的思路，感觉自己还是tcl tcl –&gt;</p>
+
+    </div>
+
+    <div class="about">
+        <h1>关于本文</h1>
+        <p>本文作者 云之君, 许可由 <a
+                target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc/4.0">CC BY-NC 4.0</a>.</p>
+    </div>
+
+    
+        
+    
+</article>
+        <footer>
+    <div class="inner">
+        <div class="links">
+            
+            <div class="group">
+                <h4 class="title">Blog</h4>
+                
+                <a href="/" class="item">Blog</a>
+                
+                <a href="/CTF" class="item">CTF</a>
+                
+                <a href="/Learn" class="item">Learn</a>
+                
+                <a href="/Diary" class="item">Diary</a>
+                
+                <a href="/friends" class="item">Friends</a>
+                
+            </div>
+            
+            <div class="group">
+                <h4 class="title">Me</h4>
+                
+                <a target="_blank" rel="noopener" href="https://github.com/YunZh1Jun" class="item">GitHub</a>
+                
+                <a href="mailto:yunzh1jun@qq.com" class="item">Email</a>
+                
+            </div>
+            
+        </div>
+        <span>&copy; 2023 云之君<br >驱动由 <a href="http://hexo.io/" target="_blank">Hexo</a></span>
+        
+            <br>
+            <div class="color-scheme-toggle" role="radiogroup" id="theme-color-scheme-toggle">
+                <label>
+                    <input type="radio" value="light">
+                    <span>Light</span>
+                </label>
+                <label>
+                    <input type="radio" value="dark">
+                    <span>Dark</span>
+                </label>
+                <label>
+                    <input type="radio" value="auto">
+                    <span>Auto</span>
+                </label>
+            </div>
+        
+    </div>
+</footer>
+
+
+        
+<script src="/js/main.js"></script>
+
+        
+    </body>
+</html>
