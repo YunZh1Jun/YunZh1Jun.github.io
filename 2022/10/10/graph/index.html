@@ -127,9 +127,9 @@
 <p>啊啊啊啊啊啊啊啊啊啊啊看不懂看不懂看不懂看不懂看不懂<br>不你可以看懂你可以看懂你可以看懂你可以看懂你可以看懂</p>
 <h2 id="一些概念"><a href="#一些概念" class="headerlink" title="一些概念"></a>一些概念</h2><p>又要开始递归学习了……………………</p>
 <h3 id="卷积"><a href="#卷积" class="headerlink" title="卷积"></a>卷积</h3><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/22298352">如何通俗易懂地解释卷积？</a>这篇文章讲的很清楚。</p>
-<p>$$f(x)*g(x) = \displaystyle \int^{\infty}_{-\infty}f(\tau)g(x-\tau)d\tau$$</p>
+<p>$$f(x)*g(x) &#x3D; \displaystyle \int^{\infty}_{-\infty}f(\tau)g(x-\tau)d\tau$$</p>
 <p>卷积的物理意义大概可以理解为：<strong>系统某一时刻的输出是由多个输入共同作用（叠加）的结果。</strong><br>对图而言，用到的都是<strong>离散卷积</strong>。而离散卷积简单来讲本质上就是一种<strong>加权求和</strong>。</p>
-<p>二维离散卷积的定义：<br>$$(f*g)(m,n)= \sum_i \sum_j f(i,j)g(m-i,n-j)$$</p>
+<p>二维离散卷积的定义：<br>$$(f*g)(m,n)&#x3D; \sum_i \sum_j f(i,j)g(m-i,n-j)$$</p>
 <p>不同的图像处理函数（矩阵g）决定了输出图像（g与原始图像卷积之后的图像）是变得模糊还是锐利。<br>实际计算时会计算采用g翻转（上下左右翻转后）的矩阵与原图像的内积（对应点相乘相加）。</p>
 <blockquote>
 <p>以前学信号的时候觉得这定义好抽象，根本不能理解，现在看了别人的解释感觉确实每一个公式都有它的来源……</p>
@@ -140,8 +140,8 @@
 <p>理想中的激活函数是阶跃函数，它将输入映射为0或1。但是由于阶跃函数不连续、不光滑，因此常用的激活函数是Sigmoid函数。</p>
 <p><img src="/img/code/graph/3.png"></p>
 <p>把许多个这样的神经元按一定的层次结构连接起来，就得到了神经网络。</p>
-<p>事实上，我们只需要知道，神经网络是一个包含了许多参数的数学模型，这个模型是若干函数，例如$y_i=f(\sum_i w_ix_i - \theta_j)$相互（嵌套）带入而得。</p>
-<h3 id="CNN-Convolutional-Neural-Network-卷积神经网络"><a href="#CNN-Convolutional-Neural-Network-卷积神经网络" class="headerlink" title="CNN(Convolutional Neural Network 卷积神经网络)"></a>CNN(Convolutional Neural Network 卷积神经网络)</h3><p>对于卷积公式 $$f(x)*g(x) = \displaystyle \int^{\infty}_{-\infty}f(\tau)g(x-\tau)d\tau$$<br>在图像分析中， $f(x)$ 是 <strong>原始像素点(source pixel)</strong> ，$g(x)$是作用点，所有作用点合起来称为 <strong>卷积核(Convolution kernel)</strong> ，二者的卷积结果称为 <strong>目标像素(destination pixel)</strong> 。</p>
+<p>事实上，我们只需要知道，神经网络是一个包含了许多参数的数学模型，这个模型是若干函数，例如$y_i&#x3D;f(\sum_i w_ix_i - \theta_j)$相互（嵌套）带入而得。</p>
+<h3 id="CNN-Convolutional-Neural-Network-卷积神经网络"><a href="#CNN-Convolutional-Neural-Network-卷积神经网络" class="headerlink" title="CNN(Convolutional Neural Network 卷积神经网络)"></a>CNN(Convolutional Neural Network 卷积神经网络)</h3><p>对于卷积公式 $$f(x)*g(x) &#x3D; \displaystyle \int^{\infty}_{-\infty}f(\tau)g(x-\tau)d\tau$$<br>在图像分析中， $f(x)$ 是 <strong>原始像素点(source pixel)</strong> ，$g(x)$是作用点，所有作用点合起来称为 <strong>卷积核(Convolution kernel)</strong> ，二者的卷积结果称为 <strong>目标像素(destination pixel)</strong> 。</p>
 <p>CNN的核心在于它的kernel，kernel是一个个小窗口，在图片上平移，通过卷积的方式来提取特征。这里的关键在于图片结构上的平移不变性：一个小窗口无论移动到图片的哪一个位置，其内部的结构都是一模一样的，因此CNN可以实现参数共享。</p>
 <p>CNN中的卷积本质上就是利用一个共享参数的过滤器（kernel），通过计算中心像素点以及相邻像素点的加权和来构成feature map实现<strong>空间特征的提取</strong>，加权系数就是卷积核的权重系数。</p>
 <p>那么卷积核的系数如何确定的呢？是随机化初值，然后根据误差函数通过反向传播梯度下降进行迭代优化。这是一个关键点，<strong>卷积核的参数通过优化求出才能实现特征提取的作用</strong>，GCN的理论很大一部分工作就是为了引入可以优化的卷积参数。</p>
@@ -159,11 +159,11 @@
 <li><strong>嵌入的维数</strong><br>  实际嵌入时很难找到表示的最佳维数。例如，较高的维数可能会提高重建精度，但具有较高的时间和空间复杂性。较低的维度虽然时间、空间复杂度低，但无疑会损失很多图中原有的信息。</li>
 </ul>
 <h3 id="一些线代定义"><a href="#一些线代定义" class="headerlink" title="一些线代定义"></a>一些线代定义</h3><h4 id="度矩阵-degree-matrix"><a href="#度矩阵-degree-matrix" class="headerlink" title="度矩阵(degree matrix)"></a>度矩阵(degree matrix)</h4><p>度矩阵是对角阵，对角上的元素为各个顶点的度。</p>
-<h4 id="邻接矩阵-adjacent-matrix"><a href="#邻接矩阵-adjacent-matrix" class="headerlink" title="邻接矩阵(adjacent matrix)"></a>邻接矩阵(adjacent matrix)</h4><p>邻接矩阵表示顶点间关系。<br>行数和列数对应坐标写入两个节点的权重。<br>$A=D^{-1}S$，其中$D$是度矩阵，$S$是邻接矩阵。</p>
+<h4 id="邻接矩阵-adjacent-matrix"><a href="#邻接矩阵-adjacent-matrix" class="headerlink" title="邻接矩阵(adjacent matrix)"></a>邻接矩阵(adjacent matrix)</h4><p>邻接矩阵表示顶点间关系。<br>行数和列数对应坐标写入两个节点的权重。<br>$A&#x3D;D^{-1}S$，其中$D$是度矩阵，$S$是邻接矩阵。</p>
 <h4 id="特征矩阵"><a href="#特征矩阵" class="headerlink" title="特征矩阵"></a>特征矩阵</h4><p>给定$A \in F^{n \times n}$，称多项式矩阵<br>$ \lambda E-A$为A的特征矩阵</p>
-<p>其中$\lambda$是$A$的特征值：<br>若存在$\lambda$和非零$n$维向量$x$，使得$Ax= \lambda x$，则称$\lambda$为$A$的特征值，向量$x$称为$A$的对应于特征值$\lambda$的特征向量。</p>
+<p>其中$\lambda$是$A$的特征值：<br>若存在$\lambda$和非零$n$维向量$x$，使得$Ax&#x3D; \lambda x$，则称$\lambda$为$A$的特征值，向量$x$称为$A$的对应于特征值$\lambda$的特征向量。</p>
 <h4 id="拉普拉斯矩阵"><a href="#拉普拉斯矩阵" class="headerlink" title="拉普拉斯矩阵"></a>拉普拉斯矩阵</h4><ul>
-<li>$L=D-A$(度矩阵 $-$ 邻接矩阵)</li>
+<li>$L&#x3D;D-A$(度矩阵 $-$ 邻接矩阵)</li>
 </ul>
 <h3 id="归一化"><a href="#归一化" class="headerlink" title="归一化"></a>归一化</h3><p>使得预处理的数据被限定在一定的范围内，从而消除奇异样本数据导致的不良影响。</p>
 <h4 id="何时使用？"><a href="#何时使用？" class="headerlink" title="何时使用？"></a>何时使用？</h4><ul>
@@ -195,7 +195,7 @@
 <blockquote>
 <p>经过学长提醒才关注这几个概念并且搞清楚的呜呜呜呜呜</p>
 </blockquote>
-<h2 id="GCN-Graph-Convolutional-Network-图卷积网络"><a href="#GCN-Graph-Convolutional-Network-图卷积网络" class="headerlink" title="GCN(Graph Convolutional Network 图卷积网络)"></a>GCN(Graph Convolutional Network 图卷积网络)</h2><h3 id="来源"><a href="#来源" class="headerlink" title="来源"></a>来源</h3><p>为什么要研究GCN？因为CNN无法处理拓扑图，因为CNN只能处理图像那样规整的矩阵，无法卷积一个拓扑图。而我们又希望在拓扑图上有效地<strong>提取空间特征</strong>来进行机器学习，就需要研究GCN。</p>
+<h2 id="GCN-Graph-Convolutional-Network-图卷积网络"><a href="#GCN-Graph-Convolutional-Network-图卷积网络" class="headerlink" title="GCN(Graph Convolutional Network 图卷积网络)"></a>GCN(Graph Convolutional Network 图卷积网络)</h2><h3 id="来源"><a href="#来源" class="headerlink" title="来源"></a>来源</h3><p>为什么要研究GCN？因为CNN无法处理拓扑图，只能处理图像那样规整的矩阵，无法卷积一个拓扑图。而我们又希望在拓扑图上有效地<strong>提取空间特征</strong>来进行机器学习，就需要研究GCN。</p>
 <p><strong>提取拓扑图的空间特征</strong>，在vertex domain(spatial domain)（空间维度）和spectral domain（图谱维度）实现目标是两种主流的方式，而后者就是GCN的理论基础。</p>
 <h4 id="Spatial-domain"><a href="#Spatial-domain" class="headerlink" title="Spatial domain"></a>Spatial domain</h4><p>提取拓扑图上的空间特征，那么就把每个顶点相邻的neighbors找出来。</p>
 <p>这种方法的主要缺点：</p>
@@ -205,25 +205,25 @@
 </ul>
 <h4 id="Spectral-domain"><a href="#Spectral-domain" class="headerlink" title="Spectral domain"></a>Spectral domain</h4><p>这是借助图谱的理论来实现拓扑图上的卷积操作。图谱维度将问题转换为频域分析，不再需要node-wise的处理。</p>
 <h3 id="简单理解"><a href="#简单理解" class="headerlink" title="简单理解"></a>简单理解</h3><h4 id="0x00-定义"><a href="#0x00-定义" class="headerlink" title="0x00 定义"></a>0x00 定义</h4><p>大多数图神经网络模型都有一个共同的通用架构，这些模型称为GCN。</p>
-<p>对于这些模型，目标是学习一个图（$G=(V,E)$）上的信号/特征函数，这个图有以下输入：</p>
+<p>对于这些模型，目标是学习一个图（$G&#x3D;(V,E)$）上的信号&#x2F;特征函数，这个图有以下输入：</p>
 <ul>
 <li>每个节点$i$有一个特征值$x_i$，生成一个特征矩阵$X$（一个$N \times D$维的矩阵），其中$N$是节点个数，$D$是输入的特征数。</li>
 <li>一个描述各个节点关系（图的结构）的矩阵，通常是邻接矩阵$A$</li>
 </ul>
 <p>生成一个输出$Z$（一个$N \times F$特征矩阵，其中$F$是每个节点的输出特征值）。</p>
-<p>每个神经网络层都可以写成非线性函数 $H^{(l+1)}=f(H^{(l)},A)$<br>其中$H^{(0)}=X,H^{(L)}=Z$，$L$是层数。具体模型的不同仅取决于$f(·,·)$如何选择。</p>
-<h4 id="0x01-举个例子"><a href="#0x01-举个例子" class="headerlink" title="0x01 举个例子"></a>0x01 举个例子</h4><p>考虑下面这个简单的逐层传播规则形式：<br>$$f(H^{(l)},A)= \sigma \big (AH^{(l)}W^{(l)}\big )$$<br>$W^{(l)}$是第$l$层神经网络层的系数矩阵，$\sigma(·)$是一个非线性激活函数（如$ReLU$）。虽然这个模型很简单，但它已经很强大。</p>
+<p>每个神经网络层都可以写成非线性函数 $H^{(l+1)}&#x3D;f(H^{(l)},A)$<br>其中$H^{(0)}&#x3D;X,H^{(L)}&#x3D;Z$，$L$是层数。具体模型的不同仅取决于$f(·,·)$如何选择。</p>
+<h4 id="0x01-举个例子"><a href="#0x01-举个例子" class="headerlink" title="0x01 举个例子"></a>0x01 举个例子</h4><p>考虑下面这个简单的逐层传播规则形式：<br>$$f(H^{(l)},A)&#x3D; \sigma \big (AH^{(l)}W^{(l)}\big )$$<br>$W^{(l)}$是第$l$层神经网络层的系数矩阵，$\sigma(·)$是一个非线性激活函数（如$ReLU$）。虽然这个模型很简单，但它已经很强大。</p>
 <p>当然，这个模型有几个局限性：</p>
 <ul>
 <li>只使用$A$的话，由于$A$的对角线上都是0，所以在和特征矩阵$H$相乘的时候，只会计算一个node的所有邻居的特征的加权和，该node自己的特征却被忽略了。因此，我们可以做一个小小的改动，给$A$加上一个单位矩阵$I$ ，这样就让对角线元素变成1了。</li>
 <li>$A$是没有经过归一化的矩阵，这样与特征矩阵相乘会改变特征原本的分布，产生一些不可预测的问题，比如邻居节点多的节点倾向于有更大的影响力。所以我们对$A$做一个标准化处理。首先让$A$的每一行加起来为1，我们可以乘以一个$D$的逆，$D$就是度矩阵。我们可以进一步把D的拆开与$A$相乘，得到一个对称且归一化的矩阵$D^{- \frac{1}{2}}AD^{- \frac{1}{2}}$</li>
 </ul>
-<p>基于上述改进，我们得到了最终的层特征传播公式：$f(H^{(l)},A)= \sigma \big (\hat{D}^{- \frac{1}{2}}\hat{A}\hat{D}^{- \frac{1}{2}}H^{(l)}W^{(l)}\big )$</p>
-<p>其中$\hat{A}=A+I$，$I$是单位矩阵，$\hat{D}$是$\hat{A}$的对角节点度矩阵。<br>$H^{(l)}W^{(l)}$相当于给$l$层的所有节点的embedding做了一次线性变换。<br>左乘以邻接矩阵表示对每个节点来说，该节点的特征表示为邻居节点特征相加之后的结果。</p>
-<p>点形式：$h_v^{k+1}=f \Big ( \displaystyle \frac{1}{|N(v)|}\sum_{u \in N(v)}W^k h^k_u+b^k \Big )$，即聚合邻居节点的特征然后做一个线性变换。</p>
+<p>基于上述改进，我们得到了最终的层特征传播公式：$f(H^{(l)},A)&#x3D; \sigma \big (\hat{D}^{- \frac{1}{2}}\hat{A}\hat{D}^{- \frac{1}{2}}H^{(l)}W^{(l)}\big )$</p>
+<p>其中$\hat{A}&#x3D;A+I$，$I$是单位矩阵，$\hat{D}$是$\hat{A}$的对角节点度矩阵。<br>$H^{(l)}W^{(l)}$相当于给$l$层的所有节点的embedding做了一次线性变换。<br>左乘以邻接矩阵表示对每个节点来说，该节点的特征表示为邻居节点特征相加之后的结果。</p>
+<p>点形式：$h_v^{k+1}&#x3D;f \Big ( \displaystyle \frac{1}{|N(v)|}\sum_{u \in N(v)}W^k h^k_u+b^k \Big )$，即聚合邻居节点的特征然后做一个线性变换。</p>
 <h4 id="0x10-空手道俱乐部的embedding"><a href="#0x10-空手道俱乐部的embedding" class="headerlink" title="0x10 空手道俱乐部的embedding"></a>0x10 空手道俱乐部的embedding</h4><p>这里的embedding我暂且理解为空间特征（不知道对不对，没找到解释这是什么意思）</p>
 <p>图和视频在<a target="_blank" rel="noopener" href="http://tkipf.github.io/graph-convolutional-networks/">GRAPH CONVOLUTIONAL NETWORKS</a>，我就不抄过来了（doge</p>
-<p>采用一个随机的系数矩阵，甚至在训练权重之前我们只需要插入图形的邻接矩阵，然后让$X=I$（即单位矩阵，因为我们没有任何节点特征），以这些作为模型输入。<del>后面看原文吧，怎么翻都感觉很奇怪啊啊啊</del> The 3-layer GCN now performs three propagation steps during the forward pass and effectively convolves the 3rd-order neighborhood（3阶邻域） of every node (all nodes up to 3 “hops”（跃点） away). Remarkably, the model produces an embedding of these nodes that closely resembles the community-structure of the graph (see Figure below). Remember that we have initialized the weights completely at random and have not yet performed any training updates (so far)!</p>
+<p>采用一个随机的系数矩阵，甚至在训练权重之前我们只需要插入图形的邻接矩阵，然后让$X&#x3D;I$（即单位矩阵，因为我们没有任何节点特征），以这些作为模型输入。<del>后面看原文吧，怎么翻都感觉很奇怪啊啊啊</del> The 3-layer GCN now performs three propagation steps during the forward pass and effectively convolves the 3rd-order neighborhood（3阶邻域） of every node (all nodes up to 3 “hops”（跃点） away). Remarkably, the model produces an embedding of these nodes that closely resembles the community-structure of the graph (see Figure below). Remember that we have initialized the weights completely at random and have not yet performed any training updates (so far)!</p>
 <p><strong>GCN为什么这么强？</strong><br>我们可以通过将GCN模型解释为一个在图上的广义可微的Weisfeiler-Lehman算法来阐明这一点。</p>
 <p>对于所有节点$v_i \in G$：</p>
 <ul>
@@ -232,14 +232,14 @@
 </ul>
 <p>重复上述步骤$k$次或直到收敛。</p>
 <p>在实践中，Weisfeiler-Lehman算法为大多数图形分配了一组独特的特征。这意味着每个节点都分配有一个特征，该特征唯一地描述了它在图形中的角色。例外情况是高度规则的图形，如网格，链等。对于大多数不规则图，此特征分配可以用作图同构的检查（即两个图是否相同，直到节点的排列）。</p>
-<p>回到我们的图卷积逐层传播规则（为向量形式）：<br>$$h_{v_i}^{(l+1)}= \sigma \bigg( \displaystyle \sum_{j} \frac{1}{c_{ij}} h^{(l)}_{v_j}W^{(l)} \bigg)$$</p>
+<p>回到我们的图卷积逐层传播规则（为向量形式）：<br>$$h_{v_i}^{(l+1)}&#x3D; \sigma \bigg( \displaystyle \sum_{j} \frac{1}{c_{ij}} h^{(l)}_{v_j}W^{(l)} \bigg)$$</p>
 <p>$j$是节点$v_i$的邻居节点的索引，$c_{ij}$是边$\big (v_i,v_j\big )$的归一化常量，它源于我们在GCN模型中使用的对称归一化邻接矩阵$D^{-\frac{1}{2}}AD^{-\frac{1}{2}}$。我们现在看到，这个传播规则可以被解释为可微分和参数化的（因为$W^{(l)}$是原始Weisfeiler-Lehman算法中使用的哈希函数的变体）。如果我们现在选择一个适当的非线性并初始化随机权重矩阵，使其正交，则这个规则会在实践中变得更稳定（也要归功于$c_{ij}$）。</p>
 <h4 id="0x11-半监督学习"><a href="#0x11-半监督学习" class="headerlink" title="0x11 半监督学习"></a>0x11 半监督学习</h4><p>由于模型中的所有内容都是可微分和参数化的，因此我们可以添加一些标签，训练模型并观察嵌入如何反应。<br>我们只需要为每个类标记一个节点，并开始训练几次迭代。（看原文视频）</p>
 <h3 id="缺陷"><a href="#缺陷" class="headerlink" title="缺陷"></a>缺陷</h3><ul>
 <li>GCN需要将整个图放到内存，比较耗内存，不能处理大图。</li>
 <li>在训练时需要知道整个图的结构信息（包括待预测的节点）</li>
 </ul>
-<h2 id="GraphSAGE"><a href="#GraphSAGE" class="headerlink" title="GraphSAGE"></a>GraphSAGE</h2><h3 id="来源-1"><a href="#来源-1" class="headerlink" title="来源"></a>来源</h3><p>GCN输入了整个图，训练节点收集邻居节点信息的时候，用到了测试和验证集的样本，我们把这个称为Transductive learning。<br>然而，我们所处理的大多数的机器学习问题都是Inductive learning，因为我们刻意的将样本集分为训练/验证/测试，并且训练的时候只用训练样本。这样对图来说有个好处，可以处理图中新来的节点，可以利用已知节点的信息为未知节点生成embedding，GraphSAGE就是这么干的。</p>
+<h2 id="GraphSAGE"><a href="#GraphSAGE" class="headerlink" title="GraphSAGE"></a>GraphSAGE</h2><h3 id="来源-1"><a href="#来源-1" class="headerlink" title="来源"></a>来源</h3><p>GCN输入了整个图，训练节点收集邻居节点信息的时候，用到了测试和验证集的样本，我们把这个称为Transductive learning。<br>然而，我们所处理的大多数的机器学习问题都是Inductive learning，因为我们刻意的将样本集分为训练&#x2F;验证&#x2F;测试，并且训练的时候只用训练样本。这样对图来说有个好处，可以处理图中新来的节点，可以利用已知节点的信息为未知节点生成embedding，GraphSAGE就是这么干的。</p>
 <p>总的来说，GraphSAGE用于归纳节点的embedding，它利用节点特征来学习泛化到未知节点的embedding函数。当然，GraphSAGE也可以用于没有节点特征的图，只利用图的结构特征（如节点度数）。<br>GraphSAGE的关键思想在于如何从节点的本地邻域（如邻居节点的度数或文本属性）聚合特征信息。</p>
 <h3 id="简单理解-1"><a href="#简单理解-1" class="headerlink" title="简单理解"></a>简单理解</h3><p>GraphSAGE是一个Inductive Learning框架，具体实现中，训练时它仅仅保留训练样本到训练样本的边，然后包含Sample和Aggregate两大步骤</p>
 <ul>
@@ -257,11 +257,11 @@
 <p>首先，(line1)算法首先初始化输入的图中所有节点的特征向量，(line3)对于每个节点$v$，拿到它采样后的邻居节点$N(v)$后，(line4)利用聚合函数聚合邻居节点的信息，(line5)并结合自身embedding通过一个非线性变换更新自身的embedding表示。</p>
 <p>注意到算法里面的$K$，它是指聚合器的数量，也是指权重矩阵的数量，还是网络的层数，这是因为<strong>每一层网络中聚合器和权重矩阵是共享的</strong>。网络的层数可以理解为需要最大访问的邻居的跳数(hops)。</p>
 <p>给定一组输入节点，首先对所需的邻域进行向前采样（直到深度K），然后运行内部循环（line3），而不是迭代所有节点。</p>
-<h4 id="GraphSAGE-Sample"><a href="#GraphSAGE-Sample" class="headerlink" title="GraphSAGE Sample"></a>GraphSAGE Sample</h4><p>采用定长抽样的方法。<br>具体来说，定义需要的邻居个数$S$，然后采用有放回的重采样/负采样方法达到$S$。保证每个节点（采样后的）邻居个数一致，这样是为了把多个节点以及它们的邻居拼接成Tensor送到GPU中进行批训练。</p>
+<h4 id="GraphSAGE-Sample"><a href="#GraphSAGE-Sample" class="headerlink" title="GraphSAGE Sample"></a>GraphSAGE Sample</h4><p>采用定长抽样的方法。<br>具体来说，定义需要的邻居个数$S$，然后采用有放回的重采样&#x2F;负采样方法达到$S$。保证每个节点（采样后的）邻居个数一致，这样是为了把多个节点以及它们的邻居拼接成Tensor送到GPU中进行批训练。</p>
 <h4 id="聚合器"><a href="#聚合器" class="headerlink" title="聚合器"></a>聚合器</h4><p>图的邻居节点是没有自然顺序的，因此，聚合函数必须对一组无序的向量进行操作。<br>理想情况下，聚合函数是对称的（即输入的排列不变），同时仍可训练并保持高表示能力。<br>对称性可以确保我们的神经网络模型可以被训练并应用于任意排序的邻居节点特征集。</p>
 <h5 id="Mean-Aggregator"><a href="#Mean-Aggregator" class="headerlink" title="Mean Aggregator"></a>Mean Aggregator</h5><p>$h_v^k \leftarrow \sigma(W·MEAN({h_v^{k-1}} \cup {h_u^{k-1}, \forall u \in N(v)}))$<br>和GCN做法基本一致</p>
 <h5 id="LSTM-Aggregator"><a href="#LSTM-Aggregator" class="headerlink" title="LSTM Aggregator"></a>LSTM Aggregator</h5><p>Applies LSTM to a random permutation of neighbors.<br>本质上是不对称的。</p>
-<h5 id="Pooling-Aggregator"><a href="#Pooling-Aggregator" class="headerlink" title="Pooling Aggregator"></a>Pooling Aggregator</h5><p>$AGGREGATE_k^{pool}=max({ \sigma (W_{pool}h_{u_i}^k +b) })$<br>原则上，任何对称向量函数（如逐元素均值）都可以用来代替最大算子。开发测试中发现最大和平均没有显著差异。</p>
+<h5 id="Pooling-Aggregator"><a href="#Pooling-Aggregator" class="headerlink" title="Pooling Aggregator"></a>Pooling Aggregator</h5><p>$AGGREGATE_k^{pool}&#x3D;max({ \sigma (W_{pool}h_{u_i}^k +b) })$<br>原则上，任何对称向量函数（如逐元素均值）都可以用来代替最大算子。开发测试中发现最大和平均没有显著差异。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
 <li>利用采样机制，解决了GCN必须要知道全部图的信息问题，克服了GCN训练时内存和显存的限制。即使对于未知的新节点，也能得到其表示</li>
 <li>聚合器和权重矩阵的参数对于所有的节点是共享的</li>
@@ -274,12 +274,12 @@
 </ul>
 <h2 id="GAT"><a href="#GAT" class="headerlink" title="GAT"></a>GAT</h2><h3 id="来源-2"><a href="#来源-2" class="headerlink" title="来源"></a>来源</h3><p>为了解决GNN聚合邻居节点的时候没有考虑到不同的邻居节点重要性不同的问题，GAT借鉴了Transformer的idea，引入masked self-attention机制，在计算图中的每个节点的表示的时候，会根据邻居节点特征的不同来为其分配不同的权值。</p>
 <h3 id="简单理解-2"><a href="#简单理解-2" class="headerlink" title="简单理解"></a>简单理解</h3><p>对于输入的图，一个graph attention layer如图所示</p>
-<p>Input features: $h={ \vec{h_1}, \vec{h_2} ,…,\vec{h_N} }$<br>Importance of $v_i$ to $v_i$: $e_{ij}=a(W \vec{h}_i,W \vec{h}_j)$</p>
+<p>Input features: $h&#x3D;{ \vec{h_1}, \vec{h_2} ,…,\vec{h_N} }$<br>Importance of $v_i$ to $v_i$: $e_{ij}&#x3D;a(W \vec{h}_i,W \vec{h}_j)$</p>
 <p><img src="/img/code/graph/6.png"></p>
 <p>其中$\alpha$采用了单层的前馈神经网络实现，计算过程如下（注意权重矩阵$W$对于所有的节点是共享的）：</p>
-<p>$$\alpha_{ij}= \displaystyle \frac{exp \Big  (LeakyReLU \Big  ( \vec{a}^T[W \vec{h}_i] |W \vec{h}<em>j \Big ) \Big )}{\sum</em>{k \in N_i}exp \Big (LeakyReLU \Big ( \vec{a}^T[W \vec{h}_i] | W \vec{h}_k \Big  ) \Big  )}$$</p>
+<p>$$\alpha_{ij}&#x3D; \displaystyle \frac{exp \Big  (LeakyReLU \Big  ( \vec{a}^T[W \vec{h}_i] |W \vec{h}<em>j \Big ) \Big )}{\sum</em>{k \in N_i}exp \Big (LeakyReLU \Big ( \vec{a}^T[W \vec{h}_i] | W \vec{h}_k \Big  ) \Big  )}$$</p>
 <p>计算完attention之后，就可以得到某个节点聚合其邻居节点信息的新的表示，计算过程如下：</p>
-<p>$$ \vec{h}<em>i’= \sigma \Big  ( \displaystyle \sum</em>{j \in N_i}{\alpha_{ij}W \vec{h}_j} \Big )$$</p>
+<p>$$ \vec{h}<em>i’&#x3D; \sigma \Big  ( \displaystyle \sum</em>{j \in N_i}{\alpha_{ij}W \vec{h}_j} \Big )$$</p>
 <p>为了提高模型的拟合能力，还引入了<em>multi-attention</em>机制，即同时使用多个$W^k$计算self-attention，然后将计算的结果合并（连接或者求和）：</p>
 <p><img src="/img/code/graph/7.png"></p>
 <p>此外，由于GAT结构的特性，GAT无需使用预先构建好的图，因此GAT既适用于Transductive Learning，又适用于Inductive Learning。</p>
@@ -288,8 +288,7 @@
 <li>计算速度快，可以在不同的节点上进行并行计算</li>
 <li>既可以用于Transductive Learning，又可以用于Inductive Learning，可以对未见过的图结构进行处理</li>
 </ul>
-<p>参考链接：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/30994790">https://zhuanlan.zhihu.com/p/30994790</a><br><a target="_blank" rel="noopener" href="http://tkipf.github.io/graph-convolutional-networks/">http://tkipf.github.io/graph-convolutional-networks/</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42189083/article/details/103407753">https://blog.csdn.net/qq_42189083/article/details/103407753</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/136521625">https://zhuanlan.zhihu.com/p/136521625</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/62629465">https://zhuanlan.zhihu.com/p/62629465</a><br>《机器学习》，周志华<br><a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2017/file/5dd9db5e033da9c6fb5ba83c7a7ebea9-Paper.pdf">https://proceedings.neurips.cc/paper/2017/file/5dd9db5e033da9c6fb5ba83c7a7ebea9-Paper.pdf</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/136521625">https://zhuanlan.zhihu.com/p/136521625</a><br><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1710.10903.pdf">https://arxiv.org/pdf/1710.10903.pdf</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/thunlp/GNNPapers/blob/master/README.md">https://github.com/thunlp/GNNPapers/blob/master/README.md</a></p>
+<p>参考链接：<br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/30994790">https://zhuanlan.zhihu.com/p/30994790</a><br><a target="_blank" rel="noopener" href="http://tkipf.github.io/graph-convolutional-networks/">http://tkipf.github.io/graph-convolutional-networks/</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_42189083/article/details/103407753">https://blog.csdn.net/qq_42189083/article/details/103407753</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/136521625">https://zhuanlan.zhihu.com/p/136521625</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/62629465">https://zhuanlan.zhihu.com/p/62629465</a><br>《机器学习》，周志华<br><a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2017/file/5dd9db5e033da9c6fb5ba83c7a7ebea9-Paper.pdf">https://proceedings.neurips.cc/paper/2017/file/5dd9db5e033da9c6fb5ba83c7a7ebea9-Paper.pdf</a><br><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/136521625">https://zhuanlan.zhihu.com/p/136521625</a><br><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1710.10903.pdf">https://arxiv.org/pdf/1710.10903.pdf</a><br><a target="_blank" rel="noopener" href="https://github.com/thunlp/GNNPapers/blob/master/README.md">https://github.com/thunlp/GNNPapers/blob/master/README.md</a></p>
 
     </div>
 
